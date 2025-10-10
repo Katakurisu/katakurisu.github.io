@@ -19,9 +19,13 @@ h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 #stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
 @keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0;}to{transform:translate(-50%,-50%) scale(1);opacity:1;}}
 @media(max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
-#top-left{position:fixed;top:12px;left:12px;z-index:20;font-size:3em;cursor:pointer;user-select:none;}
+#top-left{position:fixed;top:12px;left:12px;z-index:20;font-size:6em;cursor:pointer;user-select:none;width:100px;height:100px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+#top-left .half{width:50%;height:100%;position:absolute;top:0;transition:all 0.3s ease;cursor:pointer;}
+#top-left .half.dark{left:0;background:#000;border-radius:50% 0 0 50%;border:3px solid transparent;}
+#top-left .half.light{right:0;background:#f0f0e0;border-radius:0 50% 50% 0;border:3px solid transparent;}
+#top-left .selected{border-color:#00ff99;}
 #top-right{position:fixed;top:12px;right:12px;display:flex;align-items:center;gap:12px;z-index:20;font-size:1.1em;}
-#date-time{display:flex;align-items:center;gap:6px;}
+#date-time{display:flex;align-items:center;gap:4px;}
 #lang-select{padding:4px 6px;border-radius:6px;border:1px solid #00ff99;background:rgba(0,0,0,0.8);color:#00ff99;}
 .light-theme{background:#f0f0e0;color:#000;}
 </style>
@@ -45,7 +49,10 @@ h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 </div>
 <audio id="alert-sound" preload="auto"><source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg"></audio>
 
-<div id="top-left">☯︎</div>
+<div id="top-left">
+<div class="half dark selected" data-theme="dark"></div>
+<div class="half light" data-theme="light"></div>
+</div>
 <div id="top-right">
 <div id="date-time"><span id="date"></span><span id="weekday"></span><span id="time"></span></div>
 <select id="lang-select">
@@ -71,8 +78,9 @@ setInterval(updateDateTime,1000);updateDateTime();
 langSelect.addEventListener('change',()=>{currentLang=langSelect.value;updateDateTime();});
 
 // ===== Theme Toggle ======
-const themeToggle=document.getElementById('top-left');
-themeToggle.addEventListener('click',()=>{document.body.classList.toggle('light-theme');});
+const darkHalf=document.querySelector('#top-left .dark'),lightHalf=document.querySelector('#top-left .light');
+darkHalf.addEventListener('click',()=>{document.body.classList.remove('light-theme');darkHalf.classList.add('selected');lightHalf.classList.remove('selected');});
+lightHalf.addEventListener('click',()=>{document.body.classList.add('light-theme');lightHalf.classList.add('selected');darkHalf.classList.remove('selected');});
 </script>
 </body>
 </html>
