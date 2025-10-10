@@ -4,35 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎁 حمایت از میلاد کاتاکوری</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* === فونت و استایل پایه === */
+/* === بک‌گراند و فونت نئون === */
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  direction: rtl;
-  text-align: center;
-  min-height: 100vh;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-/* === تم ها === */
-body.dark {
-  background-color: #000;
+  background-color: #000000;
   color: #00ff99;
-}
-body.light {
-  background-color: #f5f5f5;
-  color: #222;
+  text-align: center;
+  direction: rtl;
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
 }
 
 /* === عنوان اصلی === */
 h1 {
   margin: 60px 0 50px 0;
   font-size: 2.4em;
-  text-shadow: 0 0 15px currentColor;
+  text-shadow: 0 0 15px #00ff99;
 }
 
 /* === دکمه‌ها === */
@@ -43,79 +34,23 @@ h1 {
   flex-wrap: wrap;
   margin-bottom: 80px;
 }
+
 .btn {
   display: inline-block;
   padding: 16px 32px;
   font-size: 1.2em;
+  color: #00ff99;
   text-decoration: none;
-  border: 2px solid currentColor;
+  border: 2px solid #00ff99;
   border-radius: 12px;
-  box-shadow: 0 0 15px currentColor;
+  box-shadow: 0 0 15px #00ff99;
   transition: all 0.3s ease;
 }
 .btn:hover {
-  background: currentColor;
-  color: #000;
-  box-shadow: 0 0 30px currentColor;
+  background: #00ff99;
+  color: #000000;
+  box-shadow: 0 0 30px #00ff99;
   transform: scale(1.05);
-}
-
-/* === تم فیکس بالا سمت چپ === */
-#theme-toggle {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  z-index: 100;
-}
-.theme-icon {
-  font-size: 1.5em;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.theme-icon.active {
-  border: 2px solid currentColor;
-  box-shadow: 0 0 8px 2px currentColor;
-}
-.theme-icon.sun {
-  color: orange;
-}
-.theme-icon.moon {
-  color: white;
-}
-
-/* === بالای صفحه: زبان + تاریخ/ساعت سمت راست === */
-#top-bar {
-  position: fixed;
-  top: 15px;
-  right: 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  z-index: 100;
-  font-size: 1em;
-}
-#language-select {
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid currentColor;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-}
-#date-time {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  font-weight: 600;
 }
 
 /* === Overlay برای Donation Alert === */
@@ -124,6 +59,7 @@ h1 {
   inset: 0;
   pointer-events: none;
 }
+
 #donation-alert {
   position: absolute;
   top: 35%;
@@ -131,26 +67,29 @@ h1 {
   transform: translate(-50%, -50%);
   text-align: center;
   background: rgba(0,0,0,0.9);
-  border: 2px solid currentColor;
-  box-shadow: 0 0 50px currentColor;
+  border: 2px solid #00ff99;
+  box-shadow: 0 0 50px #00ff99;
   border-radius: 20px;
   padding: 30px 40px;
   display: none;
   z-index: 10;
   animation: popin 0.5s ease;
 }
+
 #donation-gif {
   width: 180px;
   height: 180px;
   border-radius: 12px;
   margin-bottom: 15px;
 }
+
 #donor-name {
   font-size: 1.6em;
   font-weight: 600;
-  text-shadow: 0 0 15px currentColor;
+  text-shadow: 0 0 15px #00ff99;
   margin-bottom: 5px;
 }
+
 #donor-amount {
   font-size: 1.4em;
   color: #ccffdd;
@@ -166,10 +105,73 @@ h1 {
   background: rgba(0,0,0,0.85);
   border-radius: 14px;
   padding: 20px 30px;
-  color: currentColor;
-  text-shadow: 0 0 12px currentColor;
+  color: #00ff99;
+  text-shadow: 0 0 12px #00ff99;
   line-height: 1.8;
   z-index: 5;
+}
+
+/* === تم (دارک/لایت) === */
+#theme-toggle {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  gap: 8px;
+  z-index: 20;
+}
+
+.theme-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: #00ff99;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.theme-icon.active {
+  border-color: #00ff99;
+  box-shadow: 0 0 10px #00ff99;
+}
+
+/* === تاریخ، ساعت و زبان === */
+#top-right {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 20;
+  font-size: 1em;
+}
+
+#datetime {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#language-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 2px solid #00ff99;
+  background: transparent;
+  color: #00ff99;
+  font-size: 0.9em;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s;
+}
+#language-select:hover {
+  background: #00ff99;
+  color: #000;
 }
 
 /* === انیمیشن popup === */
@@ -180,34 +182,34 @@ h1 {
 
 /* === ریسپانسیو موبایل === */
 @media (max-width: 500px) {
-  .btn { padding: 12px 20px; font-size: 1em; }
-  h1 { font-size: 2em; margin: 40px 0 40px 0; }
-  #donation-gif { width: 140px; height: 140px; }
-  #stats { padding: 15px 20px; font-size: 1.1em; }
-  #top-bar { flex-direction: column; right: 10px; top: 10px; gap: 6px; }
+  .btn {
+    padding: 12px 20px;
+    font-size: 1em;
+  }
+  h1 {
+    font-size: 2em;
+    margin: 40px 0 40px 0;
+  }
+  #donation-gif {
+    width: 140px;
+    height: 140px;
+  }
+  #stats {
+    padding: 15px 20px;
+    font-size: 1.1em;
+  }
+  #language-select {
+    font-size: 0.8em;
+  }
+  #theme-toggle .theme-icon {
+    width: 30px;
+    height: 30px;
+  }
 }
 </style>
 </head>
-<body class="dark">
 
-<!-- === تم بالا سمت چپ === -->
-<div id="theme-toggle">
-  <span id="dark-icon" class="theme-icon moon active">⏾</span>
-  <span id="light-icon" class="theme-icon sun">🔆</span>
-</div>
-
-<!-- === بالای صفحه: زبان + تاریخ/ساعت سمت راست === -->
-<div id="top-bar">
-  <select id="language-select">
-    <option value="fa" selected>فارسی</option>
-    <option value="en">English</option>
-  </select>
-  <div id="date-time">
-    <span id="date">1404/07/18</span> |
-    <span id="weekday">چهارشنبه</span> |
-    <span id="clock">12:00:00</span>
-  </div>
-</div>
+<body>
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
@@ -233,105 +235,160 @@ h1 {
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
 
+<!-- === تم دارک/لایت === -->
+<div id="theme-toggle">
+  <div id="dark-icon" class="theme-icon active">⏾</div>
+  <div id="light-icon" class="theme-icon">🔆</div>
+</div>
+
+<!-- === تاریخ، ساعت و زبان === -->
+<div id="top-right">
+  <div id="datetime">1404/07/18 | جمعه | 00:00:00</div>
+  <select id="language-select">
+    <option value="fa" selected>فارسی</option>
+    <option value="en">English</option>
+  </select>
+</div>
+
 <script>
-// === تاریخ و ساعت و زبان ===
-const clockEl=document.getElementById('clock');
-const dateEl=document.getElementById('date');
-const weekdayEl=document.getElementById('weekday');
-const languageSelect=document.getElementById('language-select');
+// ======= تم دارک/لایت =======
+const darkIcon = document.getElementById("dark-icon");
+const lightIcon = document.getElementById("light-icon");
+darkIcon.addEventListener("click", ()=>setTheme("dark"));
+lightIcon.addEventListener("click", ()=>setTheme("light"));
 
-function pad(n){return n<10?'0'+n:n;}
-function toPersianNum(n){return n.toString().replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);}
+function setTheme(mode){
+  if(mode==="dark"){
+    document.body.style.backgroundColor="#000";
+    document.body.style.color="#00ff99";
+    darkIcon.classList.add("active");
+    lightIcon.classList.remove("active");
+  } else {
+    document.body.style.backgroundColor="#f0f0f0";
+    document.body.style.color="#333";
+    lightIcon.classList.add("active");
+    darkIcon.classList.remove("active");
+  }
+}
 
-function getJalaliDate(date){
-  const gy=date.getFullYear(), gm=date.getMonth()+1, gd=date.getDate();
-  const weekdays=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
-  return {year: gy, month: gm, day: gd, weekday: weekdays[date.getDay()]};
+// ======= زبان و تاریخ =======
+const languageSelect = document.getElementById("language-select");
+let currentLang = "fa";
+languageSelect.addEventListener("change", ()=>{
+  currentLang = languageSelect.value;
+});
+
+function toPersianNum(n){
+  const map = {'0':'۰','1':'۱','2':'۲','3':'۳','4':'۴','5':'۵','6':'۶','7':'۷','8':'۸','9':'۹'};
+  return n.toString().replace(/[0-9]/g, x=>map[x]);
+}
+
+const weekDays = {
+  fa:["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"],
+  en:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+};
+
+// تبدیل میلادی به شمسی ساده (Jalali)
+function gregorian_to_jalali(gy, gm, gd){
+  var g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];
+  var jy=gy-621;
+  var gy2= (gm>2)?(gy+1):gy;
+  var days= 365*gy + Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400) + gd + g_d_m[gm-1] - 1;
+  var jy=jy + 33*Math.floor(days/12053);
+  days=days%12053;
+  jy=jy + 4*Math.floor(days/1461);
+  days=days%1461;
+  if(days>365){ jy=jy+Math.floor((days-1)/365); days=(days-1)%365;}
+  var jm=(days<186)?1+Math.floor(days/31):7+Math.floor((days-186)/30);
+  var jd= (days<186)?1+days%31:1+(days-186)%30;
+  return [jy,jm,jd];
 }
 
 function updateClock(){
-  const now=new Date();
-  let h=pad(now.getHours()), m=pad(now.getMinutes()), s=pad(now.getSeconds());
-  let dateStr, weekdayStr;
-  if(languageSelect.value==='fa'){
-    const j=getJalaliDate(now);
-    dateStr=toPersianNum(`${j.year}/${pad(j.month)}/${pad(j.day)}`);
-    weekdayStr=j.weekday;
-    clockEl.textContent=toPersianNum(`${h}:${m}:${s}`);
-  }else{
-    const weekdays=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    dateStr=`${pad(now.getFullYear())}/${pad(now.getMonth()+1)}/${pad(now.getDate())}`;
-    weekdayStr=weekdays[now.getDay()];
-    clockEl.textContent=`${h}:${m}:${s}`;
+  const now = new Date();
+  let year, month, day;
+  let weekDay = now.getDay(); // 0=یکشنبه ... 6=شنبه
+  if(currentLang==="fa"){
+    [year,month,day] = gregorian_to_jalali(now.getFullYear(), now.getMonth()+1, now.getDate());
+    weekDay = weekDays.fa[weekDay];
+  } else {
+    year = now.getFullYear();
+    month = now.getMonth()+1;
+    day = now.getDate();
+    weekDay = weekDays.en[weekDay];
   }
-  dateEl.textContent=dateStr;
-  weekdayEl.textContent=weekdayStr;
+  let hh = now.getHours().toString().padStart(2,'0');
+  let mm = now.getMinutes().toString().padStart(2,'0');
+  let ss = now.getSeconds().toString().padStart(2,'0');
+
+  if(currentLang==="fa"){
+    hh = toPersianNum(hh);
+    mm = toPersianNum(mm);
+    ss = toPersianNum(ss);
+    year = toPersianNum(year);
+    month = toPersianNum(month.toString().padStart(2,'0'));
+    day = toPersianNum(day.toString().padStart(2,'0'));
+  } else {
+    month = month.toString().padStart(2,'0');
+    day = day.toString().padStart(2,'0');
+  }
+
+  document.getElementById("datetime").textContent = `${year}/${month}/${day} | ${weekDay} | ${hh}:${mm}:${ss}`;
 }
 setInterval(updateClock,1000);
 updateClock();
-languageSelect.addEventListener('change',updateClock);
 
-// === مدیریت تم و رنگ‌ها پویا ===
-const body=document.body;
-const darkIcon=document.getElementById('dark-icon');
-const lightIcon=document.getElementById('light-icon');
-function setTheme(theme){
-  if(theme==='dark'){
-    body.classList.remove('light'); body.classList.add('dark');
-    darkIcon.classList.add('active'); lightIcon.classList.remove('active');
-  }else{
-    body.classList.remove('dark'); body.classList.add('light');
-    darkIcon.classList.remove('active'); lightIcon.classList.add('active');
-  }
-}
-darkIcon.addEventListener('click',()=>setTheme('dark'));
-lightIcon.addEventListener('click',()=>setTheme('light'));
-setTheme('dark');
+// ======= Donation =======
+const alertBox = document.getElementById('donation-alert');
+const donorName = document.getElementById('donor-name');
+const donorAmount = document.getElementById('donor-amount');
+const totalEl = document.getElementById('total');
+const percentEl = document.getElementById('percent');
+const alertSound = document.getElementById('alert-sound');
 
-// === مدیریت Donations ===
-const alertBox=document.getElementById('donation-alert');
-const donorName=document.getElementById('donor-name');
-const donorAmount=document.getElementById('donor-amount');
-const totalEl=document.getElementById('total');
-const percentEl=document.getElementById('percent');
-const alertSound=document.getElementById('alert-sound');
-
-let total=0;
-const target=60000000;
-const seenDonations=new Set();
-const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";
-const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
+let total = 0;
+const target = 60000000;
+const seenDonations = new Set();
+const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
+const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
 
 function showDonation(d){
-  let rate=currencyRates[d.currency]||0;
-  let amountIRR=d.amount*rate;
-  total+=amountIRR;
-  donorName.textContent=d.name||"حامی ناشناس";
-  donorAmount.textContent=(languageSelect.value==='fa'?toPersianNum(amountIRR.toLocaleString()):amountIRR.toLocaleString());
-  totalEl.textContent=(languageSelect.value==='fa'?toPersianNum(total.toLocaleString()):total.toLocaleString());
-  percentEl.textContent=(languageSelect.value==='fa'?toPersianNum(Math.min(((total/target)*100).toFixed(1),100)):Math.min(((total/target)*100).toFixed(1),100));
+  let rate = currencyRates[d.currency] || 0;
+  let amountIRR = d.amount * rate;
+  total += amountIRR;
+
+  donorName.textContent = d.name || (currentLang==="fa"?"حامی ناشناس":"Anonymous");
+  donorAmount.textContent = (currentLang==="fa"?toPersianNum(amountIRR.toLocaleString("fa-IR")):amountIRR.toLocaleString("en-US")) + (currentLang==="fa"?" ریال":" IRR");
+
+  totalEl.textContent = (currentLang==="fa"?toPersianNum(total.toLocaleString("fa-IR")):total.toLocaleString("en-US"));
+  percentEl.textContent = (currentLang==="fa"?toPersianNum(Math.min(((total / target) * 100).toFixed(1), 100)):Math.min(((total / target) * 100).toFixed(1), 100));
+  
   alertBox.style.display="block";
-  alertSound.currentTime=0; alertSound.play().catch(()=>{});
-  setTimeout(()=>{alertBox.style.display="none";},4000);
+  alertSound.currentTime=0;
+  alertSound.play().catch(()=>{});
+
+  setTimeout(()=>{ alertBox.style.display="none"; },4000);
 }
 
 async function fetchDonations(){
   try{
-    const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});
+    const res = await fetch(DONATIONS_URL + "?t=" + Date.now(), { cache: "no-store" });
     if(!res.ok) throw new Error("Fetch failed");
-    const data=await res.json();
+    const data = await res.json();
     if(!Array.isArray(data)) return;
     data.forEach(d=>{
-      if(d.ts&&!seenDonations.has(d.ts)){
+      if(d.ts && !seenDonations.has(d.ts)){
         seenDonations.add(d.ts);
         showDonation(d);
       }
     });
-  }catch(err){console.warn("❗ خطا:",err.message);}
+  }catch(err){
+    console.warn("❗ خطا در دریافت داده:", err.message);
+  }
 }
 fetchDonations();
 setInterval(fetchDonations,5000);
-</script>
 
+</script>
 </body>
 </html>
