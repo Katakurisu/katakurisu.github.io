@@ -1,75 +1,96 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>صفحه اصلی</title>
+  <title>صفحه نمونه</title>
   <style>
     body {
-      background-color: #000; /* بک‌گراند مشکی */
-      color: #fff;           /* متن سفید */
+      margin: 0;
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
+      background-color: #111;
+      color: #eee;
     }
-    #datetime {
-      font-size: 24px;
-      margin-top: 20px;
+
+    header {
+      background-color: #222;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    select {
+
+    .content {
+      padding: 20px;
+    }
+
+    .datetime {
+      font-size: 16px;
+      color: #fff;
+      margin-right: 20px;
+    }
+
+    .language-select {
       font-size: 16px;
       padding: 5px;
-      margin-top: 20px;
-      background-color: #222;
-      color: #fff;
-      border: 1px solid #555;
-      border-radius: 5px;
+    }
+
+    h1, p {
+      color: #eee;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px 0;
+      font-size: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-
-  <h1 id="greeting">سلام!</h1>
-
-  <!-- ساعت و تاریخ زنده -->
-  <div id="datetime"></div>
-
-  <!-- انتخاب زبان -->
-  <div>
-    <label for="language">انتخاب زبان:</label>
-    <select id="language">
-      <option value="fa">فارسی</option>
+  <header>
+    <div class="datetime" id="datetime"></div>
+    <select class="language-select" id="language-select">
       <option value="en">English</option>
+      <option value="fa">فارسی</option>
     </select>
+  </header>
+
+  <div class="content" id="content">
+    <h1 id="title">Welcome to My Website</h1>
+    <p id="paragraph">This is a sample content. You can replace it with your own text.</p>
+    <button id="sampleButton">Click Me</button>
   </div>
 
   <script>
-    // تابع نمایش تاریخ و ساعت زنده
+    // نمایش ساعت و تاریخ زنده
     function updateDateTime() {
       const now = new Date();
-      const optionsFa = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-      const optionsEn = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-      const lang = document.getElementById('language').value;
-      const datetimeDiv = document.getElementById('datetime');
-
-      if(lang === 'fa') {
-        datetimeDiv.textContent = now.toLocaleDateString('fa-IR', optionsFa) + ' ' + now.toLocaleTimeString('fa-IR', optionsFa);
-      } else {
-        datetimeDiv.textContent = now.toLocaleDateString('en-US', optionsEn) + ' ' + now.toLocaleTimeString('en-US', optionsEn);
-      }
+      const datetimeElement = document.getElementById('datetime');
+      const options = { 
+        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', 
+        hour: '2-digit', minute: '2-digit', second: '2-digit' 
+      };
+      datetimeElement.textContent = now.toLocaleDateString('fa-IR', options) + ' - ' + now.toLocaleTimeString('fa-IR');
     }
-
-    // بروزرسانی هر ثانیه
     setInterval(updateDateTime, 1000);
     updateDateTime();
 
-    // تغییر متن خوش‌آمدگویی با تغییر زبان
-    document.getElementById('language').addEventListener('change', function() {
-      const greeting = document.getElementById('greeting');
+    // تغییر زبان محتوا
+    const languageSelect = document.getElementById('language-select');
+    const title = document.getElementById('title');
+    const paragraph = document.getElementById('paragraph');
+    const button = document.getElementById('sampleButton');
+
+    languageSelect.addEventListener('change', function() {
       if(this.value === 'fa') {
-        greeting.textContent = 'سلام!';
+        title.textContent = 'به وبسایت من خوش آمدید';
+        paragraph.textContent = 'این یک محتوای نمونه است. می‌توانید آن را با متن خود جایگزین کنید.';
+        button.textContent = 'کلیک کن';
       } else {
-        greeting.textContent = 'Hello!';
+        title.textContent = 'Welcome to My Website';
+        paragraph.textContent = 'This is a sample content. You can replace it with your own text.';
+        button.textContent = 'Click Me';
       }
     });
   </script>
