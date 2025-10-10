@@ -1,98 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>صفحه نمونه</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #111;
-      color: #eee;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Neon Page</title>
+    <style>
+        /* Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
 
-    header {
-      background-color: #222;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        body { 
+            background-color: #0d0d0d; 
+            color: #00ff00; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    .content {
-      padding: 20px;
-    }
+        h1, h2, p { 
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00;
+        }
 
-    .datetime {
-      font-size: 16px;
-      color: #fff;
-      margin-right: 20px;
-    }
+        .flicker {
+            animation: flicker 1.5s infinite alternate;
+        }
 
-    .language-select {
-      font-size: 16px;
-      padding: 5px;
-    }
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 22%, 24%, 55% { opacity: 0.4; }
+        }
 
-    h1, p {
-      color: #eee;
-    }
+        button {
+            background: none;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
 
-    button {
-      padding: 10px 20px;
-      margin: 10px 0;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
+        button:hover {
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+            box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+        }
+
+        .card {
+            border: 2px solid #00ff00;
+            padding: 20px;
+            margin: 20px;
+            width: 300px;
+            text-align: center;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .donation-alert {
+            border: 2px solid #ff00ff;
+            padding: 15px;
+            margin: 20px;
+            background-color: #1a001a;
+            text-align: center;
+            animation: flicker 1.5s infinite alternate;
+        }
+
+        #datetime {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        select {
+            background-color: #0d0d0d;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 5px 10px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+    </style>
 </head>
 <body>
-  <header>
-    <div class="datetime" id="datetime"></div>
-    <select class="language-select" id="language-select">
-      <option value="en">English</option>
-      <option value="fa">فارسی</option>
-    </select>
-  </header>
 
-  <div class="content" id="content">
-    <h1 id="title">Welcome to My Website</h1>
-    <p id="paragraph">This is a sample content. You can replace it with your own text.</p>
-    <button id="sampleButton">Click Me</button>
-  </div>
+    <h1 class="flicker" id="title">Welcome!</h1>
 
-  <script>
-    // نمایش ساعت و تاریخ زنده
-    function updateDateTime() {
-      const now = new Date();
-      const datetimeElement = document.getElementById('datetime');
-      const options = { 
-        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', 
-        hour: '2-digit', minute: '2-digit', second: '2-digit' 
-      };
-      datetimeElement.textContent = now.toLocaleDateString('fa-IR', options) + ' - ' + now.toLocaleTimeString('fa-IR');
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
+    <div>
+        <label for="lang">Language:</label>
+        <select id="lang">
+            <option value="en">English</option>
+            <option value="fa">فارسی</option>
+        </select>
+    </div>
 
-    // تغییر زبان محتوا
-    const languageSelect = document.getElementById('language-select');
-    const title = document.getElementById('title');
-    const paragraph = document.getElementById('paragraph');
-    const button = document.getElementById('sampleButton');
+    <div class="card">
+        <h2 id="stats-title">Stats</h2>
+        <p id="stats">Visitors: 1234</p>
+    </div>
 
-    languageSelect.addEventListener('change', function() {
-      if(this.value === 'fa') {
-        title.textContent = 'به وبسایت من خوش آمدید';
-        paragraph.textContent = 'این یک محتوای نمونه است. می‌توانید آن را با متن خود جایگزین کنید.';
-        button.textContent = 'کلیک کن';
-      } else {
-        title.textContent = 'Welcome to My Website';
-        paragraph.textContent = 'This is a sample content. You can replace it with your own text.';
-        button.textContent = 'Click Me';
-      }
-    });
-  </script>
+    <div class="donation-alert" id="donation-alert">
+        Support us with a donation!
+    </div>
+
+    <div id="datetime"></div>
+
+    <button class="flicker" id="action-btn">Click Me</button>
+
+    <script>
+        // Clock
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('datetime').textContent = now.toLocaleDateString(currentLang, options) + ' ' + timeString;
+        }
+        setInterval(updateDateTime, 1000);
+
+        // Language switcher
+        let currentLang = 'en';
+        const langSelect = document.getElementById('lang');
+
+        const texts = {
+            en: {
+                title: 'Welcome!',
+                statsTitle: 'Stats',
+                stats: 'Visitors: 1234',
+                donation: 'Support us with a donation!',
+                button: 'Click Me'
+            },
+            fa: {
+                title: 'خوش آمدید!',
+                statsTitle: 'آمار',
+                stats: 'بازدیدکنندگان: 1234',
+                donation: 'ما را با یک حمایت مالی حمایت کنید!',
+                button: 'کلیک کنید'
+            }
+        };
+
+        langSelect.addEventListener('change', (e) => {
+            currentLang = e.target.value;
+            document.getElementById('title').textContent = texts[currentLang].title;
+            document.getElementById('stats-title').textContent = texts[currentLang].statsTitle;
+            document.getElementById('stats').textContent = texts[currentLang].stats;
+            document.getElementById('donation-alert').textContent = texts[currentLang].donation;
+            document.getElementById('action-btn').textContent = texts[currentLang].button;
+            updateDateTime();
+        });
+
+        updateDateTime();
+    </script>
+
 </body>
 </html>
