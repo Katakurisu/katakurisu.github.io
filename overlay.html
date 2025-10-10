@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Donation Alert</title>
+<style>
+  body {
+    margin: 0;
+    background: transparent;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  #alert {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeInOut 13s ease-in-out forwards;
+  }
+  #alert img {
+    width: 400px;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(255,255,255,0.8);
+  }
+  #alert p {
+    color: white;
+    font-size: 2rem;
+    margin-top: 1rem;
+    text-shadow: 0 0 10px black;
+  }
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: scale(0.8); }
+    10% { opacity: 1; transform: scale(1); }
+    80% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.8); }
+  }
+</style>
+</head>
+<body>
+  <div id="alert">
+    <img id="alertGif" src="https://media.tenor.com/zFvV1wOE5_MAAAAC/bitcoin-money.gif" alt="Donation alert" />
+    <p>💰 پرداخت جدید دریافت شد!</p>
+    <audio id="alertSound" src="https://www.myinstants.com/media/sounds/cash-register.mp3"></audio>
+  </div>
+
+<script>
+  const alertBox = document.getElementById("alert");
+  const alertSound = document.getElementById("alertSound");
+
+  async function checkDonation() {
+    try {
+      // نمونه: چک کردن Pipedream برای رویداد جدید (شبیه‌سازی ساده)
+      const res = await fetch("https://eoyf8grpms15wjd.m.pipedream.net");
+      if (res.ok) {
+        showAlert();
+      }
+    } catch (e) {
+      console.log("No new donation yet.");
+    }
+  }
+
+  function showAlert() {
+    alertBox.style.display = "flex";
+    alertSound.currentTime = 0;
+    alertSound.play();
+    setTimeout(() => alertBox.style.display = "none", 13000);
+  }
+
+  // برای تست دستی (حذفش کن بعداً)
+  window.addEventListener("click", showAlert);
+
+  // هر چند ثانیه وبهوک چک بشه (در نسخه واقعی با WebSocket جایگزین میشه)
+  setInterval(checkDonation, 15000);
+</script>
+</body>
+</html>
