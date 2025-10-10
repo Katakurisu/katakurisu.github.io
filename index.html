@@ -6,78 +6,65 @@
 <title>🎁 حمایت از میلاد کاتاکوری</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:'Vazirmatn',sans-serif;background-color:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;}
-h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
-.button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
-.btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
-.btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
-#stats{font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;display:inline-block;}
-#clock{font-size:1.4em;margin-bottom:30px;text-shadow:0 0 12px #00ff99;}
-@media(max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#stats{padding:15px 20px;font-size:1.1em;}}
+body {margin:0;font-family:'Vazirmatn',sans-serif;background-color:#000;color:#00ff99;text-align:center;direction:rtl;overflow:hidden;}
+h1 {margin:50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
+.button-container {display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
+.btn {display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
+.btn:hover {background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
+#overlay {position:fixed;inset:0;pointer-events:none;}
+#donation-alert {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;background:rgba(0,0,0,0.9);border:2px solid #00ff99;box-shadow:0 0 50px #00ff99;border-radius:20px;padding:20px;display:none;z-index:10;animation:popin 0.5s ease;}
+#donation-video {width:250px;border-radius:12px;margin-bottom:15px;}
+#donation-info {font-size:1.6em;font-weight:600;text-shadow:0 0 15px #00ff99;line-height:1.6;}
+#stats {position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
+@keyframes popin {from {transform:translate(-50%,-60%) scale(0.9);opacity:0;} to {transform:translate(-50%,-50%) scale(1);opacity:1;}}
+@media (max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0;}#donation-video{width:180px;}#stats{padding:15px 20px;font-size:1.1em;}}
+#clock {position:fixed;top:20px;right:20px;font-size:1.4em;color:#00ff99;text-shadow:0 0 12px #00ff99;}
 </style>
 </head>
 <body>
-
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
-
-<div id="clock">--:--:--</div>
-
 <div class="button-container">
   <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
-  <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
+  <a class="btn" href="https://nowpayments.io/donation?api_key=0289ad3c-32ce-4361-96a2-d2951b0ee943" target="_blank">₿ پرداخت کریپتو</a>
 </div>
-
-<div id="stats">
-  💰 جمع کل: <span id="total">0</span> ریال<br>
-  🎯 درصد هدف: <span id="percent">0</span>%
+<div id="overlay">
+  <div id="donation-alert">
+    <video id="donation-video" src="alert-donate.mp4" autoplay muted></video>
+    <div id="donation-info"></div>
+  </div>
+  <div id="stats">
+    💰 جمع کل: <span id="total">0</span> ریال<br>
+    🎯 درصد هدف: <span id="percent">0</span>%
+  </div>
 </div>
-
-<audio id="alert-sound" preload="auto">
-  <source src="alert-sound.mp3" type="audio/mpeg">
-</audio>
-
+<div id="clock"></div>
 <script>
-const totalEl=document.getElementById('total');
-const percentEl=document.getElementById('percent');
-const alertSound=document.getElementById('alert-sound');
-let total=0,target=60000000;
+// ساعت زنده فارسی
+function updateClock(){const now=new Date();let h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();const toFarsi=n=>n.toString().replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[d]);h=toFarsi(h);m=toFarsi(m);s=toFarsi(s);document.getElementById("clock").textContent=`${h}:${m}:${s}`;}
+setInterval(updateClock,1000);updateClock();
 
-// تابع نمایش ساعت فارسی
-function updateClock(){
-  const now=new Date();
-  let h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
-  const pad=(n)=>n.toString().padStart(2,'0');
-  totalEl.textContent = total.toLocaleString('fa-IR');
-  document.getElementById('clock').textContent=`${pad(h)}:${pad(m)}:${pad(s)}`;
-}
-setInterval(updateClock,1000);
-updateClock();
+// Donor stats
+let total=0;const target=60000000;const totalEl=document.getElementById("total"),percentEl=document.getElementById("percent"),alertBox=document.getElementById("donation-alert"),donorInfo=document.getElementById("donation-info"),videoEl=document.getElementById("donation-video");
 
-// دریافت دونیت‌ها از وبهوک Pipedream
 async function fetchDonations(){
   try{
-    const res=await fetch('https://eoyf8grpms15wjd.m.pipedream.net',{cache:'no-store'});
-    if(!res.ok)throw new Error('Fetch failed');
+    const res=await fetch("https://eoyf8grpms15wjd.m.pipedream.net");
     const data=await res.json();
-    if(!Array.isArray(data))return;
     data.forEach(d=>{
-      if(d.amount){
-        total+=d.amount;
-        percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);
-        totalEl.textContent=total.toLocaleString('fa-IR');
-        alertSound.currentTime=0;
-        alertSound.play().catch(()=>{});
-        // پیام به overlay ارسال شود
-        const overlay = window.open('overlay.html', 'overlay');
-        if(overlay) overlay.postMessage('donation','*');
-      }
+      const amount=d.amount||0;
+      const name=d.name||"حامی ناشناس";
+      const message=d.message||"";
+      total+=amount;
+      totalEl.textContent=total.toLocaleString("fa-IR");
+      percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);
+      donorInfo.innerHTML=`${name}<br>${amount.toLocaleString("fa-IR")} ریال${message?`<br>${message}`:""}`;
+      alertBox.style.display="block";
+      videoEl.currentTime=0;videoEl.play();
+      setTimeout(()=>{alertBox.style.display="none";},13000);
     });
-  }catch(err){console.warn(err);}
+  }catch(e){console.warn(e);}
 }
-
-// بررسی وبهوک هر 5 ثانیه
 setInterval(fetchDonations,5000);
 </script>
-
 </body>
 </html>
