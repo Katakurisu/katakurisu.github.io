@@ -1,156 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Neon Page</title>
-    <style>
-        /* Reset */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>صفحه نمونه با نئون</title>
+  <style>
+    /* دارک تم و بک‌گراند نئون */
+    body {
+      background-color: #0a0a0a;
+      color: #00ff99;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-        body { 
-            background-color: #0d0d0d; 
-            color: #00ff00; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: flex-start;
-            min-height: 100vh;
-            padding: 20px;
-        }
+    .neon {
+      text-shadow: 0 0 5px #00ff99, 0 0 10px #00ff99, 0 0 20px #00ff99;
+    }
 
-        h1, h2, p { 
-            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00;
-        }
+    /* کارت */
+    .card {
+      background-color: #111;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00ff99;
+    }
 
-        .flicker {
-            animation: flicker 1.5s infinite alternate;
-        }
+    /* انتخاب زبان */
+    select {
+      margin-bottom: 20px;
+      padding: 5px 10px;
+      background-color: #111;
+      color: #00ff99;
+      border: 1px solid #00ff99;
+      border-radius: 5px;
+    }
 
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 22%, 24%, 55% { opacity: 0.4; }
-        }
-
-        button {
-            background: none;
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            padding: 10px 20px;
-            margin: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
-            box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
-        }
-
-        .card {
-            border: 2px solid #00ff00;
-            padding: 20px;
-            margin: 20px;
-            width: 300px;
-            text-align: center;
-            text-shadow: 0 0 5px #00ff00;
-        }
-
-        .donation-alert {
-            border: 2px solid #ff00ff;
-            padding: 15px;
-            margin: 20px;
-            background-color: #1a001a;
-            text-align: center;
-            animation: flicker 1.5s infinite alternate;
-        }
-
-        #datetime {
-            margin-top: 10px;
-            font-size: 18px;
-        }
-
-        select {
-            background-color: #0d0d0d;
-            color: #00ff00;
-            border: 2px solid #00ff00;
-            padding: 5px 10px;
-            margin: 10px;
-            cursor: pointer;
-        }
-
-    </style>
+    /* تاریخ و ساعت */
+    #datetime {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
-    <h1 class="flicker" id="title">Welcome!</h1>
+  <h1 class="neon" id="title">Welcome</h1>
 
-    <div>
-        <label for="lang">Language:</label>
-        <select id="lang">
-            <option value="en">English</option>
-            <option value="fa">فارسی</option>
-        </select>
-    </div>
+  <!-- انتخاب زبان -->
+  <label for="language">Language / زبان:</label>
+  <select id="language">
+    <option value="en">English</option>
+    <option value="fa">فارسی</option>
+  </select>
 
-    <div class="card">
-        <h2 id="stats-title">Stats</h2>
-        <p id="stats">Visitors: 1234</p>
-    </div>
+  <!-- کارت‌ها -->
+  <div class="card" id="card1">This is a card</div>
+  <div class="card" id="card2">Another card</div>
 
-    <div class="donation-alert" id="donation-alert">
-        Support us with a donation!
-    </div>
+  <!-- تاریخ و ساعت -->
+  <div id="datetime"></div>
 
-    <div id="datetime"></div>
+  <script>
+    const langSelect = document.getElementById('language');
+    const title = document.getElementById('title');
+    const card1 = document.getElementById('card1');
+    const card2 = document.getElementById('card2');
+    const datetime = document.getElementById('datetime');
 
-    <button class="flicker" id="action-btn">Click Me</button>
+    const texts = {
+      en: {
+        title: "Welcome",
+        card1: "This is a card",
+        card2: "Another card"
+      },
+      fa: {
+        title: "خوش آمدید",
+        card1: "این یک کارت است",
+        card2: "یک کارت دیگر"
+      }
+    };
 
-    <script>
-        // Clock
-        function updateDateTime() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('datetime').textContent = now.toLocaleDateString(currentLang, options) + ' ' + timeString;
-        }
-        setInterval(updateDateTime, 1000);
+    // تغییر زبان
+    langSelect.addEventListener('change', () => {
+      const lang = langSelect.value;
+      title.textContent = texts[lang].title;
+      card1.textContent = texts[lang].card1;
+      card2.textContent = texts[lang].card2;
+    });
 
-        // Language switcher
-        let currentLang = 'en';
-        const langSelect = document.getElementById('lang');
+    // ساعت و تاریخ زنده
+    function updateDateTime() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateStr = now.toLocaleDateString(langSelect.value === 'fa' ? 'fa-IR' : 'en-US', options);
+      const timeStr = now.toLocaleTimeString(langSelect.value === 'fa' ? 'fa-IR' : 'en-US');
+      datetime.textContent = `${dateStr} - ${timeStr}`;
+    }
 
-        const texts = {
-            en: {
-                title: 'Welcome!',
-                statsTitle: 'Stats',
-                stats: 'Visitors: 1234',
-                donation: 'Support us with a donation!',
-                button: 'Click Me'
-            },
-            fa: {
-                title: 'خوش آمدید!',
-                statsTitle: 'آمار',
-                stats: 'بازدیدکنندگان: 1234',
-                donation: 'ما را با یک حمایت مالی حمایت کنید!',
-                button: 'کلیک کنید'
-            }
-        };
-
-        langSelect.addEventListener('change', (e) => {
-            currentLang = e.target.value;
-            document.getElementById('title').textContent = texts[currentLang].title;
-            document.getElementById('stats-title').textContent = texts[currentLang].statsTitle;
-            document.getElementById('stats').textContent = texts[currentLang].stats;
-            document.getElementById('donation-alert').textContent = texts[currentLang].donation;
-            document.getElementById('action-btn').textContent = texts[currentLang].button;
-            updateDateTime();
-        });
-
-        updateDateTime();
-    </script>
+    setInterval(updateDateTime, 1000);
+    updateDateTime(); // نمایش اولیه
+  </script>
 
 </body>
 </html>
