@@ -6,10 +6,11 @@
 <title>🎁 حمایت از میلاد کاتاکوری</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
+/* === بک‌گراند و فونت === */
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000;
+  background-color: #000000;
   color: #00ff99;
   text-align: center;
   direction: rtl;
@@ -45,12 +46,12 @@ h1 {
 }
 .btn:hover {
   background: #00ff99;
-  color: #000;
+  color: #000000;
   box-shadow: 0 0 30px #00ff99;
   transform: scale(1.05);
 }
 
-/* === Overlay برای Donation Alert === */
+/* === Donation Alert === */
 #overlay {
   position: fixed;
   inset: 0;
@@ -77,10 +78,18 @@ h1 {
   border-radius: 12px;
   margin-bottom: 15px;
 }
-#donor-name { font-size: 1.6em; font-weight: 600; text-shadow:0 0 15px #00ff99; margin-bottom:5px; }
-#donor-amount { font-size:1.4em; color:#ccffdd; }
+#donor-name {
+  font-size: 1.6em;
+  font-weight: 600;
+  text-shadow: 0 0 15px #00ff99;
+  margin-bottom: 5px;
+}
+#donor-amount {
+  font-size: 1.4em;
+  color: #ccffdd;
+}
 
-/* === بخش آمار === */
+/* === آمار پایین صفحه === */
 #stats {
   position: fixed;
   bottom: 8%;
@@ -96,45 +105,82 @@ h1 {
   z-index: 5;
 }
 
-/* === تاریخ، ساعت و زبان === */
+/* === تاریخ، ساعت، زبان و تم === */
 #top-right {
   position: fixed;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 15px;
   z-index: 20;
   font-size: 1em;
 }
-#datetime { display:flex; gap:8px; align-items:center; }
-select { padding:4px 8px; border-radius:6px; border:1px solid #00ff99; background:#000; color:#00ff99; }
-
-/* === تم با ☯︎ === */
-#theme-switcher {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  width: 60px;
-  height: 60px;
-  font-size: 50px;
-  cursor: pointer;
+#date-time {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius:50%;
-  border:2px solid #00ff99;
-  user-select:none;
-  transition: all 0.3s;
+  gap: 10px;
 }
-#theme-switcher.dark { border: 4px solid #00ff99; }
-#theme-switcher.light { border: 4px solid #f0e68c; }
+#language-select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #00ff99;
+  background: #000000;
+  color: #00ff99;
+  cursor: pointer;
+}
+#language-select:hover {
+  background: #00ff99;
+  color: #000000;
+}
+
+/* === تم با ☯︎ === */
+#theme-toggle {
+  font-size: 5em;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+#theme-toggle span {
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  cursor: pointer;
+}
+.dark-selected {
+  border: 3px solid #00ff99;
+  border-radius: 50%;
+}
 
 /* === انیمیشن popup === */
-@keyframes popin { from{transform:translate(-50%,-60%) scale(0.9); opacity:0;} to{transform:translate(-50%,-50%) scale(1); opacity:1;} }
+@keyframes popin {
+  from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
 
-/* === ریسپانسیو === */
-@media (max-width: 500px){ .btn{padding:12px 20px; font-size:1em;} h1{font-size:2em;margin:40px 0 40px 0;} #donation-gif{width:140px;height:140px;} #stats{padding:15px 20px; font-size:1.1em;} }
+/* === ریسپانسیو موبایل === */
+@media (max-width: 500px) {
+  .btn {
+    padding: 12px 20px;
+    font-size: 1em;
+  }
+  h1 {
+    font-size: 2em;
+    margin: 40px 0 40px 0;
+  }
+  #donation-gif {
+    width: 140px;
+    height: 140px;
+  }
+  #stats {
+    padding: 15px 20px;
+    font-size: 1.1em;
+  }
+  #theme-toggle {
+    font-size: 3em;
+  }
+}
 </style>
 </head>
 <body>
@@ -152,6 +198,7 @@ select { padding:4px 8px; border-radius:6px; border:1px solid #00ff99; backgroun
     <p id="donor-name"></p>
     <p id="donor-amount"></p>
   </div>
+
   <div id="stats">
     <p>💰 جمع کل: <span id="total">0</span> ریال</p>
     <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
@@ -162,27 +209,88 @@ select { padding:4px 8px; border-radius:6px; border:1px solid #00ff99; backgroun
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
 
+<!-- تاریخ، ساعت، زبان و تم -->
 <div id="top-right">
-  <div id="datetime">
-    <span id="date-display"></span>
-    <span id="weekday-display"></span>
-    <span id="time-display"></span>
+  <div id="date-time">
+    <span id="date">1404/07/18</span> | <span id="weekday">شنبه</span> | <span id="time">12:00:00</span>
   </div>
-  <select id="lang-select">
+  <select id="language-select">
     <option value="fa">فارسی</option>
     <option value="en">English</option>
   </select>
+  <div id="theme-toggle"><span id="yin-yang">☯︎</span></div>
 </div>
 
-<div id="theme-switcher" class="dark">☯︎</div>
-
 <script>
+/* === تغییر تم === */
+const themeToggle = document.getElementById("yin-yang");
+let isDark = true;
+
+function applyTheme() {
+  if(isDark){
+    document.body.style.backgroundColor = "#000";
+    document.body.style.color = "#00ff99";
+    themeToggle.classList.add("dark-selected");
+  } else {
+    document.body.style.backgroundColor = "#eee3d3"; // رنگ کرمی ملایم
+    document.body.style.color = "#000";
+    themeToggle.classList.remove("dark-selected");
+  }
+}
+
+themeToggle.addEventListener("click", ()=>{
+  isDark = !isDark;
+  applyTheme();
+});
+
+/* === ساعت و تاریخ === */
+const dateEl = document.getElementById("date");
+const timeEl = document.getElementById("time");
+const weekdayEl = document.getElementById("weekday");
+const languageSelect = document.getElementById("language-select");
+
+function toPersianNumber(n){
+  const map = {0:'۰',1:'۱',2:'۲',3:'۳',4:'۴',5:'۵',6:'۶',7:'۷',8:'۸',9:'۹'};
+  return n.toString().replace(/\d/g, d=>map[d]);
+}
+
+function updateTime(){
+  const now = new Date();
+  let lang = languageSelect.value;
+  let y = now.getFullYear();
+  let m = now.getMonth()+1;
+  let d = now.getDate();
+  let h = now.getHours();
+  let min = now.getMinutes();
+  let s = now.getSeconds();
+
+  let weekdaysFa = ["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"];
+  let weekdaysEn = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+  let weekdayText = lang==="fa" ? weekdaysFa[now.getDay()] : weekdaysEn[now.getDay()];
+
+  let dateStr = lang==="fa" ? `${toPersianNumber(y)}/${toPersianNumber(m.toString().padStart(2,'0'))}/${toPersianNumber(d.toString().padStart(2,'0'))}` :
+                                `${y}/${m.toString().padStart(2,'0')}/${d.toString().padStart(2,'0')}`;
+  let timeStr = lang==="fa" ? `${toPersianNumber(h.toString().padStart(2,'0'))}:${toPersianNumber(min.toString().padStart(2,'0'))}:${toPersianNumber(s.toString().padStart(2,'0'))}` :
+                              `${h.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+
+  dateEl.textContent = dateStr;
+  timeEl.textContent = timeStr;
+  weekdayEl.textContent = weekdayText;
+}
+
+languageSelect.addEventListener("change", updateTime);
+setInterval(updateTime, 1000);
+updateTime();
+
+/* === Donation simulation === */
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
 const totalEl = document.getElementById('total');
 const percentEl = document.getElementById('percent');
 const alertSound = document.getElementById('alert-sound');
+
 let total = 0;
 const target = 60000000;
 const seenDonations = new Set();
@@ -193,14 +301,17 @@ function showDonation(d) {
   let rate = currencyRates[d.currency] || 0;
   let amountIRR = d.amount * rate;
   total += amountIRR;
+
   donorName.textContent = d.name || "حامی ناشناس";
-  donorAmount.textContent = amountIRR.toLocaleString("fa-IR") + " ریال";
-  totalEl.textContent = total.toLocaleString("fa-IR");
+  donorAmount.textContent = amountIRR.toLocaleString(languageSelect.value==='fa'?'fa-IR':'en-US') + " ریال";
+
+  totalEl.textContent = total.toLocaleString(languageSelect.value==='fa'?'fa-IR':'en-US');
   percentEl.textContent = Math.min(((total / target) * 100).toFixed(1), 100);
+
   alertBox.style.display = "block";
   alertSound.currentTime = 0;
   alertSound.play().catch(()=>{});
-  setTimeout(() => { alertBox.style.display = "none"; }, 4000);
+  setTimeout(()=>{alertBox.style.display="none";},4000);
 }
 
 async function fetchDonations() {
@@ -209,61 +320,20 @@ async function fetchDonations() {
     if (!res.ok) throw new Error("Fetch failed");
     const data = await res.json();
     if (!Array.isArray(data)) return;
-    data.forEach(d => { if(d.ts && !seenDonations.has(d.ts)){ seenDonations.add(d.ts); showDonation(d); } });
-  } catch(err) { console.warn("❗ خطا در دریافت داده:", err.message); }
+    data.forEach(d => {
+      if(d.ts && !seenDonations.has(d.ts)){
+        seenDonations.add(d.ts);
+        showDonation(d);
+      }
+    });
+  } catch(e){ console.warn(e); }
 }
+
 fetchDonations();
-setInterval(fetchDonations, 5000);
+setInterval(fetchDonations,5000);
 
-/* === تاریخ و ساعت و زبان === */
-const langSelect = document.getElementById('lang-select');
-const dateDisplay = document.getElementById('date-display');
-const weekdayDisplay = document.getElementById('weekday-display');
-const timeDisplay = document.getElementById('time-display');
-let currentLang = 'fa';
-
-function pad(n){ return n<10? '0'+n: n; }
-function toPersianDigits(str){ const map = {0:'۰',1:'۱',2:'۲',3:'۳',4:'۴',5:'۵',6:'۶',7:'۷',8:'۸',9:'۹'}; return str.replace(/[0-9]/g, m=>map[m]); }
-
-function updateDateTime(){
-  const now = new Date();
-  let y,m,d,wd;
-  if(currentLang==='fa'){
-    // ساده سازی: استفاده از تاریخ میلادی فقط برای نمایش، میشه با کتابخانه تبدیل واقعی شمسی جایگزین کرد
-    y = now.getFullYear(); m = pad(now.getMonth()+1); d = pad(now.getDate());
-    const weekdays = ['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
-    wd = weekdays[now.getDay()];
-    dateDisplay.textContent = toPersianDigits(y+'/'+m+'/'+d);
-    weekdayDisplay.textContent = wd;
-    timeDisplay.textContent = toPersianDigits(pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds()));
-  } else {
-    y = now.getFullYear(); m = pad(now.getMonth()+1); d = pad(now.getDate());
-    const weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    wd = weekdays[now.getDay()];
-    dateDisplay.textContent = y+'/'+m+'/'+d;
-    weekdayDisplay.textContent = wd;
-    timeDisplay.textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
-  }
-}
-setInterval(updateDateTime,1000);
-langSelect.addEventListener('change',(e)=>{currentLang=e.target.value; updateDateTime();});
-updateDateTime();
-
-/* === تم با ☯︎ === */
-const themeSwitcher = document.getElementById('theme-switcher');
-themeSwitcher.addEventListener('click',()=>{
-  if(themeSwitcher.classList.contains('dark')){
-    themeSwitcher.classList.remove('dark');
-    themeSwitcher.classList.add('light');
-    document.body.style.backgroundColor='#f5f5dc';
-    document.body.style.color='#000';
-  } else {
-    themeSwitcher.classList.remove('light');
-    themeSwitcher.classList.add('dark');
-    document.body.style.backgroundColor='#000';
-    document.body.style.color='#00ff99';
-  }
-});
+/* === اعمال اولیه تم === */
+applyTheme();
 </script>
 
 </body>
