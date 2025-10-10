@@ -4,34 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎁 حمایت از میلاد کاتاکوری</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
+/* === بک‌گراند دارک و فونت نئون === */
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000000 !important;
+  background-color: #000000;
   color: #00ff99;
   text-align: center;
   direction: rtl;
   min-height: 100vh;
+  position: relative;
 }
 
-/* عنوان اصلی */
+/* === عنوان اصلی === */
 h1 {
   margin: 60px 0 50px 0;
   font-size: 2.4em;
   text-shadow: 0 0 15px #00ff99;
 }
 
-/* دکمه‌ها */
+/* === دکمه‌ها === */
 .button-container {
   display: flex;
   justify-content: center;
   gap: 25px;
   flex-wrap: wrap;
-  margin-bottom: 50px;
+  margin-bottom: 80px;
 }
 
 .btn {
@@ -52,30 +53,7 @@ h1 {
   transform: scale(1.05);
 }
 
-/* بخش تاریخ، ساعت و زبان در بالا سمت راست */
-#datetime {
-  position: fixed;
-  top: 15px;
-  right: 20px;
-  font-size: 1.2em;
-  color: #00ff99;
-  text-shadow: 0 0 10px #00ff99;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-#language-select {
-  padding: 5px 10px;
-  font-size: 1em;
-  border-radius: 8px;
-  border: 2px solid #00ff99;
-  background: #000000;
-  color: #00ff99;
-  text-align: center;
-}
-
-/* Overlay برای Donation Alert */
+/* === اعلان پاپ‌آپ === */
 #overlay {
   position: fixed;
   inset: 0;
@@ -117,7 +95,7 @@ h1 {
   color: #ccffdd;
 }
 
-/* بخش آمار */
+/* === آمار در پایین صفحه === */
 #stats {
   position: fixed;
   bottom: 8%;
@@ -133,19 +111,59 @@ h1 {
   z-index: 5;
 }
 
-/* انیمیشن popup */
+/* === بخش تاریخ و زبان گوشه بالا === */
+#top-right {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  background: rgba(0,0,0,0.7);
+  padding: 10px 15px;
+  border-radius: 12px;
+  font-size: 1em;
+  color: #00ff99;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  z-index: 20;
+}
+
+#lang-select {
+  background: #000;
+  color: #00ff99;
+  border: 1px solid #00ff99;
+  border-radius: 8px;
+  padding: 3px 6px;
+  font-size: 0.9em;
+}
+
+/* === انیمیشن popup === */
 @keyframes popin {
   from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
   to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* ریسپانسیو موبایل */
+/* === ریسپانسیو موبایل === */
 @media (max-width: 500px) {
-  .btn { padding: 12px 20px; font-size: 1em; }
-  h1 { font-size: 2em; margin: 40px 0 40px 0; }
-  #donation-gif { width: 140px; height: 140px; }
-  #stats { padding: 15px 20px; font-size: 1.1em; }
-  #datetime { flex-direction: column; gap: 5px; font-size: 1em; top: 10px; right: 10px; }
+  .btn {
+    padding: 12px 20px;
+    font-size: 1em;
+  }
+  h1 {
+    font-size: 2em;
+    margin: 40px 0 40px 0;
+  }
+  #donation-gif {
+    width: 140px;
+    height: 140px;
+  }
+  #stats {
+    padding: 15px 20px;
+    font-size: 1.1em;
+  }
+  #top-right {
+    flex-direction: column;
+    font-size: 0.9em;
+  }
 }
 </style>
 </head>
@@ -154,24 +172,11 @@ h1 {
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
-<!-- تاریخ و ساعت با انتخاب زبان -->
-<div id="datetime">
-  <div>
-    <span id="date"></span> <span id="time"></span>
-  </div>
-  <select id="language-select">
-    <option value="fa">فارسی</option>
-    <option value="en">English</option>
-  </select>
-</div>
-
-<!-- دکمه‌های پرداخت -->
 <div class="button-container">
   <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
   <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
 </div>
 
-<!-- Donation Alert و Stats -->
 <div id="overlay">
   <div id="donation-alert">
     <img id="donation-gif" src="https://media.giphy.com/media/3o7TKPcehQvZqg2rZu/giphy.gif" alt="Donation">
@@ -185,38 +190,21 @@ h1 {
   </div>
 </div>
 
+<div id="top-right">
+  <span id="date">1404/07/18</span>
+  <span id="time">00:00:00</span>
+  <select id="lang-select">
+    <option value="fa">فارسی</option>
+    <option value="en">English</option>
+  </select>
+</div>
+
 <audio id="alert-sound" preload="auto">
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-// ========== تاریخ و ساعت زنده ==========
-const languageSelect = document.getElementById('language-select');
-
-function updateDateTime() {
-  const now = new Date();
-  const lang = languageSelect.value;
-
-  if (lang === 'fa') {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    const persianDate = new Intl.DateTimeFormat('fa-IR', options).format(now);
-    const parts = persianDate.split('/'); // [year, month, day]
-    document.getElementById('date').textContent = `${parts[0]}/${parts[1]}/${parts[2]}`;
-  } else {
-    document.getElementById('date').textContent = now.toLocaleDateString('en-US');
-  }
-
-  const hours = String(now.getHours()).padStart(2,'0');
-  const minutes = String(now.getMinutes()).padStart(2,'0');
-  const seconds = String(now.getSeconds()).padStart(2,'0');
-  document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
-}
-
-languageSelect.addEventListener('change', updateDateTime);
-setInterval(updateDateTime, 1000);
-updateDateTime();
-
-// ========== Donation Alert ==========
+// ======= Donation System =======
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
@@ -246,7 +234,9 @@ function showDonation(d) {
   alertSound.currentTime = 0;
   alertSound.play().catch(()=>{});
 
-  setTimeout(() => { alertBox.style.display = "none"; }, 4000);
+  setTimeout(() => {
+    alertBox.style.display = "none";
+  }, 4000);
 }
 
 async function fetchDonations() {
@@ -266,8 +256,84 @@ async function fetchDonations() {
     console.warn("❗ خطا در دریافت داده:", err.message);
   }
 }
+
 fetchDonations();
 setInterval(fetchDonations, 5000);
+
+// ======= Date & Time with Language =======
+const dateEl = document.getElementById('date');
+const timeEl = document.getElementById('time');
+const langSelect = document.getElementById('lang-select');
+
+function toPersianDigits(str) {
+  const map = {'0':'۰','1':'۱','2':'۲','3':'۳','4':'۴','5':'۵','6':'۶','7':'۷','8':'۸','9':'۹'};
+  return str.replace(/\d/g, d => map[d]);
+}
+
+function updateDateTime() {
+  const now = new Date();
+  
+  // ====== Gregorian or Persian ======
+  let year = now.getFullYear();
+  let month = now.getMonth() +1;
+  let day = now.getDate();
+  let hours = now.getHours();
+  let minutes = now.getMinutes();
+  let seconds = now.getSeconds();
+
+  // تبدیل به فرمت دو رقمی
+  month = month.toString().padStart(2,'0');
+  day = day.toString().padStart(2,'0');
+  hours = hours.toString().padStart(2,'0');
+  minutes = minutes.toString().padStart(2,'0');
+  seconds = seconds.toString().padStart(2,'0');
+
+  let dateStr = '';
+  let timeStr = `${hours}:${minutes}:${seconds}`;
+
+  if(langSelect.value === 'fa'){
+    // تبدیل به شمسی
+    const jDate = toJalali(now);
+    dateStr = `${jDate.jy}/${jDate.jm.toString().padStart(2,'0')}/${jDate.jd.toString().padStart(2,'0')}`;
+    timeStr = toPersianDigits(timeStr);
+  } else {
+    dateStr = `${year}/${month}/${day}`;
+  }
+
+  dateEl.textContent = dateStr;
+  timeEl.textContent = timeStr;
+}
+
+// ======= Simple Jalali Converter =======
+function toJalali(g) {
+  const gy = g.getFullYear();
+  const gm = g.getMonth() +1;
+  const gd = g.getDate();
+  let g_d_m = [0,31,59,90,120,151,181,212,243,273,304,334];
+  let jy = (gy <= 1600) ? 0 : 979;
+  let gy2 = gy - 1600;
+  let gm2 = gm -1;
+  let gd2 = gd -1;
+  let g_day_no = 365*gy2 + Math.floor((gy2+3)/4) - Math.floor((gy2+99)/100) + Math.floor((gy2+399)/400);
+  g_day_no += gd2 + g_d_m[gm2];
+  if (gm>2 && ((gy%4===0 && gy%100!==0) || (gy%400===0))) g_day_no++;
+  let j_day_no = g_day_no - 79;
+  let j_np = Math.floor(j_day_no / 12053);
+  j_day_no %= 12053;
+  jy += 33*j_np + 4*Math.floor(j_day_no/1461);
+  j_day_no %= 1461;
+  if(j_day_no>=366){
+    jy += Math.floor((j_day_no-1)/365);
+    j_day_no = (j_day_no-1)%365;
+  }
+  const jm = (j_day_no < 186) ? 1 + Math.floor(j_day_no/31) : 7 + Math.floor((j_day_no-186)/30);
+  const jd = 1 + ((j_day_no <186) ? (j_day_no %31) : ((j_day_no-186)%30));
+  return {jy,jm,jd};
+}
+
+updateDateTime();
+setInterval(updateDateTime,1000);
+langSelect.addEventListener('change',updateDateTime);
 </script>
 
 </body>
