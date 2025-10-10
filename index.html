@@ -6,9 +6,9 @@
 <title>🎁 حمایت از میلاد کاتاکوری</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-html,body{margin:0;padding:0;overflow:hidden;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;height:100vh;}
+body{margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;}
 h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
-.button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:20px;}
+.button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
 .btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
 .btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
 #overlay{position:fixed;inset:0;pointer-events:none;}
@@ -16,17 +16,19 @@ h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 #donation-gif{width:180px;height:180px;border-radius:12px;margin-bottom:15px;}
 #donor-name{font-size:1.6em;font-weight:600;text-shadow:0 0 15px #00ff99;margin-bottom:5px;}
 #donor-amount{font-size:1.4em;color:#ccffdd;}
-#stats{position:fixed;bottom:5%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
+#stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
+#top-right{position:fixed;top:10px;right:20px;font-size:1.2em;color:#00ff99;text-align:right;z-index:20;}
 @keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0;}to{transform:translate(-50%,-50%) scale(1);opacity:1;}}
-#clock{position:fixed;top:10px;right:20px;font-size:1.4em;color:#00ff99;z-index:20;}
-@media(max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
+@media (max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
 </style>
 </head>
 <body>
+
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
+
 <div class="button-container">
-<a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
-<a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
+  <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
+  <a class="btn" href="https://nowpayments.io/donation?api_key=0289ad3c-32ce-4361-96a2-d2951b0ee943" target="_blank">₿ پرداخت کریپتو</a>
 </div>
 
 <div id="overlay">
@@ -41,10 +43,15 @@ h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
   </div>
 </div>
 
-<div id="clock"></div>
 <audio id="alert-sound" preload="auto">
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
+
+<div id="top-right">
+  <span id="time">00:00:00</span> | 
+  <span id="weekday">جمعه</span> | 
+  <span id="date">1404/07/18</span>
+</div>
 
 <script>
 const alertBox=document.getElementById('donation-alert');
@@ -53,11 +60,10 @@ const donorAmount=document.getElementById('donor-amount');
 const totalEl=document.getElementById('total');
 const percentEl=document.getElementById('percent');
 const alertSound=document.getElementById('alert-sound');
-let total=0;
-const target=60000000;
-const seenDonations=new Set();
+let total=0,target=60000000,seenDonations=new Set();
 const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";
 const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
+
 function showDonation(d){
   let rate=currencyRates[d.currency]||0;
   let amountIRR=d.amount*rate;
@@ -67,36 +73,30 @@ function showDonation(d){
   totalEl.textContent=total.toLocaleString("fa-IR");
   percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);
   alertBox.style.display="block";
-  alertSound.currentTime=0;
-  alertSound.play().catch(()=>{});
+  alertSound.currentTime=0;alertSound.play().catch(()=>{});
   setTimeout(()=>{alertBox.style.display="none";},13000);
 }
+
 async function fetchDonations(){
   try{
     const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});
     if(!res.ok)throw new Error("Fetch failed");
     const data=await res.json();
     if(!Array.isArray(data))return;
-    data.forEach(d=>{
-      if(d.ts&&!seenDonations.has(d.ts)){
-        seenDonations.add(d.ts);
-        showDonation(d);
-      }
-    });
+    data.forEach(d=>{if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d);}});
   }catch(err){console.warn("❗ خطا در دریافت داده:",err.message);}
 }
-fetchDonations();
-setInterval(fetchDonations,5000);
+fetchDonations();setInterval(fetchDonations,5000);
 
-function updateClock(){
-  const now=new Date();
-  const h=String(now.getHours()).padStart(2,'0');
-  const m=String(now.getMinutes()).padStart(2,'0');
-  const s=String(now.getSeconds()).padStart(2,'0');
-  document.getElementById('clock').textContent=`${h}:${m}:${s}`;
+function updateTime(){
+  const d=new Date();
+  const h=("0"+d.getHours()).slice(-2);
+  const m=("0"+d.getMinutes()).slice(-2);
+  const s=("0"+d.getSeconds()).slice(-2);
+  document.getElementById("time").textContent=`${h}:${m}:${s}`;
 }
-updateClock();
-setInterval(updateClock,1000);
+updateTime();setInterval(updateTime,1000);
 </script>
+
 </body>
 </html>
