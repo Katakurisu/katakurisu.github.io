@@ -11,68 +11,30 @@ h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 .button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
 .btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
 .btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
-#stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
-#donation-alert{position:fixed;top:35%;left:50%;transform:translate(-50%,-50%);text-align:center;background:rgba(0,0,0,0.9);border:2px solid #00ff99;box-shadow:0 0 50px #00ff99;border-radius:20px;padding:30px 40px;display:none;z-index:10;animation:popin 0.5s ease;}
-#donation-gif{width:180px;height:180px;border-radius:12px;margin-bottom:15px;}
-#donor-name{font-size:1.6em;font-weight:600;text-shadow:0 0 15px #00ff99;margin-bottom:5px;}
-#donor-amount{font-size:1.4em;color:#ccffdd;}
 #timebox{position:fixed;top:20px;right:20px;color:#00ff99;font-size:1.2em;text-align:center;direction:ltr;}
-@keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0;}to{transform:translate(-50%,-50%) scale(1);opacity:1;}}
-@media(max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
 </style>
 </head>
 <body>
+
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
+
 <div class="button-container">
 <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
 <a class="btn" href="https://nowpayments.io/donation?api_key=0289ad3c-32ce-4361-96a2-d2951b0ee943" target="_blank" rel="noreferrer noopener">
-<img src="https://nowpayments.io/images/embeds/donation-button-white.svg" alt="پرداخت کریپتو"></a>
+پرداخت کریپتو
+</a>
 </div>
-<div id="donation-alert">
-<img id="donation-gif" src="https://media.giphy.com/media/3o7TKPcehQvZqg2rZu/giphy.gif" alt="Donation">
-<p id="donor-name"></p>
-<p id="donor-amount"></p>
-</div>
-<div id="stats">
-<p>💰 جمع کل: <span id="total">0</span> ریال</p>
-<p>🎯 درصد هدف: <span id="percent">0</span>%</p>
-</div>
-<audio id="alert-sound" preload="auto">
-<source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
-</audio>
+
 <div id="timebox"></div>
+
 <script>
-const alertBox=document.getElementById('donation-alert');
-const donorName=document.getElementById('donor-name');
-const donorAmount=document.getElementById('donor-amount');
-const totalEl=document.getElementById('total');
-const percentEl=document.getElementById('percent');
-const alertSound=document.getElementById('alert-sound');
-let total=0;const target=60000000;const seenDonations=new Set();const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
-function showDonation(d){let rate=currencyRates[d.currency]||0;let amountIRR=d.amount*rate;total+=amountIRR;donorName.textContent=d.name||"حامی ناشناس";donorAmount.textContent=amountIRR.toLocaleString("fa-IR")+" ریال";totalEl.textContent=total.toLocaleString("fa-IR");percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);alertBox.style.display="block";alertSound.currentTime=0;alertSound.play().catch(()=>{});setTimeout(()=>{alertBox.style.display="none";},13000);}
-async function fetchDonations(){try{const res=await fetch("https://api.npoint.io/9617d42448d95d736b0d?t="+Date.now(),{cache:"no-store"});if(!res.ok)throw new Error("Fetch failed");const data=await res.json();if(!Array.isArray(data))return;data.forEach(d=>{if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d);}});}catch(err){console.warn("❗ خطا در دریافت داده:",err.message);}}
-fetchDonations();setInterval(fetchDonations,5000);
-
-// توابع تبدیل میلادی به شمسی
-function gregorianToJalali(gy,gm,gd){
-  var g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];
-  var jy=(gy<=1600)?0:979;
-  gy-=(gy<=1600)?621:1600;
-  var gy2=gm>2?gy+1:gy;
-  var days=365*gy+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400)-80+gd+g_d_m[gm-1];
-  jy+=33*Math.floor(days/12053);days%=12053;jy+=4*Math.floor(days/1461);days%=1461;if(days>365){jy+=Math.floor((days-1)/365);days=(days-1)%365;}
-  var jm=Math.floor(days/30.6)+1;var jd=days-Math.floor(30.6*(jm-1))+1;if(jm>12){jm=12;jd=days-Math.floor(30.6*(12-1))+1;}return [jy,jm,jd];
-}
-
 function updateTime(){
   const date=new Date();
-  const [jy,jm,jd]=gregorianToJalali(date.getFullYear(),date.getMonth()+1,date.getDate());
-  const days=["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"];
-  const week=days[date.getDay()];
   const pad=(n)=>n.toString().padStart(2,"0");
-  document.getElementById("timebox").innerHTML=week+" | "+pad(date.getHours())+":"+pad(date.getMinutes())+":"+pad(date.getSeconds())+" | "+jy+"/"+pad(jm)+"/"+pad(jd);
+  document.getElementById("timebox").textContent=pad(date.getHours())+":"+pad(date.getMinutes())+":"+pad(date.getSeconds());
 }
-setInterval(updateTime,1000);updateTime();
+setInterval(updateTime,1000);
+updateTime();
 </script>
 </body>
 </html>
