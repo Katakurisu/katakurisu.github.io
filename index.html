@@ -53,9 +53,25 @@ function showDonation(d){let rate=currencyRates[d.currency]||0;let amountIRR=d.a
 async function fetchDonations(){try{const res=await fetch("https://api.npoint.io/9617d42448d95d736b0d?t="+Date.now(),{cache:"no-store"});if(!res.ok)throw new Error("Fetch failed");const data=await res.json();if(!Array.isArray(data))return;data.forEach(d=>{if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d);}});}catch(err){console.warn("❗ خطا در دریافت داده:",err.message);}}
 fetchDonations();setInterval(fetchDonations,5000);
 
-// ساعت شمسی
-function updateTime(){const date=new Date();const jd=Math.floor((date/86400000)+2440587.5);const jdn=jd+0.5;const days=["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"];const gDate=date;const week=days[gDate.getDay()];const pad=(n)=>n.toString().padStart(2,"0");const shYear=1404,shMonth=7,shDay=18; //مثال ثابت,می‌توان تبدیل واقعی شمسی کرد
-document.getElementById("timebox").innerHTML=week+" | "+pad(gDate.getHours())+":"+pad(gDate.getMinutes())+":"+pad(gDate.getSeconds())+" | "+shYear+"/"+pad(shMonth)+"/"+pad(shDay);}
+// توابع تبدیل میلادی به شمسی
+function gregorianToJalali(gy,gm,gd){
+  var g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];
+  var jy=(gy<=1600)?0:979;
+  gy-=(gy<=1600)?621:1600;
+  var gy2=gm>2?gy+1:gy;
+  var days=365*gy+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400)-80+gd+g_d_m[gm-1];
+  jy+=33*Math.floor(days/12053);days%=12053;jy+=4*Math.floor(days/1461);days%=1461;if(days>365){jy+=Math.floor((days-1)/365);days=(days-1)%365;}
+  var jm=Math.floor(days/30.6)+1;var jd=days-Math.floor(30.6*(jm-1))+1;if(jm>12){jm=12;jd=days-Math.floor(30.6*(12-1))+1;}return [jy,jm,jd];
+}
+
+function updateTime(){
+  const date=new Date();
+  const [jy,jm,jd]=gregorianToJalali(date.getFullYear(),date.getMonth()+1,date.getDate());
+  const days=["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"];
+  const week=days[date.getDay()];
+  const pad=(n)=>n.toString().padStart(2,"0");
+  document.getElementById("timebox").innerHTML=week+" | "+pad(date.getHours())+":"+pad(date.getMinutes())+":"+pad(date.getSeconds())+" | "+jy+"/"+pad(jm)+"/"+pad(jd);
+}
 setInterval(updateTime,1000);updateTime();
 </script>
 </body>
