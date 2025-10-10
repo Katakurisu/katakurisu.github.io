@@ -16,7 +16,7 @@ body {
   overflow:hidden;
 }
 
-/* -------------------- ⏰ ساعت ⏰ -------------------- */
+/* -------------------- ⏰ ساعت -------------------- */
 #clock {
   position:fixed;
   top:20px;
@@ -25,7 +25,7 @@ body {
   color:#00ff99;
 }
 
-/* -------------------- 🎥 ویدیو دونیت -------------------- */
+/* -------------------- ویدیو دونیت -------------------- */
 #overlay {
   position:fixed;
   inset:0;
@@ -39,20 +39,16 @@ body {
 #donation-alert {
   position:relative;
   text-align:center;
-  background:rgba(0,0,0,0.85);
-  border-radius:20px;
-  padding:30px 40px;
+  padding:10px;
   display:none;
   z-index:10;
-  animation:fadein 0.5s ease;
-  overflow:hidden;
 }
 
 #donation-video {
-  width:200px;
-  height:200px;
+  width:300px;
+  height:300px;
   border-radius:12px;
-  margin-bottom:15px;
+  margin-bottom:10px;
 }
 
 #donor-text {
@@ -60,7 +56,7 @@ body {
   text-shadow:0 0 15px #00ff99;
 }
 
-/* -------------------- 💰 آمار کل و هدف -------------------- */
+/* -------------------- آمار کل -------------------- */
 #stats {
   position:fixed;
   bottom:8%;
@@ -76,28 +72,7 @@ body {
   z-index:5;
 }
 
-/* -------------------- ✨ افکت پرداخت جدید -------------------- */
-#donation-text-effect {
-  font-size:2em;
-  color:#00ff99;
-  text-shadow:0 0 15px #00ff99;
-  margin-top:10px;
-  display:none;
-  animation:shakeGrow 1s ease;
-}
-
-/* -------------------- 🎯 بوردر متحرک -------------------- */
-#donation-border {
-  position:absolute;
-  top:0; left:0; right:0; bottom:0;
-  border:2px solid #00ff99;
-  border-radius:20px;
-  box-shadow:0 0 10px #00ff99;
-  opacity:0;
-  pointer-events:none;
-}
-
-/* دکمه تست */
+/* -------------------- دکمه تست -------------------- */
 button#test-btn {
   position:fixed;
   top:60px;
@@ -112,27 +87,10 @@ button#test-btn {
   cursor:pointer;
 }
 
-@keyframes fadein {from{opacity:0;}to{opacity:1;}}
-@keyframes shakeGrow {
-  0%{transform:scale(1) translate(0,0);}
-  20%{transform:scale(1.1) translate(-3px,2px);}
-  40%{transform:scale(1.05) translate(2px,-2px);}
-  60%{transform:scale(1.1) translate(-2px,1px);}
-  80%{transform:scale(1.05) translate(1px,-1px);}
-  100%{transform:scale(1) translate(0,0);}
-}
-@keyframes borderFade {
-  0%{opacity:0;}
-  10%{opacity:1;}
-  90%{opacity:1;}
-  100%{opacity:0;}
-}
-
 @media(max-width:500px){
-  #donation-video{width:140px;height:140px;}
+  #donation-video{width:200px;height:200px;}
   #stats{padding:15px 20px;font-size:1.1em;}
   #donor-text{font-size:1.2em;}
-  #donation-text-effect{font-size:1.5em;}
 }
 </style>
 </head>
@@ -140,10 +98,8 @@ button#test-btn {
 
 <div id="overlay">
   <div id="donation-alert">
-    <div id="donation-border"></div>
-    <video id="donation-video" src="https://katakurisu.github.io/alert-donate.mp4" autoplay></video>
+    <video id="donation-video" src="alert-donate.mp4" autoplay></video>
     <p id="donor-text"></p>
-    <p id="donation-text-effect">💚 حمایت جدید دریافت شد</p>
   </div>
   <div id="stats">
     <p>💰 جمع کل: <span id="total">0</span> ریال</p>
@@ -153,11 +109,10 @@ button#test-btn {
 
 <div id="clock"></div>
 
-<!-- دکمه تست گیف دونیت -->
 <button id="test-btn" onclick="testDonation()">Test Donation</button>
 
 <script>
-/* -------------------- ⏰ ساعت زنده -------------------- */
+/* -------------------- ساعت زنده -------------------- */
 function updateClock(){
   let now=new Date();
   let h=('0'+now.getHours()).slice(-2);
@@ -168,18 +123,16 @@ function updateClock(){
 setInterval(updateClock,1000);
 updateClock();
 
-/* -------------------- 💰 المان‌ها -------------------- */
+/* -------------------- المان‌ها -------------------- */
 const alertBox=document.getElementById('donation-alert');
 const donorText=document.getElementById('donor-text');
 const videoEl=document.getElementById('donation-video');
 const totalEl=document.getElementById('total');
 const percentEl=document.getElementById('percent');
-const donationEffect=document.getElementById('donation-text-effect');
-const donationBorder=document.getElementById('donation-border');
 
 let total=0,target=60000000;
 
-/* -------------------- 🎥 نمایش دونیت و افکت -------------------- */
+/* -------------------- نمایش دونیت -------------------- */
 function showDonation(d){
   let amountIRR=d.amount*d.currency_rate||d.amount||0;
   total+=amountIRR;
@@ -189,22 +142,14 @@ function showDonation(d){
 
   alertBox.style.display='block';
   videoEl.currentTime=0;
+  videoEl.muted = false;  // صدا فعال
   videoEl.play();
 
-  donationEffect.style.display='block';
-  donationEffect.style.animation='shakeGrow 1s ease';
-
-  donationBorder.style.animation='borderFade 13s linear';
-  donationBorder.style.opacity='1';
-
-  setTimeout(()=>{
-    alertBox.style.display='none';
-    donationEffect.style.display='none';
-    donationBorder.style.opacity='0';
-  },13000);
+  // ویدیو بعد از اتمام پنهان می‌شود (اختیاری)
+  setTimeout(()=>{alertBox.style.display='none';},13000);
 }
 
-/* -------------------- تابع دکمه تست -------------------- */
+/* -------------------- دکمه تست -------------------- */
 function testDonation(){
   showDonation({
     name:'حامی تست',
@@ -217,4 +162,3 @@ function testDonation(){
 
 </body>
 </html>
-
