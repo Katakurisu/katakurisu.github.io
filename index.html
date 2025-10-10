@@ -4,23 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎁 حمایت از میلاد کاتاکوری</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000;
+  background-color: #000000;
   color: #00ff99;
   text-align: center;
   direction: rtl;
   min-height: 100vh;
 }
+
+/* عنوان اصلی */
 h1 {
   margin: 60px 0 50px 0;
   font-size: 2.4em;
   text-shadow: 0 0 15px #00ff99;
 }
+
+/* دکمه‌ها */
 .button-container {
   display: flex;
   justify-content: center;
@@ -28,6 +33,7 @@ h1 {
   flex-wrap: wrap;
   margin-bottom: 80px;
 }
+
 .btn {
   display: inline-block;
   padding: 16px 32px;
@@ -41,15 +47,18 @@ h1 {
 }
 .btn:hover {
   background: #00ff99;
-  color: #000;
+  color: #000000;
   box-shadow: 0 0 30px #00ff99;
   transform: scale(1.05);
 }
+
+/* Overlay اعلان */
 #overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
 }
+
 #donation-alert {
   position: absolute;
   top: 35%;
@@ -65,22 +74,27 @@ h1 {
   z-index: 10;
   animation: popin 0.5s ease;
 }
+
 #donation-gif {
   width: 180px;
   height: 180px;
   border-radius: 12px;
   margin-bottom: 15px;
 }
+
 #donor-name {
   font-size: 1.6em;
   font-weight: 600;
   text-shadow: 0 0 15px #00ff99;
   margin-bottom: 5px;
 }
+
 #donor-amount {
   font-size: 1.4em;
   color: #ccffdd;
 }
+
+/* بخش آمار جمع کل و درصد هدف */
 #stats {
   position: fixed;
   bottom: 8%;
@@ -93,34 +107,65 @@ h1 {
   color: #00ff99;
   text-shadow: 0 0 12px #00ff99;
   line-height: 1.8;
-  z-index: 5;
+  z-index: 25;
+  direction: rtl;
 }
+
+/* انیمیشن popup */
 @keyframes popin {
   from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
   to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
+
+/* تاریخ و ساعت و انتخاب زبان */
 #datetime-container {
   position: fixed;
   top: 15px;
-  left: 15px;
+  right: 20px;
+  background: rgba(0,0,0,0.7);
+  padding: 10px 15px;
+  border-radius: 12px;
   font-size: 1em;
-  background: rgba(0,0,0,0.8);
-  padding: 8px 12px;
-  border-radius: 10px;
-  color: #00ff99;
-  text-shadow: 0 0 8px #00ff99;
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 12px;
   z-index: 20;
+  color: #00ff99;
 }
+
+/* انتخاب زبان */
 #language-select {
   background: #000;
   color: #00ff99;
   border: 1px solid #00ff99;
-  border-radius: 6px;
-  padding: 2px 6px;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.9em;
   cursor: pointer;
+}
+
+/* ریسپانسیو موبایل */
+@media (max-width: 500px) {
+  .btn {
+    padding: 12px 20px;
+    font-size: 1em;
+  }
+  h1 {
+    font-size: 2em;
+    margin: 40px 0 40px 0;
+  }
+  #donation-gif {
+    width: 140px;
+    height: 140px;
+  }
+  #stats {
+    padding: 15px 20px;
+    font-size: 1.1em;
+  }
+  #datetime-container {
+    font-size: 0.9em;
+    padding: 6px 10px;
+  }
 }
 </style>
 </head>
@@ -131,6 +176,15 @@ h1 {
 <div class="button-container">
   <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
   <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
+</div>
+
+<!-- بخش تاریخ، ساعت و انتخاب زبان -->
+<div id="datetime-container">
+  <span id="date"></span> | <span id="weekday"></span> | <span id="time"></span>
+  <select id="language-select">
+    <option value="fa">فارسی</option>
+    <option value="en">English</option>
+  </select>
 </div>
 
 <div id="overlay">
@@ -150,84 +204,8 @@ h1 {
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
 
-<div id="datetime-container">
-  <span id="date">...</span> | <span id="weekday">...</span> | <span id="time">...</span>
-  <select id="language-select">
-    <option value="fa">فارسی</option>
-    <option value="en">English</option>
-  </select>
-</div>
-
 <script>
-// ====== پشتیبانی از اعداد فارسی ======
-function toPersianNumber(n) {
-  return n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-}
-
-// ====== تبدیل میلادی به شمسی ======
-function toJalali(gy, gm, gd) {
-  let g_d_m = [0,31,59,90,120,151,181,212,243,273,304,334];
-  let jy = (gy <= 1600) ? 0 : 979;
-  gy -= (gy <= 1600) ? 621 : 1600;
-  let days = 365*gy + Math.floor((gy+3)/4) - Math.floor((gy+99)/100) + Math.floor((gy+399)/400) - 80 + gd + g_d_m[gm-1];
-  jy += 33*Math.floor(days/12053); 
-  days %= 12053;
-  jy += 4*Math.floor(days/1461);
-  days %= 1461;
-  if(days > 365){
-    jy += Math.floor((days-1)/365);
-    days = (days-1)%365;
-  }
-  let jm = (days < 186) ? 1 + Math.floor(days/31) : 7 + Math.floor((days-186)/30);
-  let jd = 1 + ((days < 186) ? (days%31) : ((days-186)%30));
-  return [jy, jm, jd];
-}
-
-// ====== روز هفته ======
-const weekdays = {
-  fa: ['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'],
-  en: ['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']
-};
-
-// ====== بروزرسانی تاریخ و ساعت ======
-const dateEl = document.getElementById('date');
-const timeEl = document.getElementById('time');
-const weekdayEl = document.getElementById('weekday');
-const langSelect = document.getElementById('language-select');
-
-let currentLang = 'fa';
-
-function updateDateTime() {
-  const now = new Date();
-  const gy = now.getFullYear();
-  const gm = now.getMonth()+1;
-  const gd = now.getDate();
-  const [jy,jm,jd] = toJalali(gy, gm, gd);
-  const dayIndex = (now.getDay() + 1)%7; // تبدیل درست روز هفته شمسی
-
-  let h = now.getHours().toString().padStart(2,'0');
-  let m = now.getMinutes().toString().padStart(2,'0');
-  let s = now.getSeconds().toString().padStart(2,'0');
-
-  if(currentLang==='fa'){
-    dateEl.textContent = toPersianNumber(jy) + '/' + toPersianNumber(jm) + '/' + toPersianNumber(jd);
-    timeEl.textContent = toPersianNumber(h) + ':' + toPersianNumber(m) + ':' + toPersianNumber(s);
-    weekdayEl.textContent = weekdays.fa[dayIndex];
-  } else {
-    dateEl.textContent = jy + '/' + jm.toString().padStart(2,'0') + '/' + jd.toString().padStart(2,'0');
-    timeEl.textContent = h + ':' + m + ':' + s;
-    weekdayEl.textContent = weekdays.en[dayIndex];
-  }
-}
-
-langSelect.addEventListener('change', e=>{
-  currentLang = e.target.value;
-});
-
-updateDateTime();
-setInterval(updateDateTime, 1000);
-
-// ====== Donation ======
+// ========= DONATION ALERT =========
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
@@ -239,7 +217,6 @@ let total = 0;
 const target = 60000000;
 const seenDonations = new Set();
 const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
-
 const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
 
 function showDonation(d) {
@@ -280,6 +257,60 @@ async function fetchDonations() {
 
 fetchDonations();
 setInterval(fetchDonations, 5000);
+
+// ========= DATE & TIME =========
+const dateEl = document.getElementById('date');
+const timeEl = document.getElementById('time');
+const weekdayEl = document.getElementById('weekday');
+const langSelect = document.getElementById('language-select');
+
+let currentLang = 'fa';
+
+const weekdays = {
+  fa: ["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"],
+  en: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+};
+
+// تبدیل اعداد به فارسی
+function toFarsiNumber(n) {
+  return n.toString().replace(/\d/g, d=>"۰۱۲۳۴۵۶۷۸۹"[d]);
+}
+
+// تاریخ شمسی ساده
+function getPersianDate() {
+  const today = new Date();
+  const pDate = new Intl.DateTimeFormat('fa-IR', {year:'numeric', month:'2-digit', day:'2-digit'}).format(today);
+  return pDate; // yyyy/mm/dd
+}
+
+// ساعت دیجیتال
+function updateDateTime() {
+  const now = new Date();
+  let hour = now.getHours();
+  let min = now.getMinutes();
+  let sec = now.getSeconds();
+  let timeStr = `${hour.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+
+  if(currentLang==='fa') {
+    timeStr = toFarsiNumber(timeStr);
+    dateEl.textContent = getPersianDate();
+    weekdayEl.textContent = weekdays.fa[now.getDay()];
+  } else {
+    dateEl.textContent = now.toISOString().slice(0,10);
+    weekdayEl.textContent = weekdays.en[now.getDay()];
+  }
+  timeEl.textContent = timeStr;
+}
+
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+// تغییر زبان
+langSelect.addEventListener('change', e => {
+  currentLang = e.target.value;
+  updateDateTime();
+});
 </script>
+
 </body>
 </html>
