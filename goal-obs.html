@@ -3,114 +3,114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎯 نوار هدف حمایت OBS</title>
+<title>نوار هدف حمایت (OBS)</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background: transparent;
-  direction: rtl;
+  background: transparent; /* شفاف برای OBS */
   overflow: hidden;
 }
 
 /* -------------------- 🎯 نوار هدف -------------------- */
 #goal-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 80%;
-  max-width: 600px;
-  margin: 20px auto;
+  max-width: 800px;
+  backdrop-filter: blur(10px); /* شیشه‌ای */
+  border: 3px solid #FFD700; /* کادر زرد */
+  border-radius: 12px;
+  padding: 10px 15px;
+  box-sizing: border-box;
+  z-index: 5;
 }
 
-/* عنوان هدف */
 #goal-title {
-  font-size: 1.4em;
-  color: #FF0000; /* قرمز */
-  text-shadow: 0 0 8px #FF0000; /* glow */
+  color: red;
+  font-size: 1.2em;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 0 10px #FF0000; /* گلو */
   margin-bottom: 8px;
 }
 
-/* نوار پس‌زمینه */
-#goal-bar-bg {
+#goal-bar {
+  position: relative;
   width: 100%;
   height: 30px;
-  background: transparent; /* شفاف */
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   overflow: hidden;
-  border: 3px solid #00FF00; /* بوردر نازک سبز */
-  position: relative;
 }
 
-/* نوار پرشدنی */
-#goal-bar {
-  width: 0%;
+#goal-fill {
   height: 100%;
-  background: #00FF99; /* سبز فسفری */
-  border-radius: 6px;
+  width: 0%;
+  background: #00FF99; /* پرشدن سبز فسفری */
+  border-radius: 10px 0 0 10px;
   transition: width 0.5s ease;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 8px;
-  color: black;
-  font-weight: bold;
-  text-shadow: 0 0 5px #fff;
 }
 
-/* متن سمت راست */
+#goal-text-left {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 600;
+  color: #FFFFFF;
+  text-shadow: 0 0 8px #000;
+}
+
 #goal-text-right {
   position: absolute;
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  font-weight: bold;
-  color: black;
-  text-shadow: 0 0 5px #fff;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-shadow: 0 0 8px #000;
 }
 </style>
 </head>
 <body>
 
 <div id="goal-container">
-  <div id="goal-title">🎁 هدف: خرید وبکم</div>
-  <div id="goal-bar-bg">
-    <div id="goal-bar">0%</div>
-    <div id="goal-text-right">0 از 60,000,000 تومان</div>
+  <div id="goal-title">خرید وبکم</div>
+  <div id="goal-bar">
+    <div id="goal-fill"></div>
+    <div id="goal-text-left">0%</div>
+    <div id="goal-text-right">0 / 60,000 تومان</div>
   </div>
 </div>
 
 <script>
-let total = 0;
-const target = 60000000; // هدف به تومان
-const goalBar = document.getElementById('goal-bar');
-const goalTextRight = document.getElementById('goal-text-right');
+// -------------------- متغیرها --------------------
+let total = 0; // مبلغ فعلی به تومان
+const target = 60000; // مبلغ هدف به تومان
 
-async function fetchDonations() {
-  try {
-    const res = await fetch('https://eoyf8grpms15wjd.m.pipedream.net', { cache: 'no-store' });
-    const data = await res.json();
-    data.forEach(d => {
-      if (!d.handled) {
-        d.handled = true;
-        updateGoal(d);
-      }
-    });
-  } catch (e) {
-    console.warn(e);
-  }
+const goalFill = document.getElementById('goal-fill');
+const textLeft = document.getElementById('goal-text-left');
+const textRight = document.getElementById('goal-text-right');
+
+// -------------------- بروزرسانی نوار هدف --------------------
+function updateGoal(amount) {
+  total += amount; // به تومان
+  if (total > target) total = target;
+
+  const percent = ((total / target) * 100).toFixed(1);
+  goalFill.style.width = percent + '%';
+  textLeft.textContent = percent + '%';
+  textRight.textContent = `${total.toLocaleString()} / ${target.toLocaleString()} تومان`;
 }
-setInterval(fetchDonations, 5000);
 
-function updateGoal(d) {
-  const amountIRR = d.amount * (d.currency_rate || 1);
-  total += amountIRR;
+// -------------------- تست بدون وبهوک --------------------
+// مثال: برای تست دستی می‌توانید این خط را فعال کنید
+// updateGoal(5000);
 
-  const percent = Math.min((total / target) * 100, 100).toFixed(1);
-  goalBar.style.width = percent + '%';
-  goalBar.textContent = percent + '%';
-
-  goalTextRight.textContent = `${total.toLocaleString('fa-IR')} از ${target.toLocaleString('fa-IR')} تومان`;
-}
 </script>
-
 </body>
 </html>
