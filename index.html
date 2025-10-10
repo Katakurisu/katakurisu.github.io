@@ -5,30 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>صفحه نمونه با نئون</title>
   <style>
-    /* دارک تم و بک‌گراند نئون */
+    /* دارک تم و نئون */
     body {
       background-color: #0a0a0a;
       color: #00ff99;
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', 'Tahoma', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
       padding: 20px;
+      transition: all 0.3s;
     }
 
+    /* متن نئون */
     .neon {
       text-shadow: 0 0 5px #00ff99, 0 0 10px #00ff99, 0 0 20px #00ff99;
     }
 
-    /* کارت */
+    /* کارت‌ها */
     .card {
       background-color: #111;
       padding: 20px;
       margin: 10px;
       border-radius: 10px;
       box-shadow: 0 0 10px #00ff99;
+      text-align: center;
     }
 
     /* انتخاب زبان */
@@ -39,6 +42,7 @@
       color: #00ff99;
       border: 1px solid #00ff99;
       border-radius: 5px;
+      cursor: pointer;
     }
 
     /* تاریخ و ساعت */
@@ -46,6 +50,13 @@
       margin-top: 20px;
       font-size: 1.2rem;
       font-weight: bold;
+      text-align: center;
+    }
+
+    /* راست به چپ برای فارسی */
+    .rtl {
+      direction: rtl;
+      font-family: 'Tahoma', 'Arial', sans-serif;
     }
   </style>
 </head>
@@ -73,6 +84,7 @@
     const card1 = document.getElementById('card1');
     const card2 = document.getElementById('card2');
     const datetime = document.getElementById('datetime');
+    const body = document.body;
 
     const texts = {
       en: {
@@ -87,25 +99,36 @@
       }
     };
 
-    // تغییر زبان
-    langSelect.addEventListener('change', () => {
+    function updateLanguage() {
       const lang = langSelect.value;
       title.textContent = texts[lang].title;
       card1.textContent = texts[lang].card1;
       card2.textContent = texts[lang].card2;
-    });
 
-    // ساعت و تاریخ زنده
+      // تغییر جهت متن برای فارسی
+      if(lang === 'fa') {
+        body.classList.add('rtl');
+      } else {
+        body.classList.remove('rtl');
+      }
+
+      // بروزرسانی تاریخ
+      updateDateTime();
+    }
+
+    langSelect.addEventListener('change', updateLanguage);
+
     function updateDateTime() {
       const now = new Date();
+      const lang = langSelect.value;
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const dateStr = now.toLocaleDateString(langSelect.value === 'fa' ? 'fa-IR' : 'en-US', options);
-      const timeStr = now.toLocaleTimeString(langSelect.value === 'fa' ? 'fa-IR' : 'en-US');
+      const dateStr = now.toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US', options);
+      const timeStr = now.toLocaleTimeString(lang === 'fa' ? 'fa-IR' : 'en-US');
       datetime.textContent = `${dateStr} - ${timeStr}`;
     }
 
     setInterval(updateDateTime, 1000);
-    updateDateTime(); // نمایش اولیه
+    updateLanguage(); // نمایش اولیه با تنظیم زبان
   </script>
 
 </body>
