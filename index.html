@@ -12,7 +12,7 @@
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000000;
+  background-color: #000;
   color: #00ff99;
   direction: rtl;
   text-align: center;
@@ -23,7 +23,7 @@ body {
 /* === تم لایت === */
 body.light {
   background-color: #f5f5f5;
-  color: #222222;
+  color: #222;
 }
 
 /* === عنوان اصلی === */
@@ -59,7 +59,36 @@ h1 {
   transform: scale(1.05);
 }
 
-/* === پوزیشن ثابت زبان و تم و تاریخ/ساعت === */
+/* === پوزیشن ثابت تم بالا سمت چپ === */
+#theme-toggle {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  z-index: 100;
+}
+
+.theme-icon {
+  font-size: 1.5em;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: inherit;
+}
+.theme-icon.active {
+  box-shadow: 0 0 8px 2px currentColor;
+  border: 2px solid currentColor;
+}
+
+/* === پوزیشن ثابت بالا سمت راست: زبان + تاریخ/ساعت === */
 #top-bar {
   position: fixed;
   top: 15px;
@@ -81,27 +110,10 @@ h1 {
   cursor: pointer;
 }
 
-/* === دکمه تم با آیکن === */
-#theme-toggle {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  cursor: pointer;
-}
-.theme-icon {
-  font-size: 1.3em;
-  padding: 4px;
-  border-radius: 6px;
-  transition: border 0.2s;
-}
-.theme-icon.active {
-  border: 2px solid currentColor;
-}
-
 /* === تاریخ و ساعت === */
 #date-time {
   display: flex;
-  gap: 8px;
+  gap: 5px;
   align-items: center;
   font-weight: 600;
 }
@@ -195,24 +207,19 @@ h1 {
     gap: 6px;
   }
 }
-
-/* === دارک/لایت تم (رنگ متن) === */
-body.light #stats, body.light #donation-alert {
-  color: #222;
-  border-color: #222;
-  text-shadow: none;
-}
 </style>
 </head>
 
 <body>
 
-<!-- === بالای صفحه: تم، زبان، تاریخ/ساعت === -->
+<!-- === تم بالا سمت چپ === -->
+<div id="theme-toggle">
+  <span id="dark-icon" class="theme-icon active" style="color:white">⏾</span>
+  <span id="light-icon" class="theme-icon" style="color:orange">🔆</span>
+</div>
+
+<!-- === بالای صفحه: زبان + تاریخ/ساعت سمت راست === -->
 <div id="top-bar">
-  <div id="theme-toggle">
-    <span id="dark-icon" class="theme-icon active">⏾</span>
-    <span id="light-icon" class="theme-icon">🔆</span>
-  </div>
   <select id="language-select">
     <option value="fa" selected>فارسی</option>
     <option value="en">English</option>
@@ -256,50 +263,41 @@ const weekdayEl = document.getElementById('weekday');
 const languageSelect = document.getElementById('language-select');
 
 function pad(n){return n<10?'0'+n:n;}
+function toPersianNum(n){return n.toString().replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);}
 
-// تبدیل به اعداد فارسی
-function toPersianNum(n){
-  return n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-}
-
-// شمسی
 function getJalaliDate(date){
-  // ساده‌سازی با کتابخانه Date، برای مثال
   const gy=date.getFullYear();
   const gm=date.getMonth()+1;
   const gd=date.getDate();
   const weekdays=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
-  // placeholder ساده (برای دقت بهتر میشه از کتابخانه استفاده کرد)
   const weekday=weekdays[date.getDay()];
   return {year: gy, month: gm, day: gd, weekday: weekday};
 }
 
 function updateClock(){
-  const now = new Date();
-  let h = pad(now.getHours());
-  let m = pad(now.getMinutes());
-  let s = pad(now.getSeconds());
+  const now=new Date();
+  let h=pad(now.getHours());
+  let m=pad(now.getMinutes());
+  let s=pad(now.getSeconds());
 
   let dateStr, weekdayStr;
 
   if(languageSelect.value==='fa'){
-    const jDate = getJalaliDate(now);
-    dateStr = toPersianNum(`${pad(jDate.year)}/${pad(jDate.month)}/${pad(jDate.day)}`);
-    weekdayStr = jDate.weekday;
-    clockEl.textContent = toPersianNum(`${h}:${m}:${s}`);
+    const jDate=getJalaliDate(now);
+    dateStr=toPersianNum(`${pad(jDate.year)}/${pad(jDate.month)}/${pad(jDate.day)}`);
+    weekdayStr=jDate.weekday;
+    clockEl.textContent=toPersianNum(`${h}:${m}:${s}`);
   }else{
     const weekdays=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    dateStr = `${pad(now.getFullYear())}/${pad(now.getMonth()+1)}/${pad(now.getDate())}`;
-    weekdayStr = weekdays[now.getDay()];
-    clockEl.textContent = `${h}:${m}:${s}`;
+    dateStr=`${pad(now.getFullYear())}/${pad(now.getMonth()+1)}/${pad(now.getDate())}`;
+    weekdayStr=weekdays[now.getDay()];
+    clockEl.textContent=`${h}:${m}:${s}`;
   }
   dateEl.textContent=dateStr;
   weekdayEl.textContent=weekdayStr;
 }
 setInterval(updateClock,1000);
 updateClock();
-
-// === مدیریت زبان ===
 languageSelect.addEventListener('change',updateClock);
 
 // === مدیریت تم ===
@@ -323,21 +321,21 @@ lightIcon.addEventListener('click',()=>setTheme('light'));
 setTheme('dark'); // پیش‌فرض
 
 // === مدیریت Donations ===
-const alertBox = document.getElementById('donation-alert');
-const donorName = document.getElementById('donor-name');
-const donorAmount = document.getElementById('donor-amount');
-const totalEl = document.getElementById('total');
-const percentEl = document.getElementById('percent');
-const alertSound = document.getElementById('alert-sound');
+const alertBox=document.getElementById('donation-alert');
+const donorName=document.getElementById('donor-name');
+const donorAmount=document.getElementById('donor-amount');
+const totalEl=document.getElementById('total');
+const percentEl=document.getElementById('percent');
+const alertSound=document.getElementById('alert-sound');
 
-let total = 0;
-const target = 60000000;
-const seenDonations = new Set();
-const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
-const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
+let total=0;
+const target=60000000;
+const seenDonations=new Set();
+const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";
+const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
 
 function showDonation(d){
-  let rate = currencyRates[d.currency]||0;
+  let rate=currencyRates[d.currency]||0;
   let amountIRR=d.amount*rate;
   total+=amountIRR;
   donorName.textContent=d.name||"حامی ناشناس";
@@ -346,26 +344,4 @@ function showDonation(d){
   percentEl.textContent=(languageSelect.value==='fa'?toPersianNum(Math.min(((total/target)*100).toFixed(1),100)):Math.min(((total/target)*100).toFixed(1),100));
   alertBox.style.display="block";
   alertSound.currentTime=0; alertSound.play().catch(()=>{});
-  setTimeout(()=>{alertBox.style.display="none";},4000);
-}
-
-async function fetchDonations(){
-  try{
-    const res = await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});
-    if(!res.ok) throw new Error("Fetch failed");
-    const data = await res.json();
-    if(!Array.isArray(data)) return;
-    data.forEach(d=>{
-      if(d.ts&&!seenDonations.has(d.ts)){
-        seenDonations.add(d.ts);
-        showDonation(d);
-      }
-    });
-  }catch(err){console.warn("❗ خطا:",err.message);}
-}
-fetchDonations();
-setInterval(fetchDonations,5000);
-</script>
-
-</body>
-</html>
+  setTimeout(()=>{alertBox.style.display="no
