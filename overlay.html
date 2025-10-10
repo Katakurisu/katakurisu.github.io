@@ -3,60 +3,94 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Overlay Donates</title>
+<title>Overlay حمایت</title>
 <style>
-body {margin:0; background:transparent; font-family: Vazirmatn,sans-serif; overflow:hidden;}
-#overlay {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; z-index:999;}
-#donation-video {width:400px; max-width:90vw; border-radius:16px;}
-#donor-info {margin-top:15px; color:#00ff99; text-shadow:0 0 10px #00ff99; font-size:1.3em; line-height:1.4;}
-.hidden {display:none;}
+/* ____________________ 🎬 استایل Overlay 🎬 ____________________ */
+body {
+  margin:0;
+  font-family:'Vazirmatn',sans-serif;
+  background:transparent;
+  color:#00ff99;
+  text-align:center;
+  direction:rtl;
+  overflow:hidden;
+}
+#overlay {
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+#donation-alert {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  background:rgba(0,0,0,0.7);
+  border:2px solid #00ff99;
+  border-radius:20px;
+  padding:20px 30px;
+  display:none;
+  z-index:10;
+  animation:fadein 0.5s ease;
+}
+#donation-video {
+  width:180px;
+  height:180px;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+#donor-text {
+  font-size:1.3em;
+  text-shadow:0 0 12px #00ff99;
+}
+@keyframes fadein {from{opacity:0;}to{opacity:1;}}
+@media(max-width:500px){
+  #donation-video{width:140px;height:140px;}
+  #donor-text{font-size:1.1em;}
+}
 </style>
 </head>
 <body>
 
+<!-- ____________________ 🎬 Overlay هشدار پرداخت 🎬 ____________________ -->
 <div id="overlay">
-    <video id="donation-video" class="hidden" autoplay></video>
-    <div id="donor-info" class="hidden"></div>
+  <div id="donation-alert">
+    <video id="donation-video" src="alert-donate.mp4" autoplay muted></video>
+    <p id="donor-text"></p>
+  </div>
 </div>
 
 <script>
-// لینک فایل ویدیویی داخل پوشه alert-donate.mp4
-const video = document.getElementById('donation-video');
-const info = document.getElementById('donor-info');
+/* ____________________ 🎬 المان های DOM 🎬 ____________________ */
+const alertBox = document.getElementById('donation-alert');
+const donorText = document.getElementById('donor-text');
+const videoEl = document.getElementById('donation-video');
 
-function showDonation(name, amount, message) {
-    video.src = 'alert-donate.mp4';
-    video.classList.remove('hidden');
-    info.classList.remove('hidden');
-    info.innerHTML = `$ حمایت جدید دریافت شد $<br>${name}<br>${amount.toLocaleString('fa-IR')} ریال`;
-    if(message) info.innerHTML += `<br>${message}`;
-    video.play().catch(()=>{});
-    setTimeout(() => {
-        video.classList.add('hidden');
-        info.classList.add('hidden');
-    }, 13000); // 13 ثانیه نمایش
+/* ____________________ 🌐 اتصال به وبهوک دریافت پرداخت ها 🌐 ____________________ */
+async function fetchDonations(){
+  try{
+    const res = await fetch('https://eoyf8grpms15wjd.m.pipedream.net',{cache:'no-store'});
+    const data = await res.json();
+    data.forEach(d => {
+      if(!d.handled){
+        d.handled = true;
+        showDonation(d);
+      }
+    });
+  } catch(e){console.warn(e);}
 }
+setInterval(fetchDonations, 5000);
 
-// --- مثال تست ---
-//showDonation("میلاد کاتاکوری", 50000, "خیلی خوشحالم از حمایتتون!");
-
-
-// دریافت Webhook از Pipedream
-async function pollWebhook() {
-    try {
-        const res = await fetch('https://eoyf8grpms15wjd.m.pipedream.net');
-        const data = await res.json();
-        // داده‌ها باید شامل: name, amount, message
-        if(data && data.name && data.amount){
-            showDonation(data.name, data.amount, data.message);
-        }
-    } catch(e){
-        console.warn("خطا در دریافت وبهوک:", e);
-    }
-    setTimeout(pollWebhook, 5000); // هر 5 ثانیه چک کن
+/* ____________________ 🎬 نمایش پرداخت جدید 🎬 ____________________ */
+function showDonation(d){
+  const amountIRR = d.amount*d.currency_rate || d.amount || 0;
+  donorText.textContent = (d.name||'حامی ناشناس') + ' | ' + amountIRR.toLocaleString('fa-IR') + ' ریال' + (d.message?(' | '+d.message):'');
+  alertBox.style.display='block';
+  videoEl.currentTime=0;
+  videoEl.play();
+  setTimeout(()=>{alertBox.style.display='none';},13000);
 }
-
-pollWebhook();
 </script>
 
 </body>
