@@ -100,23 +100,24 @@ function toPersianDigits(str){
   return str.replace(/\d/g, d=>fa[d]);
 }
 
-// تبدیل تاریخ میلادی به جلالی
-function toJalali(gDate){
-  const gy = gDate.getFullYear();
-  const gm = gDate.getMonth() + 1;
-  const gd = gDate.getDate();
-  const g_d_m = [0,31,59,90,120,151,181,212,243,273,304,334];
-  let jy = (gy <= 1600)?0:979;
-  let gy2 = (gy <= 1600)?gy-621:gy-1600;
-  let days = 365*gy2 + Math.floor((gy2+3)/4) - Math.floor((gy2+99)/100) + Math.floor((gy2+399)/400) + gd + g_d_m[gm-1] - 1;
-  jy += 33 * Math.floor(days/12053); days %= 12053;
-  jy += 4 * Math.floor(days/1461); days %= 1461;
-  if(days > 365){ jy += Math.floor((days-1)/365); days = (days-1)%365; }
-  let jm, jd;
-  const sal_a = [0,31,62,93,124,155,186,216,246,276,306,336,365];
-  for(jm=0;jm<12;jm++){ if(days < sal_a[jm+1]) break; }
-  jd = days - sal_a[jm] + 1;
-  return {jy: jy+1, jm: jm+1, jd: jd};
+// تابع دقیق تبدیل میلادی به جلالی
+function toJalali(gy, gm, gd) {
+    var g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];
+    var jy, jm, jd;
+    var gy2 = (gm > 2)? (gy + 1) : gy;
+    var days = 355666 + (365 * gy) + Math.floor((gy2 + 3)/4) - Math.floor((gy2 + 99)/100) + Math.floor((gy2 + 399)/400) + gd + g_d_m[gm -1];
+    jy = -1595 + (33 * Math.floor(days/12053));
+    days %= 12053;
+    jy += 4 * Math.floor(days/1461);
+    days %= 1461;
+    if(days > 365){
+        jy += Math.floor((days-1)/365);
+        days = (days-1)%365;
+    }
+    var jm_list=[0,31,62,93,124,155,186,216,246,276,306,336,365];
+    for(jm=0; jm<12; jm++){ if(days < jm_list[jm+1]) break; }
+    jd = days - jm_list[jm] +1;
+    return {jy: jy, jm: jm+1, jd: jd};
 }
 
 const dateEl = document.getElementById('date');
@@ -133,7 +134,7 @@ function updateDateTime(){
   let dateStr='', weekdayStr='', timeStr=`${hours}:${minutes}:${seconds}`;
 
   if(langSelect.value==='fa'){
-    const jDate = toJalali(now);
+    const jDate = toJalali(now.getFullYear(), now.getMonth()+1, now.getDate());
     dateStr = `${jDate.jy}/${jDate.jm.toString().padStart(2,'0')}/${jDate.jd.toString().padStart(2,'0')}`;
     dateStr = toPersianDigits(dateStr);
     const weekdaysFa = ["شنبه","یک‌شنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنج‌شنبه","جمعه"];
