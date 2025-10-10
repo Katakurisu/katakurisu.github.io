@@ -7,54 +7,45 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0b0f12;
-  --surface:#0f1416;
-  --text:#e6f3f0;
-  --accent:#39d9b1;
-  --accent2:#78ffd2;
-  --muted:#9aa3a6;
-  --radius:14px;
-  --gap:10px;
-  --font-base:16px;
-  --font-bold:700;
-  --highlight-last:#f39c12;
-  --highlight-top:#e74c3c;
+  --bg:#0b0f12; --surface:#0f1416; --text:#e6f3f0; --accent:#39d9b1; --accent2:#78ffd2;
+  --muted:#9aa3a6; --radius:14px; --gap:10px; --font-base:16px; --font-bold:700;
+  --highlight-last:#f39c12; --highlight-top:#e74c3c;
 }
 html.light{
-  --bg:#f6f7fb;
-  --surface:#fff;
-  --text:#0b1220;
-  --accent:#6fb8ff;
-  --accent2:#a6d8ff;
-  --muted:#65707a;
-  --highlight-last:#f1c40f;
-  --highlight-top:#3498db;
+  --bg:#f6f7fb; --surface:#fff; --text:#0b1220;
+  --accent:#6fb8ff; --accent2:#a6d8ff; --muted:#65707a;
+  --highlight-last:#f1c40f; --highlight-top:#3498db;
 }
-body{margin:0;font-family:'Vazirmatn',system-ui;font-size:var(--font-base);line-height:1.5;background:var(--bg);color:var(--text);padding:20px;}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;}
-.logo{font-weight:var(--font-bold);font-size:24px;color:var(--accent);}
-.theme-toggle{display:flex;align-items:center;gap:8px;position:relative;}
-.theme-btn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;}
+body{
+  margin:0; font-family:'Vazirmatn',system-ui; font-size:var(--font-base); line-height:1.5;
+  background:var(--bg); color:var(--text); padding:20px;
+}
+header{
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px;
+}
+.logo{font-weight:var(--font-bold); font-size:24px; color:var(--accent);}
+.theme-toggle{display:flex; align-items:center; gap:8px; position:relative;}
+.theme-btn{width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer;}
 .theme-btn.active{box-shadow:0 0 10px var(--accent);}
-#dateTime{font-weight:bold;text-align:center;}
-.wrap{display:grid;grid-template-columns:1fr 500px;gap:var(--gap);}
-main{display:flex;flex-direction:column;gap:15px;}
-.card{background:var(--surface);padding:16px;border-radius:var(--radius);box-shadow:0 8px 20px rgba(0,0,0,0.5);}
-.stats{display:flex;gap:8px;margin-top:8px;}
-.stat{padding:6px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));text-align:center;min-width:100px;}
-.stat .num{font-weight:var(--font-bold);color:var(--accent);}
-.actions{display:flex;gap:8px;margin-top:8px;}
+#dateTime{font-weight:bold; text-align:center; min-width:150px;}
+.wrap{display:grid; grid-template-columns:1fr 550px; gap:var(--gap);}
+main{display:flex; flex-direction:column; gap:15px;}
+.card{background:var(--surface); padding:16px; border-radius:var(--radius); box-shadow:0 8px 20px rgba(0,0,0,0.5);}
+.stats{display:flex; gap:8px; margin-top:8px;}
+.stat{padding:6px; border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)); text-align:center; min-width:100px;}
+.stat .num{font-weight:var(--font-bold); color:var(--accent);}
+.actions{display:flex; gap:8px; margin-top:8px;}
 button{cursor:pointer;font-weight:var(--font-bold);}
-.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#071213;border:none;border-radius:8px;padding:6px 10px;}
-.btn{border:1px solid rgba(255,255,255,0.06);padding:6px 10px;border-radius:8px;background:transparent;color:var(--accent);}
-aside{display:flex;flex-direction:column;gap:8px;}
-.donations{display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - 150px);overflow-y:auto;}
-.donation{display:grid;grid-template-columns:100px 200px 140px 120px 36px;align-items:center;padding:4px;border-radius:6px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0));border:1px solid rgba(255,255,255,0.02);position:relative;}
-.donation .mail-icon{cursor:pointer;font-size:16px;text-align:center;}
+.primary{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#071213; border:none; border-radius:8px; padding:6px 10px;}
+.btn{border:1px solid rgba(255,255,255,0.06); padding:6px 10px; border-radius:8px; background:transparent; color:var(--accent);}
+aside{display:flex; flex-direction:column; gap:8px;}
+.donations{display:flex; flex-direction:column; gap:2px; max-height:calc(100vh - 150px); overflow-y:auto; background:rgba(255,255,255,0.02); padding:5px; border-radius:10px;}
+.donation{display:grid; grid-template-columns:100px 200px 140px 120px 36px; align-items:center; padding:4px; border-radius:6px; border:1px solid rgba(255,255,255,0.02); position:relative;}
+.donation .mail-icon{cursor:pointer; font-size:16px; text-align:center;}
 .donation.highlight-last{border:2px solid var(--highlight-last);}
 .donation.highlight-top{border:2px solid var(--highlight-top);}
-.donation-label{position:absolute;left:-90px;font-weight:var(--font-bold);}
-.date-time{display:flex;flex-direction:column;font-size:13px;}
+.donation-label{position:absolute; left:-90px; font-weight:var(--font-bold);}
+.date-time{display:flex; flex-direction:column; font-size:13px;}
 .phone-blur{filter:blur(3px);}
 #notifCenter{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--accent);color:#071213;padding:12px;border-radius:10px;display:none;min-width:200px;z-index:999;}
 </style>
@@ -87,14 +78,114 @@ aside{display:flex;flex-direction:column;gap:8px;}
 <div id="notifCenter"></div>
 </aside>
 </div>
-<script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.16.0/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded, get } from "https://www.gstatic.com/firebasejs/10.16.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDoa301J7GQSH7S9-rdax4AgxkYV_67Gd4",
+  authDomain: "katakuri-43539.firebaseapp.com",
+  databaseURL: "https://katakuri-43539-default-rtdb.firebaseio.com/",
+  projectId: "katakuri-43539",
+  storageBucket: "katakuri-43539.appspot.com",
+  messagingSenderId: "813013688047",
+  appId: "1:813013688047:web:fdecdb1961685db40b451a"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 const KEY='katakuri_d',THEME_KEY='katakuri_theme';let openMail=null;
-const fmt=v=>new Intl.NumberFormat('fa-IR').format(v)+' تومان';
+
+function fmt(v){return new Intl.NumberFormat('fa-IR').format(v)+' تومان';}
 function pad(n){return n<10?'0'+n:n;}
-function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
-function save(a){localStorage.setItem(KEY,JSON.stringify(a))}
-function render(){const list=load().sort((a,b)=>b.amount-a.amount);document.getElementById('totalAmount').textContent=fmt(list.reduce((s,d)=>s+d.amount,0));document.getElementById('countDonations').textContent=list.length;const dl=document.getElementById('donationList');dl.innerHTML='';const topCount=Math.min(30,list.length);const lastDonor=list[0];const topDonor=list.reduce((max,d)=>d.amount>max.amount?d:max,list[0]);for(let i=0;i<topCount;i++){const d=list[i];const el=document.createElement('div');el.className='donation';if(d===lastDonor)el.classList.add('highlight-last');if(d===topDonor)el.classList.add('highlight-top');const dateObj=new Date(d.time);const date=dateObj.getFullYear()+'/'+pad(dateObj.getMonth()+1)+'/'+pad(dateObj.getDate());const time=pad(dateObj.getHours())+':'+pad(dateObj.getMinutes())+':'+pad(dateObj.getSeconds());let phone=d.phone?d.phone.substr(0,4)+'‑'.repeat(d.phone.length-6)+d.phone.substr(-2):'';const mailIcon=d.hideMessage?'<span class="mail-icon locked">✉️</span>':'<span class="mail-icon" onclick="toggleMail('+i+')">✉️</span>';const who=d.who.length>20?d.who.substr(0,20)+'…':d.who;el.innerHTML=`<div class="date-time">${date}<br>${time}</div><div>${who}</div><div>${fmt(d.amount)}</div><div class="phone-blur">${phone}</div>${mailIcon}`;dl.appendChild(el);}}
-function toggleMail(id){const dl=document.getElementById('donationList');if(openMail!==null&&openMail!==id){dl.children[openMail].querySelector('.mail-icon').textContent='✉️';openMail=null;}const icon=dl.children[id].querySelector('.mail-icon');if(openMail===id){icon.textContent='✉️';document.getElementById('notifCenter').style.display='none';openMail=null;}else{icon.textContent='📩';document.getElementById('notifCenter').style.display='block';document.getElementById('notifCenter').textContent=load()[id].message||'';openMail=id;}}
-function simulateDonation(){const who='حامی '+Math.floor(Math.random()*1000);const amount=Math.floor(Math.random()*100000)+1000;const phone='09'+Math.floor(100000000+Math.random()*899999999);const message='پیام تستی '+Math.floor(Math.random()*100);const d={who,amount,phone,message,time:Date.now(),hideMessage:Math.random()<0.3};const arr=load();arr.unshift(d);save(arr);render();}
-function openDonate(){alert('درگاه ریالی یا لینک NowPayments بعد از تنظیم اینجا نمایش داده می‌شود.');}
-function setTheme(t){if(t==='light')document.document
+
+function saveLocal(data){localStorage.setItem(KEY, JSON.stringify(data));}
+function loadLocal(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return []}}
+
+async function render(){
+  const dl=document.getElementById('donationList');
+  dl.innerHTML='';
+  const snapshot = await get(ref(db,'donations'));
+  const list = snapshot.val() ? Object.values(snapshot.val()) : [];
+  list.sort((a,b)=>b.amount-a.amount);
+  document.getElementById('totalAmount').textContent = fmt(list.reduce((s,d)=>s+d.amount,0));
+  document.getElementById('countDonations').textContent = list.length;
+  const topCount = Math.min(30,list.length);
+  const lastDonor = list[list.length-1];
+  const topDonor = list[0];
+  for(let i=0;i<topCount;i++){
+    const d=list[i];
+    const el=document.createElement('div');
+    el.className='donation';
+    if(d===lastDonor) el.classList.add('highlight-last');
+    if(d===topDonor) el.classList.add('highlight-top');
+    const dateObj = new Date(d.time);
+    const date = dateObj.getFullYear()+'/'+pad(dateObj.getMonth()+1)+'/'+pad(dateObj.getDate());
+    const time = pad(dateObj.getHours())+':'+pad(dateObj.getMinutes())+':'+pad(dateObj.getSeconds());
+    let phone = d.phone?d.phone.substr(0,4)+'‑'.repeat(d.phone.length-6)+d.phone.substr(-2):'';
+    const mailIcon = d.hideMessage?'<span class="mail-icon locked">✉️</span>':'<span class="mail-icon" onclick="toggleMail('+i+')">✉️</span>';
+    const who = d.who.length>20?d.who.substr(0,20)+'…':d.who;
+    el.innerHTML=`<div class="date-time">${date}<br>${time}</div><div>${who}</div><div>${fmt(d.amount)}</div><div class="phone-blur">${phone}</div>${mailIcon}`;
+    dl.appendChild(el);
+  }
+}
+
+window.toggleMail=function(id){
+  const dl=document.getElementById('donationList');
+  if(openMail!==null && openMail!==id){
+    dl.children[openMail].querySelector('.mail-icon').textContent='✉️'; openMail=null;
+    document.getElementById('notifCenter').style.display='none';
+  }
+  const icon=dl.children[id].querySelector('.mail-icon');
+  if(openMail===id){
+    icon.textContent='✉️';
+    document.getElementById('notifCenter').style.display='none';
+    openMail=null;
+  } else {
+    icon.textContent='📩';
+    document.getElementById('notifCenter').style.display='block';
+    document.getElementById('notifCenter').textContent='پیام: '+loadLocal()[id]?.message;
+    openMail=id;
+  }
+}
+
+window.simulateDonation = async function(){
+  const who='حامی '+Math.floor(Math.random()*1000);
+  const amount=Math.floor(Math.random()*100000)+1000;
+  const phone='09'+Math.floor(100000000+Math.random()*899999999);
+  const message='پیام تستی '+Math.floor(Math.random()*100);
+  const d={who,amount,phone,message,time:Date.now(),hideMessage:Math.random()<0.3};
+  await push(ref(db,'donations'), d);
+  render();
+}
+
+window.openDonate=function(){
+  alert('درگاه ریالی یا NowPayments بعد از تنظیم اینجا نمایش داده می‌شود.');
+}
+
+function setTheme(t){
+  if(t==='light') document.documentElement.classList.add('light');
+  else document.documentElement.classList.remove('light');
+  localStorage.setItem(THEME_KEY,t);
+  document.getElementById('btnLight').classList.toggle('active',t==='light');
+  document.getElementById('btnDark').classList.toggle('active',t==='dark');
+}
+
+document.getElementById('btnDark').addEventListener('click',()=>setTheme('dark'));
+document.getElementById('btnLight').addEventListener('click',()=>setTheme('light'));
+setTheme(localStorage.getItem(THEME_KEY)||'dark');
+
+function updateTime(){
+  const now=new Date();
+  document.getElementById('dateTime').innerHTML = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())+'<br>'+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+  requestAnimationFrame(updateTime);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  render();
+  updateTime();
+});
+</script>
+</body>
+</html>
