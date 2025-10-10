@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Donation System</title>
+<title>Donation Overlay - Katakuri</title>
 <style>
 body{margin:0;font-family:Arial,sans-serif;background:transparent;color:#fff;text-align:center;}
 h1{margin-top:20px;}
 .btn{display:inline-block;margin:10px;padding:15px 30px;background:#ff5f5f;color:#fff;text-decoration:none;border-radius:10px;font-size:18px;}
 .btn:hover{background:#ff2f2f;}
 #overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;}
-#donation-alert{position:absolute;top:20%;left:50%;transform:translateX(-50%);text-align:center;background:rgba(0,0,0,0.5);padding:20px;border-radius:15px;animation:fadein 1s;display:none;}
+#donation-alert{position:absolute;top:20%;left:50%;transform:translateX(-50%);text-align:center;background:rgba(0,0,0,0.6);padding:20px;border-radius:15px;animation:fadein 1s;display:none;}
 #donation-gif{width:150px;height:150px;}
 #stats{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);text-align:center;font-size:24px;}
 @keyframes fadein{from{opacity:0;}to{opacity:1;}}
@@ -38,7 +38,7 @@ h1{margin-top:20px;}
 <audio id="alert-sound" src="https://www.myinstants.com/media/sounds/alert.mp3"></audio>
 
 <script>
-const overlay = document.getElementById('donation-alert');
+const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
 const totalEl = document.getElementById('total');
@@ -46,36 +46,41 @@ const percentEl = document.getElementById('percent');
 const alertSound = document.getElementById('alert-sound');
 
 let total = 0;
-const targetAmount = 1000000;
+const target = 1000000;
+let seenDonations = new Set();
 
-// شبیه‌سازی دونیت‌ها
-function addDonation(name, amount, currency){
-  let amountIRR = currency==="IRR"?amount:amount*1400000000; // نرخ BTC تقریبی
+// 🔹 لینک JSON عمومی دونیت‌ها (مثلاً npoint.io یا webhook.site)
+const DONATIONS_URL = "https://api.npoint.io/xxxxxx"; // ← بعداً اینو می‌ذاری
+
+function showDonation(d){
+  let amountIRR = d.currency==="IRR" ? d.amount : d.amount*1400000000;
   total += amountIRR;
-
-  donorName.innerText = name;
+  donorName.innerText = d.name;
   donorAmount.innerText = amountIRR.toLocaleString() + " ریال";
-  overlay.style.display = "block";
+  alertBox.style.display = "block";
   alertSound.play();
-
   totalEl.innerText = total.toLocaleString();
-  percentEl.innerText = Math.min((total/targetAmount*100).toFixed(1),100);
-
-  setTimeout(()=>overlay.style.display="none",4000);
+  percentEl.innerText = Math.min((total/target*100).toFixed(1),100);
+  setTimeout(()=>alertBox.style.display="none",4000);
 }
 
-// برای تست: شبیه‌سازی دریافت دونیت هر 5 ثانیه
-const testDonors = [
-  {name:"Ali", amount:50000, currency:"IRR"},
-  {name:"Sara", amount:0.005, currency:"BTC"},
-  {name:"Reza", amount:100000, currency:"IRR"}
-];
+// 🔹 بررسی هر 5 ثانیه برای دونیت‌های جدید
+async function fetchDonations(){
+  try{
+    const res = await fetch(DONATIONS_URL+"?t="+Date.now());
+    const data = await res.json();
+    data.forEach(d=>{
+      if(!seenDonations.has(d.ts)){
+        seenDonations.add(d.ts);
+        showDonation(d);
+      }
+    });
+  }catch(e){
+    console.log("Error fetching donations",e);
+  }
+}
 
-let i=0;
-setInterval(()=>{
-  addDonation(testDonors[i].name,testDonors[i].amount,testDonors[i].currency);
-  i = (i+1)%testDonors.length;
-},5000);
+setInterval(fetchDonations,5000);
 </script>
 
 </body>
