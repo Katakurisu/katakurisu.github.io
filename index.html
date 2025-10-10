@@ -1,40 +1,141 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎁 حمایت از میلاد کاتاکوری</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>حمایت مالی - Katakuri</title>
 <style>
-body{margin:0;font-family:'Vazirmatn',sans-serif;background-color:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;}
-h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
-.button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
-.btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
-.btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
-#timebox{position:fixed;top:20px;right:20px;color:#00ff99;font-size:1.2em;text-align:center;direction:ltr;}
+  body {
+    font-family: "Vazir", sans-serif;
+    background-color: #e7e5dc;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  /* ساعت بالا راست */
+  #clock {
+    position: fixed;
+    top: 20px;
+    right: 25px;
+    font-size: 1.4rem;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 8px 14px;
+    border-radius: 10px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+  }
+
+  .goal-box {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .goal {
+    font-size: 1.4rem;
+    margin: 8px 0;
+  }
+
+  .donate-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .donate-btn {
+    font-size: 1.2rem;
+    padding: 15px 35px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .donate-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .crypto {
+    background-color: #f7931a;
+    color: white;
+  }
+
+  .rial {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  /* نوتیفیکیشن آلارم */
+  #notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.9);
+    color: #111;
+    padding: 25px 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.25);
+    font-size: 1.5rem;
+    display: none;
+    z-index: 10;
+  }
 </style>
 </head>
+
 <body>
+  <div id="clock"></div>
 
-<h1>🎁 حمایت از میلاد کاتاکوری</h1>
+  <h1>💖 حمایت از استریم کاتاکوری</h1>
 
-<div class="button-container">
-<a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
-<a class="btn" href="https://nowpayments.io/donation?api_key=0289ad3c-32ce-4361-96a2-d2951b0ee943" target="_blank" rel="noreferrer noopener">
-پرداخت کریپتو
-</a>
-</div>
+  <div class="goal-box">
+    <div class="goal">🎯 هدف: ۵٬۰۰۰٬۰۰۰ تومان</div>
+    <div class="goal">💰 جمع فعلی: ۲٬۳۵۰٬۰۰۰ تومان</div>
+  </div>
 
-<div id="timebox"></div>
+  <div class="donate-buttons">
+    <button class="donate-btn rial" onclick="window.open('https://zarinp.al/katakuri','_blank')">پرداخت ریالی</button>
+    <button class="donate-btn crypto" onclick="window.open('https://nowpayments.io/donation?api_key=0289ad3c-32ce-4361-96a2-d2951b0ee943','_blank')">پرداخت کریپتو</button>
+  </div>
+
+  <div id="notification">✅ پرداخت جدید دریافت شد!</div>
 
 <script>
-function updateTime(){
-  const date=new Date();
-  const pad=(n)=>n.toString().padStart(2,"0");
-  document.getElementById("timebox").textContent=pad(date.getHours())+":"+pad(date.getMinutes())+":"+pad(date.getSeconds());
-}
-setInterval(updateTime,1000);
-updateTime();
+  // تبدیل اعداد انگلیسی به فارسی
+  function toPersianDigits(num) {
+    return num.toString().replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
+  }
+
+  // ساعت زنده با اعداد فارسی
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2, '0');
+    const m = now.getMinutes().toString().padStart(2, '0');
+    const s = now.getSeconds().toString().padStart(2, '0');
+    document.getElementById('clock').textContent = toPersianDigits(`${h}:${m}:${s}`);
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // نمایش نوتیفیکیشن شبیه تست پرداخت
+  function showNotification() {
+    const n = document.getElementById("notification");
+    n.style.display = "block";
+    setTimeout(() => n.style.display = "none", 13000);
+  }
+
+  // تست دستی آلارم (برای آزمایش)
+  // showNotification();
 </script>
 </body>
 </html>
