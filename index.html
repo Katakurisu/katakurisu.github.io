@@ -8,11 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* === فونت و تنظیمات پایه === */
+/* === فونت و سبک کلی === */
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000000; /* دارک پیش‌فرض */
+  background-color: #000000;
   color: #00ff99;
   text-align: center;
   direction: rtl;
@@ -27,7 +27,7 @@ h1 {
   text-shadow: 0 0 15px #00ff99;
 }
 
-/* === دکمه‌ها در container با فاصله مناسب === */
+/* === دکمه‌ها === */
 .button-container {
   display: flex;
   justify-content: center;
@@ -54,7 +54,7 @@ h1 {
   transform: scale(1.05);
 }
 
-/* === Overlay برای Donation Alert === */
+/* === Donation Alert Overlay === */
 #overlay {
   position: fixed;
   inset: 0;
@@ -96,7 +96,7 @@ h1 {
   color: #ccffdd;
 }
 
-/* === بخش آمار در پایین صفحه === */
+/* === Stats === */
 #stats {
   position: fixed;
   bottom: 8%;
@@ -112,46 +112,24 @@ h1 {
   z-index: 5;
 }
 
-/* === تم دارک و لایت بالا سمت چپ === */
-#theme-switcher {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  display: flex;
-  gap: 10px;
-  z-index: 20;
-}
-
-.theme-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: all 0.3s;
-  border: 2px solid transparent;
-  background-color: transparent;
-}
-.theme-btn.active {
-  border-color: #00ff99;
-}
-
-/* === بخش تاریخ و ساعت و زبان بالا سمت راست === */
+/* === تاریخ و ساعت و زبان === */
 #top-right {
   position: fixed;
   top: 15px;
   right: 15px;
   display: flex;
+  gap: 15px;
   align-items: center;
-  gap: 10px;
   z-index: 20;
   font-size: 1em;
 }
 
-/* === select زبان === */
+#datetime {
+  display: flex;
+  gap: 8px;
+  font-weight: 600;
+}
+
 #lang-select {
   padding: 5px 10px;
   border-radius: 8px;
@@ -159,41 +137,50 @@ h1 {
   background: transparent;
   color: #00ff99;
   cursor: pointer;
-  font-size: 1em;
+  font-weight: 600;
 }
 
-/* === انیمیشن popup === */
+#theme-toggle {
+  cursor: pointer;
+  font-size: 1.6em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.theme-circle {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid transparent;
+  transition: border 0.3s, background-color 0.3s;
+  font-size: 1.2em;
+}
+
+/* === انتخاب شده === */
+.theme-circle.selected {
+  border: 2px solid #00ff99;
+}
+
+/* === Popin animation === */
 @keyframes popin {
   from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
   to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* === ریسپانسیو موبایل === */
+/* === Responsive === */
 @media (max-width: 500px) {
-  .btn {
-    padding: 12px 20px;
-    font-size: 1em;
-  }
-  h1 {
-    font-size: 2em;
-    margin: 40px 0 40px 0;
-  }
-  #donation-gif {
-    width: 140px;
-    height: 140px;
-  }
-  #stats {
-    padding: 15px 20px;
-    font-size: 1.1em;
-  }
-  #top-right {
-    flex-direction: column;
-    align-items: flex-end;
-  }
+  .btn { padding: 12px 20px; font-size: 1em; }
+  h1 { font-size: 2em; margin: 40px 0 40px 0; }
+  #donation-gif { width: 140px; height: 140px; }
+  #stats { padding: 15px 20px; font-size: 1.1em; }
+  #top-right { flex-direction: column; gap: 5px; }
 }
 </style>
 </head>
-
 <body>
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
@@ -220,22 +207,21 @@ h1 {
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
 
-<!-- تم -->
-<div id="theme-switcher">
-  <div class="theme-btn active" id="dark-btn">⏾</div>
-  <div class="theme-btn" id="light-btn">🔆</div>
-</div>
-
-<!-- تاریخ و ساعت و زبان -->
+<!-- Top-right controls: datetime, language, theme -->
 <div id="top-right">
-  <span id="datetime"></span>
+  <div id="datetime">1404/07/18 | جمعه | 12:34:56</div>
   <select id="lang-select">
     <option value="fa">فارسی</option>
     <option value="en">English</option>
   </select>
+  <div id="theme-toggle">
+    <div id="dark-circle" class="theme-circle selected">☯︎</div>
+    <div id="light-circle" class="theme-circle">☯︎</div>
+  </div>
 </div>
 
 <script>
+// === Donation alert ===
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
@@ -257,18 +243,16 @@ function showDonation(d) {
   total += amountIRR;
 
   donorName.textContent = d.name || "حامی ناشناس";
-  donorAmount.textContent = amountIRR.toLocaleString(lang === "fa" ? "fa-IR" : "en-US") + " ریال";
+  donorAmount.textContent = amountIRR.toLocaleString(currentLang) + (currentLang === 'fa' ? " ریال" : " IRR");
 
-  totalEl.textContent = total.toLocaleString(lang === "fa" ? "fa-IR" : "en-US");
+  totalEl.textContent = total.toLocaleString(currentLang);
   percentEl.textContent = Math.min(((total / target) * 100).toFixed(1), 100);
 
   alertBox.style.display = "block";
   alertSound.currentTime = 0;
   alertSound.play().catch(()=>{});
 
-  setTimeout(() => {
-    alertBox.style.display = "none";
-  }, 4000);
+  setTimeout(() => { alertBox.style.display = "none"; }, 4000);
 }
 
 async function fetchDonations() {
@@ -284,57 +268,72 @@ async function fetchDonations() {
         showDonation(d);
       }
     });
-  } catch (err) {
-    console.warn("❗ خطا در دریافت داده:", err.message);
-  }
+  } catch (err) { console.warn("❗ خطا در دریافت داده:", err.message); }
 }
 
 fetchDonations();
 setInterval(fetchDonations, 5000);
 
-/* =================== تم =================== */
-const darkBtn = document.getElementById('dark-btn');
-const lightBtn = document.getElementById('light-btn');
-
-darkBtn.onclick = () => {
-  document.body.style.backgroundColor = "#000000";
-  document.body.style.color = "#00ff99";
-  darkBtn.classList.add("active");
-  lightBtn.classList.remove("active");
-};
-lightBtn.onclick = () => {
-  document.body.style.backgroundColor = "#f0e6d2"; // کرم ملایم
-  document.body.style.color = "#333333";
-  lightBtn.classList.add("active");
-  darkBtn.classList.remove("active");
-};
-
-/* =================== زبان و تاریخ و ساعت =================== */
-let lang = "fa";
-const langSelect = document.getElementById('lang-select');
+// === Language and datetime ===
+let currentLang = 'fa';
 const datetimeEl = document.getElementById('datetime');
+const langSelect = document.getElementById('lang-select');
 
-langSelect.addEventListener('change', e => {
-  lang = e.target.value;
+function padZero(n){ return n<10?'0'+n:n; }
+function toPersianDigits(s) {
+  return s.toString().replace(/\d/g, d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+}
+
+function updateDatetime() {
+  const now = new Date();
+  let year = now.getFullYear();
+  let month = padZero(now.getMonth()+1);
+  let day = padZero(now.getDate());
+  let hours = padZero(now.getHours());
+  let minutes = padZero(now.getMinutes());
+  let seconds = padZero(now.getSeconds());
+  const weekdayEn = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const weekdayFa = ['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+
+  let weekday = currentLang==='fa'? weekdayFa[now.getDay()] : weekdayEn[now.getDay()];
+  let dateStr = currentLang==='fa'? toPersianDigits(`${year}/${month}/${day}`) : `${year}/${month}/${day}`;
+  let timeStr = currentLang==='fa'? toPersianDigits(`${hours}:${minutes}:${seconds}`) : `${hours}:${minutes}:${seconds}`;
+
+  datetimeEl.textContent = `${dateStr} | ${weekday} | ${timeStr}`;
+}
+
+langSelect.addEventListener('change', ()=>{
+  currentLang = langSelect.value;
+  updateDatetime();
+  // Update numbers in stats
+  totalEl.textContent = total.toLocaleString(currentLang);
+  percentEl.textContent = Math.min(((total / target) * 100).toFixed(1), 100);
 });
 
-function pad(n){ return n<10 ? "0"+n : n; }
+setInterval(updateDatetime, 1000);
+updateDatetime();
 
-function updateDateTime(){
-  const now = new Date();
-  let options = { weekday: 'long', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' };
-  if(lang === "fa"){
-    const localeStr = now.toLocaleDateString('fa-IR',{weekday:'long',year:'numeric',month:'2-digit',day:'2-digit'});
-    const timeStr = now.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    datetimeEl.textContent = localeStr + " | " + timeStr;
+// === Theme toggle ===
+const darkCircle = document.getElementById('dark-circle');
+const lightCircle = document.getElementById('light-circle');
+
+function setTheme(theme){
+  if(theme==='dark'){
+    document.body.style.backgroundColor = '#000000';
+    document.body.style.color = '#00ff99';
+    darkCircle.classList.add('selected');
+    lightCircle.classList.remove('selected');
   } else {
-    const localeStr = now.toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'2-digit',day:'2-digit'});
-    const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    datetimeEl.textContent = localeStr + " | " + timeStr;
+    document.body.style.backgroundColor = '#f0e8d0'; // کرمی روشن
+    document.body.style.color = '#333333';
+    lightCircle.classList.add('selected');
+    darkCircle.classList.remove('selected');
   }
 }
-setInterval(updateDateTime, 1000);
-updateDateTime();
+
+darkCircle.addEventListener('click', ()=>setTheme('dark'));
+lightCircle.addEventListener('click', ()=>setTheme('light'));
+setTheme('dark');
 </script>
 
 </body>
