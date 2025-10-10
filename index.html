@@ -18,8 +18,10 @@ h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99}
 #donor-amount{font-size:1.4em;color:#ccffdd}
 #stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5}
 @keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
-#theme-toggle{position:fixed;top:15px;left:15px;width:80px;height:80px;cursor:pointer;z-index:20}
-#theme-toggle svg{width:100%;height:100%}
+#theme-container{position:fixed;top:15px;left:15px;display:flex;gap:10px;z-index:20}
+.theme-btn{width:50px;height:50px;cursor:pointer;border-radius:50%;border:2px solid transparent;transition:all 0.3s}
+.theme-btn.active{border:3px solid #00ff99}
+.theme-btn img{width:100%;height:100%;border-radius:50%}
 #datetime{position:fixed;top:30px;right:20px;font-size:1.2em;color:#00ff99;line-height:1.2;text-align:right;z-index:20}
 .light{background:#f0e6d2;color:#111}
 .light .btn{color:#111;border-color:#111;box-shadow:0 0 10px #111}
@@ -46,11 +48,9 @@ h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99}
   </div>
 </div>
 
-<div id="theme-toggle">
-  <svg viewBox="0 0 100 100">
-    <circle cx="50" cy="50" r="50" fill="white"/>
-    <circle cx="50" cy="50" r="50" fill="black" clip-path="polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)"/>
-  </svg>
+<div id="theme-container">
+  <div class="theme-btn" id="dark-theme"><img src="https://i.postimg.cc/T1dYwD7m/moon.png" alt="ماه"></div>
+  <div class="theme-btn" id="light-theme"><img src="https://i.postimg.cc/3JxQrQn6/sun.png" alt="خورشید"></div>
 </div>
 
 <div id="datetime"></div>
@@ -66,9 +66,24 @@ h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99}
 dayjs.extend(dayjs_plugin_localeData);
 dayjs.extend(dayjs_plugin_jalali);
 
-const themeToggle=document.getElementById('theme-toggle');
+const darkBtn=document.getElementById('dark-theme');
+const lightBtn=document.getElementById('light-theme');
 const body=document.body;
-themeToggle.addEventListener('click',()=>{body.classList.toggle('light')});
+
+function setActive(btn){
+  darkBtn.classList.remove('active');
+  lightBtn.classList.remove('active');
+  btn.classList.add('active');
+}
+
+darkBtn.addEventListener('click',()=>{
+  body.classList.remove('light');
+  setActive(darkBtn);
+});
+lightBtn.addEventListener('click',()=>{
+  body.classList.add('light');
+  setActive(lightBtn);
+});
 
 const alertBox=document.getElementById('donation-alert');
 const donorName=document.getElementById('donor-name');
@@ -116,7 +131,7 @@ function updateDateTime(){
   const sh=now.format('jYYYY/jMM/jDD');
   const week=now.format('dddd');
   const time=now.format('HH:mm:ss');
-  document.getElementById('datetime').innerHTML=`${time} | ${week} | ${sh}`;
+  document.getElementById('datetime').innerHTML=`${sh} | ${week} | ${time}`;
 }
 updateDateTime();
 setInterval(updateDateTime,1000);
