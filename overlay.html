@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Overlay حمایت - صف پرداخت ها</title>
+<title>Overlay حمایت - صف پرداخت ها + آمار زنده</title>
 <style>
 /* ____________________ 🎬 استایل Overlay 🎬 ____________________ */
 body {
@@ -15,6 +15,22 @@ body {
   direction:rtl;
   overflow:hidden;
 }
+
+/* -------------------- پنل زنده جمع کل و درصد هدف -------------------- */
+#stats {
+  position:fixed;
+  bottom:10px;
+  left:10px;
+  font-size:1.2em;
+  background:rgba(0,0,0,0.7);
+  border-radius:12px;
+  padding:15px 20px;
+  color:#00ff99;
+  text-shadow:0 0 12px #00ff99;
+  z-index:5;
+}
+
+/* -------------------- Overlay هشدار پرداخت -------------------- */
 #overlay {
   position:fixed;
   inset:0;
@@ -45,9 +61,11 @@ body {
   opacity:0;
   transition: opacity 0.7s ease-in-out;
 }
+
 @media(max-width:500px){
   #donation-video{width:140px;height:140px;}
   #donor-text{font-size:1.1em;}
+  #stats{font-size:1em;padding:10px 15px;}
 }
 </style>
 </head>
@@ -61,15 +79,27 @@ body {
   </div>
 </div>
 
+<!-- ____________________ 📊 پنل جمع کل و درصد هدف 📊 ____________________ -->
+<div id="stats">
+  <p>💰 جمع کل: <span id="total">0</span> ریال</p>
+  <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
+</div>
+
 <script>
 /* ____________________ 🎬 المان های DOM 🎬 ____________________ */
 const alertBox = document.getElementById('donation-alert');
 const donorText = document.getElementById('donor-text');
 const videoEl = document.getElementById('donation-video');
+const totalEl = document.getElementById('total');
+const percentEl = document.getElementById('percent');
 
 /* ____________________ 🟢 صف پرداخت ها 🟢 ____________________ */
 let donationQueue = [];
 let isShowing = false;
+
+/* ____________________ 🎯 تنظیمات هدف و جمع کل 🎯 ____________________ */
+let total = 0;
+const target = 60000000;
 
 /* ____________________ 🌐 اتصال به وبهوک دریافت پرداخت ها 🌐 ____________________ */
 async function fetchDonations(){
@@ -80,12 +110,20 @@ async function fetchDonations(){
       if(!d.handled){
         d.handled = true;
         donationQueue.push(d); // اضافه کردن به صف
+        total += (d.amount*d.currency_rate || d.amount || 0); // اضافه کردن به جمع کل
+        updateStats();
         showNextDonation();
       }
     });
   } catch(e){console.warn(e);}
 }
 setInterval(fetchDonations, 5000);
+
+/* ____________________ 🔢 آپدیت جمع کل و درصد هدف 🔢 ____________________ */
+function updateStats(){
+  totalEl.textContent = total.toLocaleString('fa-IR');
+  percentEl.textContent = Math.min(((total/target)*100).toFixed(1),100);
+}
 
 /* ____________________ 🎬 نمایش پرداخت ها از صف 🎬 ____________________ */
 function showNextDonation(){
@@ -96,16 +134,13 @@ function showNextDonation(){
   const amountIRR = d.amount*d.currency_rate || d.amount || 0;
   donorText.textContent = (d.name||'حامی ناشناس') + ' | ' + amountIRR.toLocaleString('fa-IR') + ' ریال' + (d.message?(' | '+d.message):'');
   
-  // نمایش overlay و پخش ویدیو
   alertBox.style.display='block';
   videoEl.currentTime=0;
   videoEl.play();
   
-  // انیمیشن Fade in متن
   donorText.style.opacity = 0;
   setTimeout(()=>{donorText.style.opacity = 1;}, 50);
   
-  // Fade out و مخفی کردن overlay بعد از 13 ثانیه
   setTimeout(()=>{
     donorText.style.opacity = 0;
     setTimeout(()=>{
