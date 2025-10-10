@@ -6,7 +6,6 @@
 <title>🎁 حمایت از میلاد کاتاکوری</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* === بک‌گراند و فونت === */
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
@@ -18,14 +17,12 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* === عنوان اصلی === */
 h1 {
   margin: 60px 0 50px 0;
   font-size: 2.4em;
   text-shadow: 0 0 15px #00ff99;
 }
 
-/* === دکمه‌ها === */
 .button-container {
   display: flex;
   justify-content: center;
@@ -51,7 +48,6 @@ h1 {
   transform: scale(1.05);
 }
 
-/* === Donation Alert === */
 #overlay {
   position: fixed;
   inset: 0;
@@ -89,7 +85,6 @@ h1 {
   color: #ccffdd;
 }
 
-/* === آمار پایین صفحه === */
 #stats {
   position: fixed;
   bottom: 8%;
@@ -105,7 +100,6 @@ h1 {
   z-index: 5;
 }
 
-/* === تاریخ، ساعت، زبان و تم === */
 #top-right {
   position: fixed;
   top: 15px;
@@ -119,7 +113,7 @@ h1 {
 #date-time {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px; /* فاصله کمتر */
 }
 #language-select {
   padding: 6px 10px;
@@ -134,7 +128,6 @@ h1 {
   color: #000000;
 }
 
-/* === تم با ☯︎ === */
 #theme-toggle {
   font-size: 5em;
   cursor: pointer;
@@ -148,18 +141,17 @@ h1 {
   text-align: center;
   cursor: pointer;
 }
+
+/* بدون هاله و بوردر برای ☯︎ */
 .dark-selected {
-  border: 3px solid #00ff99;
-  border-radius: 50%;
+  /* هیچ بوردر یا هاله‌ای */
 }
 
-/* === انیمیشن popup === */
 @keyframes popin {
   from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
   to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* === ریسپانسیو موبایل === */
 @media (max-width: 500px) {
   .btn {
     padding: 12px 20px;
@@ -209,7 +201,6 @@ h1 {
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
 
-<!-- تاریخ، ساعت، زبان و تم -->
 <div id="top-right">
   <div id="date-time">
     <span id="date">1404/07/18</span> | <span id="weekday">شنبه</span> | <span id="time">12:00:00</span>
@@ -222,7 +213,6 @@ h1 {
 </div>
 
 <script>
-/* === تغییر تم === */
 const themeToggle = document.getElementById("yin-yang");
 let isDark = true;
 
@@ -230,20 +220,17 @@ function applyTheme() {
   if(isDark){
     document.body.style.backgroundColor = "#000";
     document.body.style.color = "#00ff99";
-    themeToggle.classList.add("dark-selected");
   } else {
-    document.body.style.backgroundColor = "#eee3d3"; // رنگ کرمی ملایم
+    document.body.style.backgroundColor = "#eee3d3";
     document.body.style.color = "#000";
-    themeToggle.classList.remove("dark-selected");
   }
 }
-
 themeToggle.addEventListener("click", ()=>{
   isDark = !isDark;
   applyTheme();
 });
 
-/* === ساعت و تاریخ === */
+/* تاریخ و ساعت */
 const dateEl = document.getElementById("date");
 const timeEl = document.getElementById("time");
 const weekdayEl = document.getElementById("weekday");
@@ -266,7 +253,6 @@ function updateTime(){
 
   let weekdaysFa = ["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"];
   let weekdaysEn = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-
   let weekdayText = lang==="fa" ? weekdaysFa[now.getDay()] : weekdaysEn[now.getDay()];
 
   let dateStr = lang==="fa" ? `${toPersianNumber(y)}/${toPersianNumber(m.toString().padStart(2,'0'))}/${toPersianNumber(d.toString().padStart(2,'0'))}` :
@@ -278,12 +264,11 @@ function updateTime(){
   timeEl.textContent = timeStr;
   weekdayEl.textContent = weekdayText;
 }
-
 languageSelect.addEventListener("change", updateTime);
 setInterval(updateTime, 1000);
 updateTime();
 
-/* === Donation simulation === */
+/* Donation simulation */
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
@@ -331,10 +316,7 @@ async function fetchDonations() {
 
 fetchDonations();
 setInterval(fetchDonations,5000);
-
-/* === اعمال اولیه تم === */
 applyTheme();
 </script>
-
 </body>
 </html>
