@@ -113,7 +113,7 @@ h1 {
 #date-time {
   display: flex;
   align-items: center;
-  gap: 5px; /* فاصله کمتر */
+  gap: 5px;
 }
 #language-select {
   padding: 6px 10px;
@@ -129,22 +129,16 @@ h1 {
 }
 
 #theme-toggle {
-  font-size: 5em;
+  font-size: 6em;
   cursor: pointer;
   user-select: none;
   display: flex;
   align-items: center;
-}
-#theme-toggle span {
-  display: inline-block;
-  width: 1em;
-  text-align: center;
-  cursor: pointer;
+  line-height: 0.8;
 }
 
-/* بدون هاله و بوردر برای ☯︎ */
-.dark-selected {
-  /* هیچ بوردر یا هاله‌ای */
+#theme-toggle span {
+  display: inline-block;
 }
 
 @keyframes popin {
@@ -170,7 +164,7 @@ h1 {
     font-size: 1.1em;
   }
   #theme-toggle {
-    font-size: 3em;
+    font-size: 4em;
   }
 }
 </style>
@@ -216,8 +210,8 @@ h1 {
 const themeToggle = document.getElementById("yin-yang");
 let isDark = true;
 
-function applyTheme() {
-  if(isDark){
+function applyTheme(dark){
+  if(dark){
     document.body.style.backgroundColor = "#000";
     document.body.style.color = "#00ff99";
   } else {
@@ -225,12 +219,19 @@ function applyTheme() {
     document.body.style.color = "#000";
   }
 }
-themeToggle.addEventListener("click", ()=>{
-  isDark = !isDark;
-  applyTheme();
+
+// Yin-Yang click logic
+themeToggle.addEventListener("click", (e)=>{
+  const rect = themeToggle.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  if(clickX < rect.width/2){
+    isDark = true;
+  } else {
+    isDark = false;
+  }
+  applyTheme(isDark);
 });
 
-/* تاریخ و ساعت */
 const dateEl = document.getElementById("date");
 const timeEl = document.getElementById("time");
 const weekdayEl = document.getElementById("weekday");
@@ -268,14 +269,13 @@ languageSelect.addEventListener("change", updateTime);
 setInterval(updateTime, 1000);
 updateTime();
 
-/* Donation simulation */
+// Donations simulation
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
 const totalEl = document.getElementById('total');
 const percentEl = document.getElementById('percent');
 const alertSound = document.getElementById('alert-sound');
-
 let total = 0;
 const target = 60000000;
 const seenDonations = new Set();
@@ -313,10 +313,9 @@ async function fetchDonations() {
     });
   } catch(e){ console.warn(e); }
 }
-
 fetchDonations();
 setInterval(fetchDonations,5000);
-applyTheme();
+applyTheme(isDark);
 </script>
 </body>
 </html>
