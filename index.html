@@ -7,10 +7,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
 body{margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;transition:background 0.3s,color 0.3s;}
+body.light-theme{background:#f2f2f2;color:#222;}
 h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 .button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
-.btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
-.btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
+.btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:inherit;text-decoration:none;border:2px solid currentColor;border-radius:12px;box-shadow:0 0 15px currentColor;transition:all 0.3s ease;}
+.btn:hover{background:currentColor;color:#000;box-shadow:0 0 30px currentColor;transform:scale(1.05);}
 #overlay{position:fixed;inset:0;pointer-events:none;}
 #donation-alert{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);text-align:center;background:rgba(0,0,0,0.9);border:2px solid #00ff99;box-shadow:0 0 50px #00ff99;border-radius:20px;padding:30px 40px;display:none;z-index:10;animation:popin 0.5s ease;}
 #donation-gif{width:180px;height:180px;border-radius:12px;margin-bottom:15px;}
@@ -18,8 +19,8 @@ h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 #donor-amount{font-size:1.4em;color:#ccffdd;}
 #stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
 @keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0;}to{transform:translate(-50%,-50%) scale(1);opacity:1;}}
-#yin-yang{position:fixed;top:10px;left:10px;width:60px;height:60px;cursor:pointer;z-index:20;border:2px solid #00ff99;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px;line-height:1;user-select:none;}
-#datetime-container{position:fixed;top:20px;left:90px;display:flex;gap:10px;align-items:center;z-index:20;font-size:1em;}
+#yin-yang{position:fixed;top:10px;left:10px;width:70px;height:70px;cursor:pointer;z-index:20;border:2px solid #00ff99;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:60px;line-height:1;user-select:none;}
+#datetime-container{position:fixed;top:25px;left:100px;display:flex;gap:6px;align-items:center;z-index:20;font-size:1em;}
 </style>
 </head>
 <body>
@@ -47,7 +48,7 @@ h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 
 <div id="yin-yang">☯︎</div>
 <div id="datetime-container">
-<span id="date"></span> | <span id="weekday"></span> | <span id="time"></span>
+<span id="time"></span> | <span id="weekday"></span> | <span id="date"></span>
 </div>
 
 <script>
@@ -62,9 +63,9 @@ const target=60000000;
 const seenDonations=new Set();
 const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";
 const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
-function showDonation(d){let rate=currencyRates[d.currency]||0; let amountIRR=d.amount*rate; total+=amountIRR; donorName.textContent=d.name||"حامی ناشناس"; donorAmount.textContent=amountIRR.toLocaleString("fa-IR")+" ریال"; totalEl.textContent=total.toLocaleString("fa-IR"); percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100); alertBox.style.display="block"; alertSound.currentTime=0; alertSound.play().catch(()=>{}); setTimeout(()=>{alertBox.style.display="none";},4000);}
-async function fetchDonations(){try{const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"}); if(!res.ok)throw new Error("Fetch failed"); const data=await res.json(); if(!Array.isArray(data))return; data.forEach(d=>{if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d);}});}catch(err){console.warn("❗ خطا در دریافت داده:",err.message);}}
-fetchDonations(); setInterval(fetchDonations,5000);
+function showDonation(d){let rate=currencyRates[d.currency]||0;let amountIRR=d.amount*rate;total+=amountIRR;donorName.textContent=d.name||"حامی ناشناس";donorAmount.textContent=amountIRR.toLocaleString("fa-IR")+" ریال";totalEl.textContent=total.toLocaleString("fa-IR");percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);alertBox.style.display="block";alertSound.currentTime=0;alertSound.play().catch(()=>{});setTimeout(()=>{alertBox.style.display="none";},4000);}
+async function fetchDonations(){try{const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});if(!res.ok)throw new Error("Fetch failed");const data=await res.json();if(!Array.isArray(data))return;data.forEach(d=>{if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d);}});}catch(err){console.warn("❗ خطا در دریافت داده:",err.message);}}
+fetchDonations();setInterval(fetchDonations,5000);
 
 const dateEl=document.getElementById('date');
 const timeEl=document.getElementById('time');
@@ -81,9 +82,9 @@ function updateDateTime(){
   const seconds=('0'+now.getSeconds()).slice(-2);
   timeEl.textContent=toPersian(hours+':'+minutes+':'+seconds);
 }
-setInterval(updateDateTime,1000);
-updateDateTime();
+setInterval(updateDateTime,1000);updateDateTime();
 
+const yinYang=document.getElementById('yin-yang');
 yinYang.addEventListener('click',()=>{document.body.classList.toggle('light-theme');});
 </script>
 </body>
