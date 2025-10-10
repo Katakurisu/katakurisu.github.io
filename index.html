@@ -18,16 +18,11 @@ h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 #donor-amount{font-size:1.4em;color:#ccffdd;}
 #stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
 @keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0;}to{transform:translate(-50%,-50%) scale(1);opacity:1;}}
-@media(max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
-#top-left{position:fixed;top:12px;left:12px;z-index:20;font-size:6em;cursor:pointer;user-select:none;width:100px;height:100px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
-#top-left .half{width:50%;height:100%;position:absolute;top:0;transition:all 0.3s ease;cursor:pointer;}
-#top-left .half.dark{left:0;background:#000;border-radius:50% 0 0 50%;border:3px solid transparent;}
-#top-left .half.light{right:0;background:#f0f0e0;border-radius:0 50% 50% 0;border:3px solid transparent;}
-#top-left .selected{border-color:#00ff99;}
-#top-right{position:fixed;top:12px;right:12px;display:flex;align-items:center;gap:12px;z-index:20;font-size:1.1em;}
-#date-time{display:flex;align-items:center;gap:4px;}
-#lang-select{padding:4px 6px;border-radius:6px;border:1px solid #00ff99;background:rgba(0,0,0,0.8);color:#00ff99;}
-.light-theme{background:#f0f0e0;color:#000;}
+@media(max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
+#datetime-container{position:fixed;top:10px;right:10px;display:flex;gap:10px;align-items:center;z-index:20;font-size:1em;}
+#datetime-container select{padding:4px 8px;border-radius:8px;border:1px solid #00ff99;background:rgba(0,0,0,0.8);color:#00ff99;}
+#yin-yang{position:fixed;top:10px;left:10px;width:60px;height:60px;cursor:pointer;z-index:20;border:2px solid #00ff99;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px;line-height:1;user-select:none;}
+.light-theme{background:#f0f0e0;color:#000;} 
 </style>
 </head>
 <body>
@@ -36,6 +31,7 @@ h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
 <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
 </div>
+
 <div id="overlay">
 <div id="donation-alert">
 <img id="donation-gif" src="https://media.giphy.com/media/3o7TKPcehQvZqg2rZu/giphy.gif" alt="Donation">
@@ -47,40 +43,43 @@ h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
 </div>
 </div>
-<audio id="alert-sound" preload="auto"><source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg"></audio>
 
-<div id="top-left">
-<div class="half dark selected" data-theme="dark"></div>
-<div class="half light" data-theme="light"></div>
-</div>
-<div id="top-right">
-<div id="date-time"><span id="date"></span><span id="weekday"></span><span id="time"></span></div>
+<audio id="alert-sound" preload="auto">
+<source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
+</audio>
+
+<div id="datetime-container">
+<span id="date"></span> | <span id="weekday"></span> | <span id="time"></span>
 <select id="lang-select">
 <option value="fa">فارسی</option>
 <option value="en">English</option>
 </select>
 </div>
 
+<div id="yin-yang">☯︎</div>
+
 <script>
-// ===== Donations ======
-const alertBox=document.getElementById('donation-alert'),donorName=document.getElementById('donor-name'),donorAmount=document.getElementById('donor-amount'),totalEl=document.getElementById('total'),percentEl=document.getElementById('percent'),alertSound=document.getElementById('alert-sound');let total=0,target=60000000,seenDonations=new Set(),DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
-function showDonation(d){let rate=currencyRates[d.currency]||0,amountIRR=d.amount*rate;total+=amountIRR;donorName.textContent=d.name||"حامی ناشناس";donorAmount.textContent=amountIRR.toLocaleString("fa-IR")+" ریال";totalEl.textContent=total.toLocaleString("fa-IR");percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);alertBox.style.display="block";alertSound.currentTime=0;alertSound.play().catch(()=>{});setTimeout(()=>{alertBox.style.display="none"},4000);}
-async function fetchDonations(){try{const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});if(!res.ok)throw new Error("Fetch failed");const data=await res.json();if(!Array.isArray(data))return;data.forEach(d=>{if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d);}});}catch(err){console.warn("❗ خطا در دریافت داده:",err.message);}}
-fetchDonations();setInterval(fetchDonations,5000);
+const alertBox=document.getElementById('donation-alert');
+const donorName=document.getElementById('donor-name');
+const donorAmount=document.getElementById('donor-amount');
+const totalEl=document.getElementById('total');
+const percentEl=document.getElementById('percent');
+const alertSound=document.getElementById('alert-sound');
+let total=0; const target=60000000; const seenDonations=new Set();
+const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";
+const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
+function showDonation(d){let rate=currencyRates[d.currency]||0; let amountIRR=d.amount*rate; total+=amountIRR; donorName.textContent=d.name||"حامی ناشناس"; donorAmount.textContent=amountIRR.toLocaleString("fa-IR")+" ریال"; totalEl.textContent=total.toLocaleString("fa-IR"); percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100); alertBox.style.display="block"; alertSound.currentTime=0; alertSound.play().catch(()=>{}); setTimeout(()=>{alertBox.style.display="none";},4000);}
+async function fetchDonations(){try{const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"}); if(!res.ok)throw new Error("Fetch failed"); const data=await res.json(); if(!Array.isArray(data))return; data.forEach(d=>{if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d);}});}catch(err){console.warn("❗ خطا در دریافت داده:",err.message);}}
+fetchDonations(); setInterval(fetchDonations,5000);
 
-// ===== Date/Time & Language ======
-const dateEl=document.getElementById('date'),timeEl=document.getElementById('time'),weekdayEl=document.getElementById('weekday'),langSelect=document.getElementById('lang-select');
-let currentLang='fa';const weekdays={'fa':['شنبه','یک‌شنبه','دو‌شنبه','سه‌شنبه','چهارشنبه','پنج‌شنبه','جمعه'],'en':['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']};
-function pad(n){return n<10?'0'+n:n;}
-function toPersianDigits(str){return str.replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);}
-function updateDateTime(){const now=new Date();let yyyy=now.getFullYear(),mm=pad(now.getMonth()+1),dd=pad(now.getDate()),hrs=pad(now.getHours()),mins=pad(now.getMinutes()),secs=pad(now.getSeconds());let weekday=weekdays[currentLang][now.getDay()];if(currentLang==='fa'){dateEl.textContent=toPersianDigits(`${yyyy}/${mm}/${dd}`);timeEl.textContent=toPersianDigits(`${hrs}:${mins}:${secs}`);weekdayEl.textContent=weekday;} else{dateEl.textContent=`${yyyy}/${mm}/${dd}`;timeEl.textContent=`${hrs}:${mins}:${secs}`;weekdayEl.textContent=weekday;}}
-setInterval(updateDateTime,1000);updateDateTime();
-langSelect.addEventListener('change',()=>{currentLang=langSelect.value;updateDateTime();});
+const dateEl=document.getElementById('date'); const timeEl=document.getElementById('time'); const weekdayEl=document.getElementById('weekday'); const langSelect=document.getElementById('lang-select'); const yinYang=document.getElementById('yin-yang');
+function toPersian(num){return num.toString().replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);}
+function updateDateTime(){const now=new Date(); let year=now.getFullYear(),month=now.getMonth()+1,day=now.getDate(); let weekdayEn=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][now.getDay()]; let weekdayFa=["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"][now.getDay()]; let hours=now.getHours(),minutes=now.getMinutes(),seconds=now.getSeconds(); let lang=langSelect.value;
+let yy=year,mm=month,dd=day;
+if(lang==="fa"){yy=year; mm=("0"+month).slice(-2); dd=("0"+day).slice(-2); dateEl.textContent=toPersian(yy+"/"+mm+"/"+dd); weekdayEl.textContent=weekdayFa[now.getDay()]; timeEl.textContent=toPersian(("0"+hours).slice(-2)+":"+("0"+minutes).slice(-2)+":"+("0"+seconds).slice(-2));}else{dateEl.textContent=yy+"/"+("0"+month).slice(-2)+"/"+("0"+day).slice(-2); weekdayEl.textContent=weekdayEn[now.getDay()]; timeEl.textContent=("0"+hours).slice(-2)+":"+("0"+minutes).slice(-2)+":"+("0"+seconds).slice(-2);}}
+setInterval(updateDateTime,1000); updateDateTime();
 
-// ===== Theme Toggle ======
-const darkHalf=document.querySelector('#top-left .dark'),lightHalf=document.querySelector('#top-left .light');
-darkHalf.addEventListener('click',()=>{document.body.classList.remove('light-theme');darkHalf.classList.add('selected');lightHalf.classList.remove('selected');});
-lightHalf.addEventListener('click',()=>{document.body.classList.add('light-theme');lightHalf.classList.add('selected');darkHalf.classList.remove('selected');});
+yinYang.addEventListener('click',()=>{document.body.classList.toggle('light-theme');});
 </script>
 </body>
 </html>
