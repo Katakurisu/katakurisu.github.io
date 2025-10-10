@@ -11,7 +11,7 @@
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background: radial-gradient(circle at center, #000 60%, #050505 100%);
+  background-color: #000; /* دارک بک‌گراند */
   color: #00ff99;
   overflow: hidden;
   text-align: center;
@@ -19,15 +19,20 @@ body {
 }
 
 h1 {
-  margin-top: 40px;
+  margin-top: 60px; /* فاصله بیشتر از بالا */
+  margin-bottom: 40px;
   color: #00ff99;
-  text-shadow: 0 0 12px #00ff99;
+  text-shadow: 0 0 15px #00ff99;
   font-size: 2.2em;
+}
+
+.buttons {
+  margin-bottom: 60px; /* فاصله بین دکمه‌ها و آمار */
 }
 
 .btn {
   display: inline-block;
-  margin: 12px;
+  margin: 0 12px;
   padding: 14px 28px;
   background: transparent;
   color: #00ff99;
@@ -53,24 +58,25 @@ h1 {
 
 #donation-alert {
   position: absolute;
-  top: 40%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   border: 2px solid #00ff99;
   box-shadow: 0 0 40px #00ff99;
   border-radius: 18px;
   padding: 28px;
   display: none;
   animation: popin 0.5s ease;
+  z-index: 10;
 }
 
 #donation-gif {
   width: 180px;
   height: 180px;
   border-radius: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 #donor-name {
@@ -78,6 +84,7 @@ h1 {
   font-weight: 600;
   color: #00ff99;
   text-shadow: 0 0 15px #00ff99;
+  margin-bottom: 8px;
 }
 
 #donor-amount {
@@ -93,9 +100,10 @@ h1 {
   font-size: 1.3em;
   color: #00ff99;
   text-shadow: 0 0 8px #00ff99;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0,0,0,0.7);
   border-radius: 12px;
-  padding: 10px 20px;
+  padding: 15px 25px;
+  line-height: 1.8; /* فاصله بین خطوط */
 }
 
 @keyframes popin {
@@ -109,8 +117,10 @@ h1 {
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
-<a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
-<a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
+<div class="buttons">
+  <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
+  <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
+</div>
 
 <div id="overlay">
   <div id="donation-alert">
@@ -138,16 +148,11 @@ const percentEl = document.getElementById('percent');
 const alertSound = document.getElementById('alert-sound');
 
 let total = 0;
-const target = 60000000; // 🎯 هدف: ۶۰٬۰۰۰٬۰۰۰ ریال
+const target = 60000000;
 const seenDonations = new Set();
 const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
 
-const currencyRates = {
-  BTC: 1400000000,
-  ETH: 90000000,
-  USDT: 50000,
-  IRR: 1
-};
+const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
 
 function showDonation(d) {
   let rate = currencyRates[d.currency] || 0;
@@ -175,7 +180,6 @@ async function fetchDonations() {
     const res = await fetch(DONATIONS_URL + "?t=" + Date.now(), { cache: "no-store" });
     if (!res.ok) throw new Error("Fetch failed");
     const data = await res.json();
-    
     if (!Array.isArray(data)) return;
     
     data.forEach(d => {
@@ -189,9 +193,7 @@ async function fetchDonations() {
   }
 }
 
-// اولین بار فوراً اجرا شود
 fetchDonations();
-// سپس هر ۵ ثانیه تکرار شود
 setInterval(fetchDonations, 5000);
 </script>
 </body>
