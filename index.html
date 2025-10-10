@@ -8,25 +8,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* === بک‌گراند کاملاً دارک و فونت نئون === */
+/* === دارک تم + نئون سبز === */
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000000 !important; /* بک‌گراند مشکی خالص */
+  background-color: #000000;
   color: #00ff99;
   text-align: center;
   direction: rtl;
   min-height: 100vh;
 }
 
-/* === عنوان اصلی === */
+/* === عنوان با نئون glow === */
 h1 {
   margin: 60px 0 50px 0;
-  font-size: 2.4em;
-  text-shadow: 0 0 15px #00ff99;
+  font-size: 2.6em;
+  color: #00ff99;
+  text-shadow:
+    0 0 5px #00ff99,
+    0 0 10px #00ff99,
+    0 0 20px #00ff99,
+    0 0 40px #00ff99;
 }
 
-/* === دکمه‌ها در container با فاصله مناسب === */
+/* === دکمه‌ها با glow نئون === */
 .button-container {
   display: flex;
   justify-content: center;
@@ -43,17 +48,24 @@ h1 {
   text-decoration: none;
   border: 2px solid #00ff99;
   border-radius: 12px;
-  box-shadow: 0 0 15px #00ff99;
+  box-shadow:
+    0 0 5px #00ff99,
+    0 0 10px #00ff99,
+    0 0 20px #00ff99;
   transition: all 0.3s ease;
 }
 .btn:hover {
   background: #00ff99;
   color: #000000;
-  box-shadow: 0 0 30px #00ff99;
-  transform: scale(1.05);
+  box-shadow:
+    0 0 10px #00ff99,
+    0 0 20px #00ff99,
+    0 0 40px #00ff99,
+    0 0 60px #00ff99;
+  transform: scale(1.08);
 }
 
-/* === Overlay برای Donation Alert === */
+/* === Overlay donation alert با glow === */
 #overlay {
   position: fixed;
   inset: 0;
@@ -66,9 +78,12 @@ h1 {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,0.95);
   border: 2px solid #00ff99;
-  box-shadow: 0 0 50px #00ff99;
+  box-shadow:
+    0 0 20px #00ff99,
+    0 0 40px #00ff99,
+    0 0 60px #00ff99;
   border-radius: 20px;
   padding: 30px 40px;
   display: none;
@@ -81,12 +96,18 @@ h1 {
   height: 180px;
   border-radius: 12px;
   margin-bottom: 15px;
+  box-shadow:
+    0 0 10px #00ff99,
+    0 0 20px #00ff99;
 }
 
 #donor-name {
   font-size: 1.6em;
   font-weight: 600;
-  text-shadow: 0 0 15px #00ff99;
+  text-shadow:
+    0 0 5px #00ff99,
+    0 0 10px #00ff99,
+    0 0 20px #00ff99;
   margin-bottom: 5px;
 }
 
@@ -95,19 +116,27 @@ h1 {
   color: #ccffdd;
 }
 
-/* === بخش آمار در پایین صفحه === */
+/* === کارت آمار با نئون glow === */
 #stats {
   position: fixed;
   bottom: 8%;
   left: 50%;
   transform: translateX(-50%);
   font-size: 1.3em;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0,0,0,0.9);
+  border: 2px solid #00ff99;
   border-radius: 14px;
   padding: 20px 30px;
   color: #00ff99;
-  text-shadow: 0 0 12px #00ff99;
+  text-shadow:
+    0 0 5px #00ff99,
+    0 0 10px #00ff99,
+    0 0 20px #00ff99;
   line-height: 1.8;
+  box-shadow:
+    0 0 15px #00ff99,
+    0 0 30px #00ff99,
+    0 0 45px #00ff99;
   z-index: 5;
 }
 
@@ -138,7 +167,6 @@ h1 {
 }
 </style>
 </head>
-
 <body>
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
