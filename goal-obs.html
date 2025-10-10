@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎯 نوار هدف</title>
+<style>
+body {
+  margin:0;
+  font-family:'Vazirmatn',sans-serif;
+  background:transparent;
+  color:#00ff99;
+  text-align:center;
+  direction:rtl;
+  overflow:hidden;
+}
+
+/* -------------------- 🎯 بخش هدف -------------------- */
+#goal-container {
+  position:fixed;
+  top:10%;
+  left:50%;
+  transform:translateX(-50%);
+  width:80%;
+  max-width:600px;
+  background:rgba(0,0,0,0.6);
+  border-radius:20px;
+  padding:15px;
+  box-shadow:0 0 15px #00ff99;
+}
+
+#goal-title {
+  font-size:1.4em;
+  margin-bottom:10px;
+}
+
+#goal-bar-bg {
+  width:100%;
+  height:30px;
+  background:#111;
+  border-radius:15px;
+  overflow:hidden;
+}
+
+#goal-bar-fill {
+  width:0%;
+  height:100%;
+  background:#00ff99;
+  border-radius:15px 0 0 15px;
+  transition:width 1s ease;
+}
+
+#goal-text {
+  margin-top:8px;
+  font-size:1em;
+}
+</style>
+</head>
+<body>
+
+<div id="goal-container">
+  <div id="goal-title">🎯 هدف: خرید وبکم</div>
+  <div id="goal-bar-bg">
+    <div id="goal-bar-fill"></div>
+  </div>
+  <div id="goal-text">جمع کل: 0 ریال | 0%</div>
+</div>
+
+<script>
+let total = 0;
+const target = 60000000; // مبلغ هدف
+const goalFill = document.getElementById('goal-bar-fill');
+const goalText = document.getElementById('goal-text');
+
+// -------------------- 🌐 اتصال وبهوک --------------------
+async function fetchDonations() {
+  try {
+    const res = await fetch('https://eoyf8grpms15wjd.m.pipedream.net', { cache: 'no-store' });
+    const data = await res.json();
+    data.forEach(d => {
+      if(!d.handled){
+        d.handled = true;
+        updateGoal(d);
+      }
+    });
+  } catch(e) { console.warn(e); }
+}
+
+setInterval(fetchDonations, 5000);
+
+// -------------------- 🎬 آپدیت نوار هدف --------------------
+function updateGoal(d){
+  const amountIRR = d.amount*d.currency_rate || d.amount || 0;
+  total += amountIRR;
+  const percent = Math.min((total/target)*100, 100);
+  
+  goalFill.style.width = percent+'%';
+  goalText.textContent = `جمع کل: ${total.toLocaleString('fa-IR')} ریال | ${percent.toFixed(1)}%`;
+}
+</script>
+
+</body>
+</html>
