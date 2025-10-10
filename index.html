@@ -52,21 +52,21 @@ h1 {
   transform: scale(1.05);
 }
 
-/* بخش تاریخ و ساعت */
+/* بخش تاریخ، ساعت و زبان در بالا سمت راست */
 #datetime {
-  margin-bottom: 40px;
-  font-size: 1.3em;
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  font-size: 1.2em;
   color: #00ff99;
   text-shadow: 0 0 10px #00ff99;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
 }
 
-/* Dropdown زبان */
 #language-select {
-  padding: 6px 12px;
+  padding: 5px 10px;
   font-size: 1em;
   border-radius: 8px;
   border: 2px solid #00ff99;
@@ -145,7 +145,7 @@ h1 {
   h1 { font-size: 2em; margin: 40px 0 40px 0; }
   #donation-gif { width: 140px; height: 140px; }
   #stats { padding: 15px 20px; font-size: 1.1em; }
-  #datetime { font-size: 1.1em; flex-direction: column; gap: 10px; }
+  #datetime { flex-direction: column; gap: 5px; font-size: 1em; top: 10px; right: 10px; }
 }
 </style>
 </head>
@@ -157,8 +157,7 @@ h1 {
 <!-- تاریخ و ساعت با انتخاب زبان -->
 <div id="datetime">
   <div>
-    <p id="date"></p>
-    <p id="time"></p>
+    <span id="date"></span> <span id="time"></span>
   </div>
   <select id="language-select">
     <option value="fa">فارسی</option>
@@ -197,12 +196,12 @@ const languageSelect = document.getElementById('language-select');
 function updateDateTime() {
   const now = new Date();
   const lang = languageSelect.value;
-  
+
   if (lang === 'fa') {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     const persianDate = new Intl.DateTimeFormat('fa-IR', options).format(now);
     const parts = persianDate.split('/'); // [year, month, day]
-    document.getElementById('date').textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+    document.getElementById('date').textContent = `${parts[0]}/${parts[1]}/${parts[2]}`;
   } else {
     document.getElementById('date').textContent = now.toLocaleDateString('en-US');
   }
