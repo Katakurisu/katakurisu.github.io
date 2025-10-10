@@ -6,103 +6,28 @@
 <title>🎁 حمایت از میلاد کاتاکوری</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body {
-  margin: 0;
-  font-family: 'Vazirmatn', sans-serif;
-  background-color: #000000;
-  color: #ffffff;
-  text-align: center;
-  direction: rtl;
-  min-height: 100vh;
-  transition: background-color 0.3s, color 0.3s;
-}
-h1 {
-  margin: 60px 0 50px 0;
-  font-size: 2.4em;
-  text-shadow: 0 0 15px #00ff99;
-}
-.button-container {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-  flex-wrap: wrap;
-  margin-bottom: 80px;
-}
-.btn {
-  display: inline-block;
-  padding: 16px 32px;
-  font-size: 1.2em;
-  text-decoration: none;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-}
-.btn:hover { transform: scale(1.05); }
-#overlay {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-}
-#donation-alert {
-  position: absolute;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  background: rgba(0,0,0,0.9);
-  border-radius: 20px;
-  padding: 30px 40px;
-  display: none;
-  z-index: 10;
-  animation: popin 0.5s ease;
-}
-#donation-gif { width: 180px; height: 180px; border-radius: 12px; margin-bottom: 15px; }
-#donor-name { font-size: 1.6em; font-weight: 600; margin-bottom: 5px; }
-#donor-amount { font-size: 1.4em; }
-#stats {
-  position: fixed;
-  bottom: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.3em;
-  background: rgba(0,0,0,0.85);
-  border-radius: 14px;
-  padding: 20px 30px;
-  line-height: 1.8;
-  z-index: 5;
-}
-@keyframes popin {
-  from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
-  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-}
-/* تاریخ، ساعت و زبان */
-#top-right {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1em;
-  z-index: 20;
-}
-#date-time { display: flex; gap: 5px; }
-#lang-select { padding: 4px 8px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
-/* تم یین‌یانگ */
-#theme-toggle {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  font-size: 3em;
-  cursor: pointer;
-  user-select: none;
-  z-index: 20;
-}
-.dark-selected { border: 3px solid #ffffff; border-radius: 50%; }
-.light-selected { border: 3px solid #000000; border-radius: 50%; }
+body{margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;transition:background .3s,color .3s;}
+h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
+.button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
+.btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all .3s ease;}
+.btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
+#overlay{position:fixed;inset:0;pointer-events:none;}
+#donation-alert{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);text-align:center;background:rgba(0,0,0,.9);border:2px solid #00ff99;box-shadow:0 0 50px #00ff99;border-radius:20px;padding:30px 40px;display:none;z-index:10;animation:popin .5s ease;}
+#donation-gif{width:180px;height:180px;border-radius:12px;margin-bottom:15px;}
+#donor-name{font-size:1.6em;font-weight:600;text-shadow:0 0 15px #00ff99;margin-bottom:5px;}
+#donor-amount{font-size:1.4em;color:#ccffdd;}
+#stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
+@keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+@media(max-width:500px){.btn{padding:12px 20px;font-size:1em}h1{font-size:2em;margin:40px 0 40px 0}#donation-gif{width:140px;height:140px}#stats{padding:15px 20px;font-size:1.1em}}
+/* === ساعت و تاریخ و زبان === */
+#top-right{position:fixed;top:10px;right:10px;display:flex;gap:12px;align-items:center;font-size:1.1em;z-index:20;}
+#top-right select{padding:4px 8px;border-radius:6px;border:1px solid #00ff99;background:transparent;color:#00ff99;outline:none;}
+/* === تم یین‌یانگ === */
+#yin-yang{position:fixed;top:10px;left:10px;font-size:50px;cursor:pointer;z-index:20;user-select:none;}
+.light-bg{background:#f0f0e0;color:#000;}
 </style>
 </head>
 <body>
-
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 <div class="button-container">
   <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
@@ -121,113 +46,32 @@ h1 {
   </div>
 </div>
 
-<audio id="alert-sound" preload="auto">
-  <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
-</audio>
-
 <div id="top-right">
-  <div id="date-time">
-    <span id="date"></span> | <span id="weekday"></span> | <span id="time"></span>
-  </div>
-  <select id="lang-select">
-    <option value="fa">فارسی</option>
-    <option value="en">English</option>
-  </select>
+  <div id="date-time"></div>
+  <select id="lang"><option value="fa">فارسی</option><option value="en">English</option></select>
 </div>
 
-<div id="theme-toggle">☯︎</div>
+<div id="yin-yang">☯︎</div>
+
+<audio id="alert-sound" preload="auto"><source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg"></audio>
 
 <script>
-let darkMode = true;
-const themeToggle = document.getElementById('theme-toggle');
-const langSelect = document.getElementById('lang-select');
-const dateEl = document.getElementById('date');
-const weekdayEl = document.getElementById('weekday');
-const timeEl = document.getElementById('time');
-const totalEl = document.getElementById('total');
-const percentEl = document.getElementById('percent');
-const body = document.body;
+const alertBox=document.getElementById('donation-alert'),donorName=document.getElementById('donor-name'),donorAmount=document.getElementById('donor-amount'),totalEl=document.getElementById('total'),percentEl=document.getElementById('percent'),alertSound=document.getElementById('alert-sound'),overlay=document.getElementById('overlay'),langSel=document.getElementById('lang'),dateTime=document.getElementById('date-time'),yinYang=document.getElementById('yin-yang');let total=0,target=60000000,seenDonations=new Set(),DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
 
-function updateTheme(){
-  if(darkMode){
-    body.style.backgroundColor='#000000';
-    body.style.color='#ffffff';
-    themeToggle.classList.add('dark-selected');
-    themeToggle.classList.remove('light-selected');
-  }else{
-    body.style.backgroundColor='#f3f0e6';
-    body.style.color='#333333';
-    themeToggle.classList.remove('dark-selected');
-    themeToggle.classList.add('light-selected');
-  }
-}
-themeToggle.addEventListener('click',()=>{ darkMode=!darkMode; updateTheme(); });
-updateTheme();
+function showDonation(d){let rate=currencyRates[d.currency]||0,amountIRR=d.amount*rate;total+=amountIRR;donorName.textContent=d.name||"حامی ناشناس";donorAmount.textContent=toLocaleNum(amountIRR);totalEl.textContent=toLocaleNum(total);percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);alertBox.style.display="block";alertSound.currentTime=0;alertSound.play().catch(()=>{});setTimeout(()=>{alertBox.style.display="none"},4000)}
 
-let lang='fa';
-langSelect.addEventListener('change',(e)=>{ lang=e.target.value; });
+async function fetchDonations(){try{const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});if(!res.ok)throw new Error("Fetch failed");const data=await res.json();if(!Array.isArray(data))return;data.forEach(d=>{if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d)}})}catch(err){console.warn("❗ خطا در دریافت داده:",err.message)}}
 
-function pad(n){ return n<10?'0'+n:n; }
-function toFarsiNumber(n){ const farsi='۰۱۲۳۴۵۶۷۸۹'; return n.toString().replace(/\d/g,x=>farsi[x]); }
+function toLocaleNum(num){return langSel.value==="fa"?num.toLocaleString("fa-IR"):num.toLocaleString("en-US")}
 
-function updateDateTime(){
-  const now=new Date();
-  const weekdaysFa=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
-  const weekdaysEn=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const yyyy=now.getFullYear();
-  const mm=pad(now.getMonth()+1);
-  const dd=pad(now.getDate());
-  const hh=pad(now.getHours());
-  const min=pad(now.getMinutes());
-  if(lang==='fa'){
-    dateEl.textContent=toFarsiNumber(`${yyyy}/${mm}/${dd}`);
-    weekdayEl.textContent=weekdaysFa[now.getDay()];
-    timeEl.textContent=toFarsiNumber(`${hh}:${min}`);
-    totalEl.textContent=toFarsiNumber(totalEl.textContent);
-    percentEl.textContent=toFarsiNumber(percentEl.textContent);
-  }else{
-    dateEl.textContent=`${yyyy}/${mm}/${dd}`;
-    weekdayEl.textContent=weekdaysEn[now.getDay()];
-    timeEl.textContent=`${hh}:${min}`;
-  }
-}
-setInterval(updateDateTime,1000);
-updateDateTime();
+function updateDateTime(){let now=new Date(),weekdays={fa:["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"],en:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},lang=langSel.value,day=weekdays[lang][now.getDay()],dateStr="";if(lang==="fa"){const j=new Intl.DateTimeFormat('fa-IR',{year:'numeric',month:'2-digit',day:'2-digit'}).format(now);dateStr=j+" | "+day}else{const d=now.getDate().toString().padStart(2,"0"),m=(now.getMonth()+1).toString().padStart(2,"0"),y=now.getFullYear();dateStr=y+"/"+m+"/"+d+" | "+day}let hours=now.getHours().toString().padStart(2,"0"),minutes=now.getMinutes().toString().padStart(2,"0"),seconds=now.getSeconds().toString().padStart(2,"0");if(lang==="fa"){hours=hours.replace(/\d/g,c=>String.fromCharCode(1776+parseInt(c)));minutes=minutes.replace(/\d/g,c=>String.fromCharCode(1776+parseInt(c)));seconds=seconds.replace(/\d/g,c=>String.fromCharCode(1776+parseInt(c)))}dateTime.textContent=dateStr+" "+hours+":"+minutes+":"+seconds}
 
-// Donations (همانند قبل)
-const alertBox=document.getElementById('donation-alert');
-const donorName=document.getElementById('donor-name');
-const donorAmount=document.getElementById('donor-amount');
-const alertSound=document.getElementById('alert-sound');
-let total=0;
-const target=60000000;
-const seenDonations=new Set();
-const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";
-const currencyRates={ BTC:1400000000, ETH:90000000, USDT:50000, IRR:1 };
-function showDonation(d){
-  let rate=currencyRates[d.currency]||0;
-  let amountIRR=d.amount*rate;
-  total+=amountIRR;
-  donorName.textContent=d.name||'حامی ناشناس';
-  donorAmount.textContent=amountIRR.toLocaleString('fa-IR')+' ریال';
-  totalEl.textContent=total.toLocaleString('fa-IR');
-  percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);
-  alertBox.style.display='block';
-  alertSound.currentTime=0;
-  alertSound.play().catch(()=>{});
-  setTimeout(()=>{ alertBox.style.display='none'; },4000);
-}
-async function fetchDonations(){
-  try{
-    const res=await fetch(DONATIONS_URL+'?t='+Date.now(),{cache:'no-store'});
-    if(!res.ok)throw new Error('Fetch failed');
-    const data=await res.json();
-    if(!Array.isArray(data))return;
-    data.forEach(d=>{ if(d.ts && !seenDonations.has(d.ts)){ seenDonations.add(d.ts); showDonation(d); } });
-  }catch(err){ console.warn('❗ خطا در دریافت داده:',err.message); }
-}
-fetchDonations();
-setInterval(fetchDonations,5000);
+langSel.addEventListener('change',()=>{updateDateTime();updateNums()})
+function updateNums(){totalEl.textContent=toLocaleNum(total);percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100)}
+
+yinYang.addEventListener('click',()=>{document.body.classList.toggle('light-bg')})
+
+fetchDonations();setInterval(fetchDonations,5e3);setInterval(updateDateTime,1e3);updateDateTime();
 </script>
 </body>
 </html>
