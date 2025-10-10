@@ -12,28 +12,20 @@ body {
   transition: all 0.3s ease;
 }
 
-/* === تم‌ها === */
-body.dark {
-  background-color: #000;
-  color: #00ff99;
-}
+/* تم‌ها */
+body.dark { background-color: #000; color: #00ff99; }
+body.light { background-color: #f8f8f8; color: #333; }
 
-body.light {
-  background-color: #f8f8f8;
-  color: #333;
-}
-
-/* === عنوان اصلی === */
+/* عنوان اصلی */
 h1 {
   margin: 60px 0 50px 0;
   font-size: 2.4em;
   text-align: center;
 }
-
 body.dark h1 { text-shadow: 0 0 15px #00ff99; }
 body.light h1 { text-shadow: 0 0 5px #888; }
 
-/* === دکمه‌ها === */
+/* دکمه‌ها */
 .button-container {
   display: flex;
   justify-content: center;
@@ -41,7 +33,6 @@ body.light h1 { text-shadow: 0 0 5px #888; }
   flex-wrap: wrap;
   margin-bottom: 80px;
 }
-
 .btn {
   display: inline-block;
   padding: 16px 32px;
@@ -50,34 +41,13 @@ body.light h1 { text-shadow: 0 0 5px #888; }
   border-radius: 12px;
   transition: all 0.3s ease;
 }
+body.dark .btn { color: #00ff99; border: 2px solid #00ff99; box-shadow: 0 0 15px #00ff99; }
+body.dark .btn:hover { background: #00ff99; color: #000; box-shadow: 0 0 30px #00ff99; transform: scale(1.05); }
+body.light .btn { color: #333; border: 2px solid #333; box-shadow: 0 0 5px #aaa; }
+body.light .btn:hover { background: #333; color: #fff; box-shadow: 0 0 10px #666; transform: scale(1.05); }
 
-body.dark .btn {
-  color: #00ff99;
-  border: 2px solid #00ff99;
-  box-shadow: 0 0 15px #00ff99;
-}
-body.dark .btn:hover {
-  background: #00ff99;
-  color: #000;
-  box-shadow: 0 0 30px #00ff99;
-  transform: scale(1.05);
-}
-
-body.light .btn {
-  color: #333;
-  border: 2px solid #333;
-  box-shadow: 0 0 5px #aaa;
-}
-body.light .btn:hover {
-  background: #333;
-  color: #fff;
-  box-shadow: 0 0 10px #666;
-  transform: scale(1.05);
-}
-
-/* === آمار و Donation Alert === */
+/* آمار و Donation Alert */
 #overlay { position: fixed; inset: 0; pointer-events: none; }
-
 #donation-alert {
   position: absolute;
   top: 35%;
@@ -90,20 +60,9 @@ body.light .btn:hover {
   z-index: 10;
   animation: popin 0.5s ease;
 }
-
-body.dark #donation-alert {
-  background: rgba(0,0,0,0.9);
-  border: 2px solid #00ff99;
-  box-shadow: 0 0 50px #00ff99;
-}
-body.light #donation-alert {
-  background: #fff;
-  border: 2px solid #888;
-  box-shadow: 0 0 20px #aaa;
-}
-
+body.dark #donation-alert { background: rgba(0,0,0,0.9); border: 2px solid #00ff99; box-shadow: 0 0 50px #00ff99; }
+body.light #donation-alert { background: #fff; border: 2px solid #888; box-shadow: 0 0 20px #aaa; }
 #donation-gif { width: 180px; height: 180px; border-radius: 12px; margin-bottom: 15px; }
-
 #donor-name { font-size: 1.6em; font-weight: 600; margin-bottom: 5px; }
 #donor-amount { font-size: 1.4em; }
 
@@ -119,61 +78,44 @@ body.light #donation-alert {
   line-height: 1.8;
   z-index: 5;
 }
+body.dark #stats { background: rgba(0,0,0,0.85); color: #00ff99; text-shadow: 0 0 12px #00ff99; }
+body.light #stats { background: rgba(255,255,255,0.95); color: #333; text-shadow: none; }
 
-body.dark #stats {
-  background: rgba(0,0,0,0.85);
-  color: #00ff99;
-  text-shadow: 0 0 12px #00ff99;
-}
-
-body.light #stats {
-  background: rgba(255,255,255,0.95);
-  color: #333;
-  text-shadow: none;
-}
-
-/* === ساعت و تاریخ و تنظیمات === */
+/* ساعت و تاریخ و تنظیمات کنار هم */
 #date-time-container {
   position: fixed;
   top: 10px;
-  left: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
   font-size: 1.2em;
-  text-align: left;
-  line-height: 1.4;
 }
-
-#date-time-container span { display: block; }
-
-#controls {
-  margin-top: 5px;
-}
-
-#lang-select, #theme-select {
+#date-time-container span { margin: 0 5px; }
+#controls select {
   padding: 2px 6px;
   border-radius: 6px;
   border: 1px solid currentColor;
   background: transparent;
   color: inherit;
-  margin-right: 5px;
 }
 
-/* === انیمیشن popup === */
+/* انیمیشن popup */
 @keyframes popin {
   from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
   to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* === ریسپانسیو موبایل === */
+/* ریسپانسیو موبایل */
 @media (max-width: 500px) {
   .btn { padding: 12px 20px; font-size: 1em; }
   h1 { font-size: 2em; margin: 40px 0 40px 0; }
   #donation-gif { width: 140px; height: 140px; }
   #stats { padding: 15px 20px; font-size: 1.1em; }
-  #date-time-container { font-size: 1em; }
+  #date-time-container { font-size: 1em; flex-direction: column; align-items: flex-start; }
 }
 </style>
 </head>
-
 <body class="dark">
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
@@ -187,16 +129,14 @@ body.light #stats {
   <span id="date"></span>
   <span id="weekday"></span>
   <span id="time"></span>
-  <div id="controls">
-    <select id="lang-select">
-      <option value="fa">فارسی</option>
-      <option value="en">English</option>
-    </select>
-    <select id="theme-select">
-      <option value="dark">دارک</option>
-      <option value="light">لایت</option>
-    </select>
-  </div>
+  <select id="lang-select">
+    <option value="fa">فارسی</option>
+    <option value="en">English</option>
+  </select>
+  <select id="theme-select">
+    <option value="dark">دارک</option>
+    <option value="light">لایت</option>
+  </select>
 </div>
 
 <div id="overlay">
@@ -233,19 +173,14 @@ const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
 function showDonation(d) {
   let rate = currencyRates[d.currency] || 0;
   let amountIRR = d.amount * rate;
-
   total += amountIRR;
-
   donorName.textContent = d.name || "حامی ناشناس";
   donorAmount.textContent = amountIRR.toLocaleString("fa-IR") + " ریال";
-
   totalEl.textContent = total.toLocaleString("fa-IR");
   percentEl.textContent = Math.min(((total / target) * 100).toFixed(1), 100);
-
   alertBox.style.display = "block";
   alertSound.currentTime = 0;
   alertSound.play().catch(()=>{});
-
   setTimeout(() => { alertBox.style.display = "none"; }, 4000);
 }
 
@@ -255,7 +190,6 @@ async function fetchDonations() {
     if (!res.ok) throw new Error("Fetch failed");
     const data = await res.json();
     if (!Array.isArray(data)) return;
-
     data.forEach(d => {
       if (d.ts && !seenDonations.has(d.ts)) {
         seenDonations.add(d.ts);
@@ -264,7 +198,6 @@ async function fetchDonations() {
     });
   } catch (err) { console.warn("❗ خطا در دریافت داده:", err.message); }
 }
-
 fetchDonations();
 setInterval(fetchDonations, 5000);
 
@@ -276,34 +209,18 @@ const langSelect = document.getElementById('lang-select');
 const themeSelect = document.getElementById('theme-select');
 
 let currentLang = 'fa';
-
-const weekdays = {
-  fa: ['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'],
-  en: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
-};
-
-function toFarsiNumber(str) {
-  const farsiDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-  return str.replace(/\d/g, d => farsiDigits[d]);
-}
-
+const weekdays = { fa: ['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'], en: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] };
+function toFarsiNumber(str) { const farsiDigits=['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹']; return str.replace(/\d/g,d=>farsiDigits[d]); }
 function getPersianDate() {
   const now = new Date();
   const p = new Intl.DateTimeFormat('fa-IR',{year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);
-  let y,m,d;
-  p.forEach(part=>{
-    if(part.type==='year') y=part.value;
-    if(part.type==='month') m=part.value;
-    if(part.type==='day') d=part.value;
-  });
+  let y,m,d; p.forEach(part=>{ if(part.type==='year') y=part.value; if(part.type==='month') m=part.value; if(part.type==='day') d=part.value; });
   return `${y}/${m}/${d}`;
 }
 
 function updateDateTime() {
   const now = new Date();
-  let hour = now.getHours();
-  let min = now.getMinutes();
-  let sec = now.getSeconds();
+  let hour = now.getHours(), min = now.getMinutes(), sec = now.getSeconds();
   let timeStr = `${hour.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
 
   if(currentLang==='fa') {
@@ -312,9 +229,7 @@ function updateDateTime() {
     weekdayEl.textContent = weekdays.fa[now.getDay()];
     document.body.dir='rtl';
   } else {
-    const yyyy = now.getFullYear();
-    const mm = String(now.getMonth()+1).padStart(2,'0');
-    const dd = String(now.getDate()).padStart(2,'0');
+    const yyyy = now.getFullYear(), mm = String(now.getMonth()+1).padStart(2,'0'), dd = String(now.getDate()).padStart(2,'0');
     dateEl.textContent = `${yyyy}/${mm}/${dd}`;
     weekdayEl.textContent = weekdays.en[now.getDay()];
     document.body.dir='ltr';
@@ -322,18 +237,8 @@ function updateDateTime() {
   timeEl.textContent = timeStr;
 }
 
-langSelect.addEventListener('change',()=>{
-  currentLang = langSelect.value;
-  updateDateTime();
-});
-
-// ======= THEME =======
-themeSelect.addEventListener('change',()=>{
-  const theme = themeSelect.value;
-  document.body.classList.remove('dark','light');
-  document.body.classList.add(theme);
-});
-
+langSelect.addEventListener('change',()=>{ currentLang = langSelect.value; updateDateTime(); });
+themeSelect.addEventListener('change',()=>{ document.body.classList.remove('dark','light'); document.body.classList.add(themeSelect.value); });
 setInterval(updateDateTime, 1000);
 updateDateTime();
 </script>
