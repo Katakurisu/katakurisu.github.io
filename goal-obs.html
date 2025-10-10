@@ -21,10 +21,6 @@ body {
   width: 80%;
   max-width: 600px;
   margin: 20px auto;
-  padding: 10px;
-  background: rgba(0,0,0,0.25); /* بکگراند شفاف و کمرنگ */
-  backdrop-filter: blur(8px); /* افکت شیشه‌ای */
-  border-radius: 12px;
 }
 
 /* عنوان هدف */
@@ -37,9 +33,10 @@ body {
 #goal-bar-bg {
   width: 100%;
   height: 25px;
-  background: rgba(255,255,255,0.15); /* کمی روشن ولی شفاف */
+  background: transparent; /* بک‌گراند حذف شد */
   border-radius: 10px;
   overflow: hidden;
+  border: 4px solid #FFD700; /* بوردر دور نوار */
 }
 
 /* نوار پرشدنی */
@@ -47,7 +44,7 @@ body {
   width: 0%;
   height: 100%;
   background: #FFD700; /* زرد طلایی */
-  border-radius: 10px;
+  border-radius: 6px;
   transition: width 0.5s ease;
 }
 
@@ -71,13 +68,11 @@ body {
 </div>
 
 <script>
-/* -------------------- 🎯 متغیرهای هدف -------------------- */
 let total = 0;
 const target = 60000000; // مقدار هدف ریال
 const goalBar = document.getElementById('goal-bar');
 const goalPercent = document.getElementById('goal-percent');
 
-/* -------------------- 🌐 اتصال وبهوک -------------------- */
 async function fetchDonations() {
   try {
     const res = await fetch('https://eoyf8grpms15wjd.m.pipedream.net', { cache: 'no-store' });
@@ -94,7 +89,6 @@ async function fetchDonations() {
 }
 setInterval(fetchDonations, 5000);
 
-/* -------------------- 🎯 آپدیت هدف -------------------- */
 function updateGoal(d) {
   const amountIRR = d.amount * (d.currency_rate || 1);
   total += amountIRR;
