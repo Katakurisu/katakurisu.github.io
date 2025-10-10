@@ -1,135 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>صفحه نمونه با نئون</title>
+  <title>صفحه اصلی</title>
   <style>
-    /* دارک تم و نئون */
     body {
-      background-color: #0a0a0a;
-      color: #00ff99;
-      font-family: 'Arial', 'Tahoma', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      padding: 20px;
-      transition: all 0.3s;
-    }
-
-    /* متن نئون */
-    .neon {
-      text-shadow: 0 0 5px #00ff99, 0 0 10px #00ff99, 0 0 20px #00ff99;
-    }
-
-    /* کارت‌ها */
-    .card {
-      background-color: #111;
-      padding: 20px;
-      margin: 10px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #00ff99;
+      background-color: #000; /* بک‌گراند مشکی */
+      color: #fff;           /* متن سفید */
+      font-family: Arial, sans-serif;
       text-align: center;
+      padding: 50px;
     }
-
-    /* انتخاب زبان */
-    select {
-      margin-bottom: 20px;
-      padding: 5px 10px;
-      background-color: #111;
-      color: #00ff99;
-      border: 1px solid #00ff99;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    /* تاریخ و ساعت */
     #datetime {
+      font-size: 24px;
       margin-top: 20px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      text-align: center;
     }
-
-    /* راست به چپ برای فارسی */
-    .rtl {
-      direction: rtl;
-      font-family: 'Tahoma', 'Arial', sans-serif;
+    select {
+      font-size: 16px;
+      padding: 5px;
+      margin-top: 20px;
+      background-color: #222;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
 
-  <h1 class="neon" id="title">Welcome</h1>
+  <h1 id="greeting">سلام!</h1>
 
-  <!-- انتخاب زبان -->
-  <label for="language">Language / زبان:</label>
-  <select id="language">
-    <option value="en">English</option>
-    <option value="fa">فارسی</option>
-  </select>
-
-  <!-- کارت‌ها -->
-  <div class="card" id="card1">This is a card</div>
-  <div class="card" id="card2">Another card</div>
-
-  <!-- تاریخ و ساعت -->
+  <!-- ساعت و تاریخ زنده -->
   <div id="datetime"></div>
 
+  <!-- انتخاب زبان -->
+  <div>
+    <label for="language">انتخاب زبان:</label>
+    <select id="language">
+      <option value="fa">فارسی</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+
   <script>
-    const langSelect = document.getElementById('language');
-    const title = document.getElementById('title');
-    const card1 = document.getElementById('card1');
-    const card2 = document.getElementById('card2');
-    const datetime = document.getElementById('datetime');
-    const body = document.body;
-
-    const texts = {
-      en: {
-        title: "Welcome",
-        card1: "This is a card",
-        card2: "Another card"
-      },
-      fa: {
-        title: "خوش آمدید",
-        card1: "این یک کارت است",
-        card2: "یک کارت دیگر"
-      }
-    };
-
-    function updateLanguage() {
-      const lang = langSelect.value;
-      title.textContent = texts[lang].title;
-      card1.textContent = texts[lang].card1;
-      card2.textContent = texts[lang].card2;
-
-      // تغییر جهت متن برای فارسی
-      if(lang === 'fa') {
-        body.classList.add('rtl');
-      } else {
-        body.classList.remove('rtl');
-      }
-
-      // بروزرسانی تاریخ
-      updateDateTime();
-    }
-
-    langSelect.addEventListener('change', updateLanguage);
-
+    // تابع نمایش تاریخ و ساعت زنده
     function updateDateTime() {
       const now = new Date();
-      const lang = langSelect.value;
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const dateStr = now.toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US', options);
-      const timeStr = now.toLocaleTimeString(lang === 'fa' ? 'fa-IR' : 'en-US');
-      datetime.textContent = `${dateStr} - ${timeStr}`;
+      const optionsFa = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      const optionsEn = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      const lang = document.getElementById('language').value;
+      const datetimeDiv = document.getElementById('datetime');
+
+      if(lang === 'fa') {
+        datetimeDiv.textContent = now.toLocaleDateString('fa-IR', optionsFa) + ' ' + now.toLocaleTimeString('fa-IR', optionsFa);
+      } else {
+        datetimeDiv.textContent = now.toLocaleDateString('en-US', optionsEn) + ' ' + now.toLocaleTimeString('en-US', optionsEn);
+      }
     }
 
+    // بروزرسانی هر ثانیه
     setInterval(updateDateTime, 1000);
-    updateLanguage(); // نمایش اولیه با تنظیم زبان
-  </script>
+    updateDateTime();
 
+    // تغییر متن خوش‌آمدگویی با تغییر زبان
+    document.getElementById('language').addEventListener('change', function() {
+      const greeting = document.getElementById('greeting');
+      if(this.value === 'fa') {
+        greeting.textContent = 'سلام!';
+      } else {
+        greeting.textContent = 'Hello!';
+      }
+    });
+  </script>
 </body>
 </html>
