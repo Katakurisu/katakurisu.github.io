@@ -8,137 +8,124 @@
 <style>
 body {
   margin:0;
-  background:transparent;
   font-family:'Vazirmatn',sans-serif;
-  color:#00ff99;
-  direction:rtl;
-  overflow:hidden;
+  background:transparent;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
 
 #goal-container {
-  width:600px;
-  margin:50px auto;
+  width:70%;
+  max-width:800px;
+  background:rgba(0,0,0,0.25);
+  border-radius:15px;
+  padding:20px;
+  box-sizing:border-box;
   text-align:right;
 }
 
 #goal-title {
-  font-size:1.8em;
+  font-size:2em;
+  font-weight:600;
+  color:red;
+  text-shadow:0 0 5px red;
   margin-bottom:10px;
-  display:flex;
-  justify-content:flex-end;
-  align-items:center;
-  gap:10px;
 }
 
 #goal-title img {
-  width:40px;
-  height:40px;
+  vertical-align:middle;
+  margin-left:10px;
+  width:32px;
+  height:32px;
 }
 
-#goal-bar-wrapper {
+#goal-bar-container {
   position:relative;
   width:100%;
   height:40px;
-  border:3px solid yellow;
+  background:transparent;
+  border:2px solid yellow;
   border-radius:20px;
   overflow:hidden;
-  background:transparent;
+  margin-bottom:10px;
 }
 
-#goal-bar {
+#goal-bar-fill {
   position:absolute;
-  top:0; right:0;
+  right:0; /* پر شدن از راست به چپ */
+  top:0;
   height:100%;
   width:0%;
-  background:#00ff99;
-  border-radius:16px 0 0 16px; /* فقط سمت چپ پر میشه */
-  transition: width 0.5s ease;
+  background:#00ff99; /* سبز فسفری */
+  transition:width 1s ease;
 }
 
 #goal-percent {
   position:absolute;
-  right:8px;
+  left:10px;
   top:50%;
   transform:translateY(-50%);
-  font-weight:bold;
   font-size:1.2em;
+  font-weight:600;
+  color:#00ff99;
+  text-shadow:0 0 5px #00ff99;
 }
 
-#goal-heart {
-  position:absolute;
-  left:8px;
-  top:50%;
-  transform:translateY(-50%);
-  width:28px; height:28px;
+#goal-percent::before {
+  content:'♥ ';
 }
 
 #goal-text {
-  margin-top:8px;
-  font-size:1.4em;
+  font-size:1.5em;
+  color:#00ff99;
   text-align:right;
   direction:rtl;
+  text-shadow:0 0 5px #00ff99;
 }
 
-/* برای موبایل */
-@media(max-width:500px){
-  #goal-container{width:90%;}
-  #goal-title{font-size:1.4em;}
-  #goal-bar-wrapper{height:30px;}
-  #goal-bar{border-radius:12px 0 0 12px;}
-  #goal-percent{font-size:1em;}
-  #goal-text{font-size:1.1em;}
-}
 </style>
 </head>
 <body>
 
 <div id="goal-container">
   <div id="goal-title">
-    هدف: خرید وبکم
     <img src="https://katakurisu.github.io/gift.png" alt="هدیه">
+    هدف: خرید وبکم
   </div>
-  <div id="goal-bar-wrapper">
-    <div id="goal-bar"></div>
-    <div id="goal-heart">
-      <img src="https://katakurisu.github.io/heart.png" alt="♥">
-    </div>
-    <div id="goal-percent">۰%</div>
+  <div id="goal-bar-container">
+    <div id="goal-bar-fill"></div>
+    <div id="goal-percent"></div>
   </div>
-  <div id="goal-text">تاکنون ۰ از ۶۰۰۰۰۰ تومان حمایت شده</div>
+  <div id="goal-text">تاکنون 0 از 60,000 تومان حمایت شده</div>
 </div>
 
 <script>
-const goalBar = document.getElementById('goal-bar');
-const goalText = document.getElementById('goal-text');
-const percentText = document.getElementById('goal-percent');
-const heart = document.getElementById('goal-heart');
+// تنظیمات اولیه
+let total=0; 
+const target=60000; // تومان
+const goalFill=document.getElementById('goal-bar-fill');
+const goalPercent=document.getElementById('goal-percent');
+const goalText=document.getElementById('goal-text');
 
-let total = 0;
-let target = 600000; // تومان
-
-function toPersian(num) {
-  return num.toString().replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+// تابع آپدیت هدف
+function updateGoal(newAmount){
+  total=newAmount;
+  let percent=Math.min((total/target)*100,100);
+  let persianPercent=percent.toFixed(1).toString().replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+  goalFill.style.width=percent+'%';
+  goalPercent.textContent=persianPercent+'%';
+  goalText.textContent='تاکنون '+total.toLocaleString('fa-IR')+' از '+target.toLocaleString('fa-IR')+' تومان حمایت شده';
 }
 
-function addDonation(amount) {
-  total += amount;
-  if(total > target) total = target;
-  const percent = Math.floor((total/target)*100);
-
-  // پر شدن نوار از راست به چپ
-  goalBar.style.width = percent + '%';
-  percentText.textContent = toPersian(percent)+'%';
-  heart.style.left = `calc(8px + ${percent}% - 14px)`;
-
-  goalText.textContent = `تاکنون ${toPersian(total)} از ${toPersian(target)} تومان حمایت شده`;
-}
-
-// تست
+// شبیه‌سازی دریافت داده جدید (تست)
 setInterval(()=>{
-  // uncomment to auto test
-  //addDonation(Math.floor(Math.random()*50000));
+  let randomAdd=Math.floor(Math.random()*5000);
+  let newAmount=Math.min(total+randomAdd,target);
+  updateGoal(newAmount);
 },5000);
-</script>
 
+</script>
 </body>
 </html>
