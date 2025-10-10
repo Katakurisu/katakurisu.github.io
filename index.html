@@ -18,7 +18,7 @@ h1 {margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 #donor-amount {font-size:1.4em;color:#ccffdd;}
 #stats {position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
 @keyframes popin {from {transform:translate(-50%,-60%) scale(0.9);opacity:0;} to {transform:translate(-50%,-50%) scale(1);opacity:1;}}
-#date-time {position:fixed;top:10px;right:20px;color:#00ff99;font-size:1.2em;text-align:right;white-space:nowrap;display:flex;gap:10px;align-items:center;justify-content:flex-end;}
+#date-time {position:fixed;top:10px;right:20px;color:#00ff99;font-size:1.2em;text-align:right;white-space:nowrap;display:flex;gap:8px;align-items:center;justify-content:flex-end;}
 @media (max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
 </style>
 </head>
@@ -42,11 +42,11 @@ h1 {margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 </div>
 
 <div id="date-time">
-  <span id="week-day"></span>
+  <span id="time"></span>
   <span>|</span>
   <span id="date"></span>
   <span>|</span>
-  <span id="time"></span>
+  <span id="week-day"></span>
 </div>
 
 <audio id="alert-sound" preload="auto">
@@ -66,7 +66,6 @@ const target=60000000;
 const seenDonations=new Set();
 const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";
 const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
-
 function showDonation(d){
   let rate=currencyRates[d.currency]||0;
   let amountIRR=d.amount*rate;
@@ -80,7 +79,6 @@ function showDonation(d){
   alertSound.play().catch(()=>{});
   setTimeout(()=>{alertBox.style.display="none";},13000);
 }
-
 async function fetchDonations(){
   try{
     const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});
@@ -98,7 +96,6 @@ async function fetchDonations(){
 fetchDonations();
 setInterval(fetchDonations,5000);
 
-// تاریخ و ساعت شمسی
 function updateDateTime(){
   const pd=new persianDate();
   document.getElementById("date").textContent=pd.format("YYYY/MM/DD");
