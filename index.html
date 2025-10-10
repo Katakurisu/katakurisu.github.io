@@ -117,6 +117,9 @@ h1 {
   align-items: center;
 }
 #date, #weekday, #time { min-width: 80px; }
+#weekday {
+  padding: 0 5px;
+}
 #lang-select {
   background: #000;
   color: #00ff99;
@@ -180,7 +183,9 @@ h1 {
     <option value="en">English</option>
   </select>
   <div id="date"></div>
+  <div>|</div>
   <div id="weekday"></div>
+  <div>|</div>
   <div id="time"></div>
 </div>
 
@@ -231,7 +236,6 @@ function updateDateTime(){
     dateStr = toPersianDigits(dateStr);
     const weekdaysFa = ["یک‌شنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنج‌شنبه","جمعه","شنبه"];
     weekdayStr = weekdaysFa[now.getDay()];
-    weekdayStr = toPersianDigits(weekdayStr);
     timeStr = toPersianDigits(timeStr);
   } else {
     dateStr = `${year}/${month}/${day}`;
