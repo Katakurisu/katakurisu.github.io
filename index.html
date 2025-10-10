@@ -9,6 +9,7 @@
 body {
   margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;transition:background 0.3s,color 0.3s;
 }
+body.light{background:#f5f5e6;color:#222;}
 h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 .button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
 .btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
@@ -22,7 +23,6 @@ h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 @keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0;}to{transform:translate(-50%,-50%) scale(1);opacity:1;}}
 @media(max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
 #theme-toggle{position:fixed;top:10px;left:10px;z-index:20;font-size:3em;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;width:60px;height:60px;background:#222;color:#fff;transition:background 0.3s,color 0.3s;}
-body.light{background:#f0f0e0;color:#222;}
 body.light #theme-toggle{background:#ccc;color:#222;}
 #date-time{position:fixed;top:20px;left:90px;z-index:20;font-size:1.2em;text-align:left;}
 </style>
@@ -47,6 +47,7 @@ body.light #theme-toggle{background:#ccc;color:#222;}
 <audio id="alert-sound" preload="auto"><source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg"></audio>
 <div id="theme-toggle">☯︎</div>
 <div id="date-time"></div>
+<script src="https://cdn.jsdelivr.net/npm/@persian-date/persian-date@1.1.0/dist/persian-date.min.js"></script>
 <script>
 let total=0,target=60000000,seenDonations=new Set(),DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d",currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
 const alertBox=document.getElementById('donation-alert'),donorName=document.getElementById('donor-name'),donorAmount=document.getElementById('donor-amount'),totalEl=document.getElementById('total'),percentEl=document.getElementById('percent'),alertSound=document.getElementById('alert-sound'),themeToggle=document.getElementById('theme-toggle'),dateTime=document.getElementById('date-time');
@@ -56,7 +57,7 @@ async function fetchDonations(){try{const res=await fetch(DONATIONS_URL+"?t="+Da
 fetchDonations();setInterval(fetchDonations,5000);
 
 function padZero(n){return n<10?"0"+n:n;}
-function updateDateTime(){const d=new Date(),week=["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"];let y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate(),h=d.getHours(),min=d.getMinutes(),sec=d.getSeconds();dateTime.textContent=`${y}/${padZero(m)}/${padZero(day)} | ${week[d.getDay()]} | ${padZero(h)}:${padZero(min)}:${padZero(sec)}`;}
+function updateDateTime(){const d=new persianDate();const days=["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"];let y=d.year(),m=d.month(),day=d.date(),week=days[d.day()],h=d.hour(),min=d.minute(),sec=d.second();dateTime.textContent=`${y}/${padZero(m)}/${padZero(day)} | ${week} | ${padZero(h)}:${padZero(min)}:${padZero(sec)}`;}
 setInterval(updateDateTime,1000);updateDateTime();
 
 themeToggle.addEventListener("click",()=>{document.body.classList.toggle("light");});
