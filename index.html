@@ -58,6 +58,21 @@ h1 {
   font-size: 1.3em;
   color: #00ff99;
   text-shadow: 0 0 10px #00ff99;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Dropdown زبان */
+#language-select {
+  padding: 6px 12px;
+  font-size: 1em;
+  border-radius: 8px;
+  border: 2px solid #00ff99;
+  background: #000000;
+  color: #00ff99;
+  text-align: center;
 }
 
 /* Overlay برای Donation Alert */
@@ -130,7 +145,7 @@ h1 {
   h1 { font-size: 2em; margin: 40px 0 40px 0; }
   #donation-gif { width: 140px; height: 140px; }
   #stats { padding: 15px 20px; font-size: 1.1em; }
-  #datetime { font-size: 1.1em; }
+  #datetime { font-size: 1.1em; flex-direction: column; gap: 10px; }
 }
 </style>
 </head>
@@ -139,10 +154,16 @@ h1 {
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
-<!-- تاریخ و ساعت -->
+<!-- تاریخ و ساعت با انتخاب زبان -->
 <div id="datetime">
-  <p id="date"></p>
-  <p id="time"></p>
+  <div>
+    <p id="date"></p>
+    <p id="time"></p>
+  </div>
+  <select id="language-select">
+    <option value="fa">فارسی</option>
+    <option value="en">English</option>
+  </select>
 </div>
 
 <!-- دکمه‌های پرداخت -->
@@ -171,19 +192,28 @@ h1 {
 
 <script>
 // ========== تاریخ و ساعت زنده ==========
+const languageSelect = document.getElementById('language-select');
+
 function updateDateTime() {
   const now = new Date();
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  const persianDate = new Intl.DateTimeFormat('fa-IR', options).format(now);
-  const parts = persianDate.split(' '); // ["1404", "مهر", "18"]
-  const newDate = `${parts[2]} ${parts[1]} ${parts[0]}`; // 18 مهر 1404
-  document.getElementById('date').textContent = newDate;
+  const lang = languageSelect.value;
+  
+  if (lang === 'fa') {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const persianDate = new Intl.DateTimeFormat('fa-IR', options).format(now);
+    const parts = persianDate.split('/'); // [year, month, day]
+    document.getElementById('date').textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+  } else {
+    document.getElementById('date').textContent = now.toLocaleDateString('en-US');
+  }
 
   const hours = String(now.getHours()).padStart(2,'0');
   const minutes = String(now.getMinutes()).padStart(2,'0');
   const seconds = String(now.getSeconds()).padStart(2,'0');
   document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
 }
+
+languageSelect.addEventListener('change', updateDateTime);
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
