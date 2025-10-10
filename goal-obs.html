@@ -30,6 +30,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  direction: rtl; /* اضافه شد */
+  text-align: right; /* اضافه شد */
 }
 
 /* عنوان هدف */
@@ -42,6 +44,8 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  direction: rtl; /* اضافه شد */
+  text-align: right; /* اضافه شد */
 }
 
 #goal-title img {
@@ -59,33 +63,40 @@ body {
   border-radius: 20px;
   padding: 2px;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
   overflow: hidden;
 }
 
+/* نوار پر شونده */
 #goal-bar {
   height: 100%;
   width: 0%;
   background-color: #00ff99; /* سبز فسفری */
   border-radius: 16px;
   transition: width 0.5s ease;
+  position: relative;
 }
 
-/* درصد سمت چپ نوار */
+/* درصد سمت راست */
 #goal-percent {
   position: absolute;
-  left: 8px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 1.2em;
   color: #fff;
   font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 5px;
   text-shadow: 0 0 5px #000;
+  direction: rtl; /* اضافه شد */
+}
+
+/* قلب سمت چپ */
+#goal-heart {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
 }
 
 /* متن پایین نوار */
@@ -94,7 +105,8 @@ body {
   font-size: 1.2em;
   color: #00ff99;
   text-shadow: 0 0 5px #000;
-  text-align: right;
+  text-align: right; /* اضافه شد */
+  direction: rtl; /* اضافه شد */
 }
 
 </style>
@@ -109,10 +121,10 @@ body {
     </div>
     <div id="goal-bar-wrapper">
       <div id="goal-bar"></div>
-      <div id="goal-percent">
-        <img src="https://katakurisu.github.io/percent-icon.png" alt="%">
-        <span id="percent-text">۰%</span>
+      <div id="goal-heart">
+        <img src="https://katakurisu.github.io/heart.png" alt="♥" width="24" height="24">
       </div>
+      <div id="goal-percent">۰%</div>
     </div>
     <div id="goal-text">تاکنون ۰ از ۶۰۰۰۰۰ تومان حمایت شده</div>
   </div>
@@ -121,7 +133,8 @@ body {
 <script>
 const goalBar = document.getElementById('goal-bar');
 const goalText = document.getElementById('goal-text');
-const percentText = document.getElementById('percent-text');
+const percentText = document.getElementById('goal-percent');
+const heart = document.getElementById('goal-heart');
 
 let total = 0;
 const target = 600000; // تومان
@@ -138,8 +151,11 @@ function addDonation(amount) {
   // پر شدن نوار
   goalBar.style.width = percent + '%';
 
-  // درصد فارسی سمت چپ نوار
+  // درصد فارسی سمت راست
   percentText.textContent = toPersian(percent) + '%';
+
+  // قلب سمت چپ هم همراه نوار حرکت می‌کند
+  heart.style.left = `calc(8px + ${percent}% - 12px)`; // -12px برای وسط کردن قلب
 
   // متن پایین نوار
   goalText.textContent = `تاکنون ${toPersian(total)} از ${toPersian(target)} تومان حمایت شده`;
