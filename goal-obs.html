@@ -68,21 +68,16 @@ body {
   width: 0%;
   background-color: #00ff99; /* سبز فسفری */
   border-radius: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px;
-  box-sizing: border-box;
-  color: black;
-  font-weight: bold;
-  text-shadow: 0 0 5px #fff;
-  font-size: 1em;
-  direction: ltr; /* برای جدا شدن درصد و مبلغ داخل نوار */
+  transition: width 0.5s ease;
 }
 
-/* درصد و مقدار */
-#goal-percent { font-weight: bold; color: black; }
-#goal-amount { font-weight: bold; color: black; }
+/* متن پایین نوار */
+#goal-text {
+  margin-top: 10px;
+  font-size: 1.2em;
+  color: #00ff99;
+  text-shadow: 0 0 5px #000;
+}
 
 </style>
 </head>
@@ -95,18 +90,15 @@ body {
       <img src="https://katakurisu.github.io/gift.png" alt="هدیه">
     </div>
     <div id="goal-bar-wrapper">
-      <div id="goal-bar">
-        <span id="goal-percent">۰%</span>
-        <span id="goal-amount">۰ از ۶۰۰۰۰۰ تومان</span>
-      </div>
+      <div id="goal-bar"></div>
     </div>
+    <div id="goal-text">تاکنون ۰ حمایت شده از ۶۰۰۰۰۰ تومان</div>
   </div>
 </div>
 
 <script>
 const goalBar = document.getElementById('goal-bar');
-const percentText = document.getElementById('goal-percent');
-const amountText = document.getElementById('goal-amount');
+const goalText = document.getElementById('goal-text');
 
 let total = 0;
 const target = 600000; // تومان
@@ -120,9 +112,8 @@ function addDonation(amount) {
   total += amount;
   if(total > target) total = target;
   const percent = Math.floor((total / target) * 100);
-  percentText.textContent = toPersian(percent) + '%';
-  amountText.textContent = toPersian(total) + ' از ' + toPersian(target) + ' تومان';
   goalBar.style.width = percent + '%';
+  goalText.textContent = `تاکنون ${toPersian(total)} حمایت شده از ${toPersian(target)} تومان`;
 }
 
 // تست اولیه هر 5 ثانیه
