@@ -8,36 +8,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* === بک‌گراند کاملاً دارک و فونت نئون === */
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000000 !important;
+  background-color: #000000;
   color: #00ff99;
   text-align: center;
   direction: rtl;
   min-height: 100vh;
 }
 
-/* === عنوان اصلی === */
 h1 {
   margin: 60px 0 30px 0;
   font-size: 2.4em;
   text-shadow: 0 0 15px #00ff99;
 }
 
-/* === ساعت و تاریخ بالای صفحه === */
+/* ساعت و تاریخ */
 #clock {
   position: fixed;
   top: 15px;
   right: 20px;
-  font-size: 1.2em;
+  font-size: 1.3em;
   color: #00ff99;
-  text-shadow: 0 0 10px #00ff99;
-  z-index: 20;
+  text-shadow: 0 0 15px #00ff99;
+  z-index: 9999;
 }
 
-/* === انتخاب زبان بالای صفحه === */
+/* انتخاب زبان */
 #language-selector {
   position: fixed;
   top: 15px;
@@ -48,10 +46,9 @@ h1 {
   border-radius: 8px;
   color: #00ff99;
   padding: 5px 10px;
-  z-index: 20;
+  z-index: 9999;
 }
 
-/* === دکمه‌ها در container با فاصله مناسب === */
 .button-container {
   display: flex;
   justify-content: center;
@@ -78,7 +75,6 @@ h1 {
   transform: scale(1.05);
 }
 
-/* === Overlay برای Donation Alert === */
 #overlay {
   position: fixed;
   inset: 0;
@@ -120,7 +116,6 @@ h1 {
   color: #ccffdd;
 }
 
-/* === بخش آمار در پایین صفحه === */
 #stats {
   position: fixed;
   bottom: 8%;
@@ -136,13 +131,11 @@ h1 {
   z-index: 5;
 }
 
-/* === انیمیشن popup === */
 @keyframes popin {
   from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
   to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* === ریسپانسیو موبایل === */
 @media (max-width: 500px) {
   .btn {
     padding: 12px 20px;
@@ -161,7 +154,7 @@ h1 {
     font-size: 1.1em;
   }
   #clock {
-    font-size: 1em;
+    font-size: 1.1em;
   }
   #language-selector {
     font-size: 0.9em;
@@ -170,13 +163,9 @@ h1 {
 }
 </style>
 </head>
-
 <body>
 
-<!-- ساعت و تاریخ -->
 <div id="clock"></div>
-
-<!-- انتخاب زبان -->
 <select id="language-selector">
   <option value="fa">فارسی</option>
   <option value="en">English</option>
@@ -207,7 +196,7 @@ h1 {
 </audio>
 
 <script>
-// === ساعت و تاریخ زنده ===
+// ساعت و تاریخ زنده
 function updateClock() {
   const now = new Date();
   const hours = now.getHours().toString().padStart(2,"0");
@@ -227,44 +216,33 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 updateClock();
-
-// === تغییر زبان ===
 document.getElementById("language-selector").addEventListener("change", updateClock);
 
-// === Donation Alert ===
+// Donation Alert
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
 const totalEl = document.getElementById('total');
 const percentEl = document.getElementById('percent');
 const alertSound = document.getElementById('alert-sound');
-
 let total = 0;
 const target = 60000000;
 const seenDonations = new Set();
 const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
-
 const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
 
 function showDonation(d) {
   let rate = currencyRates[d.currency] || 0;
   let amountIRR = d.amount * rate;
-
   total += amountIRR;
-
   donorName.textContent = d.name || "حامی ناشناس";
   donorAmount.textContent = amountIRR.toLocaleString("fa-IR") + " ریال";
-
   totalEl.textContent = total.toLocaleString("fa-IR");
   percentEl.textContent = Math.min(((total / target) * 100).toFixed(1), 100);
-
   alertBox.style.display = "block";
   alertSound.currentTime = 0;
   alertSound.play().catch(()=>{});
-
-  setTimeout(() => {
-    alertBox.style.display = "none";
-  }, 4000);
+  setTimeout(() => { alertBox.style.display = "none"; }, 4000);
 }
 
 async function fetchDonations() {
@@ -273,18 +251,11 @@ async function fetchDonations() {
     if (!res.ok) throw new Error("Fetch failed");
     const data = await res.json();
     if (!Array.isArray(data)) return;
-    
-    data.forEach(d => {
-      if (d.ts && !seenDonations.has(d.ts)) {
-        seenDonations.add(d.ts);
-        showDonation(d);
-      }
-    });
+    data.forEach(d => { if (d.ts && !seenDonations.has(d.ts)) { seenDonations.add(d.ts); showDonation(d); } });
   } catch (err) {
     console.warn("❗ خطا در دریافت داده:", err.message);
   }
 }
-
 fetchDonations();
 setInterval(fetchDonations, 5000);
 </script>
