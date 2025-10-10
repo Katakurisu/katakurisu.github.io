@@ -3,54 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Donation Overlay</title>
+<title>Overlay Donates</title>
 <style>
-  body {
-    margin: 0;
-    background: transparent;
-    overflow: hidden;
-  }
-  #donation-video {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 90%;
-    max-height: 90%;
-    display: none;
-    z-index: 9999;
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(0,255,153,0.8);
-  }
+body {margin:0; background:transparent; font-family: Vazirmatn,sans-serif; overflow:hidden;}
+#overlay {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; z-index:999;}
+#donation-video {width:400px; max-width:90vw; border-radius:16px;}
+#donor-info {margin-top:15px; color:#00ff99; text-shadow:0 0 10px #00ff99; font-size:1.3em; line-height:1.4;}
+.hidden {display:none;}
 </style>
 </head>
 <body>
 
-<video id="donation-video" autoplay muted>
-  <source src="alert-donate.mp4" type="video/mp4">
-</video>
+<div id="overlay">
+    <video id="donation-video" class="hidden" autoplay></video>
+    <div id="donor-info" class="hidden"></div>
+</div>
 
 <script>
-const donationVideo = document.getElementById('donation-video');
+// لینک فایل ویدیویی داخل پوشه alert-donate.mp4
+const video = document.getElementById('donation-video');
+const info = document.getElementById('donor-info');
 
-// تابعی برای نمایش ویدیو هنگام دریافت دونیت
-function showDonation() {
-  donationVideo.currentTime = 0;
-  donationVideo.style.display = 'block';
-  donationVideo.muted = false;
-  donationVideo.play().catch(()=>{});
-  
-  donationVideo.onended = () => {
-    donationVideo.style.display = 'none';
-  };
+function showDonation(name, amount, message) {
+    video.src = 'alert-donate.mp4';
+    video.classList.remove('hidden');
+    info.classList.remove('hidden');
+    info.innerHTML = `$ حمایت جدید دریافت شد $<br>${name}<br>${amount.toLocaleString('fa-IR')} ریال`;
+    if(message) info.innerHTML += `<br>${message}`;
+    video.play().catch(()=>{});
+    setTimeout(() => {
+        video.classList.add('hidden');
+        info.classList.add('hidden');
+    }, 13000); // 13 ثانیه نمایش
 }
 
-// تست دستی (در واقع از وبهوک فراخوانی می‌شود)
-window.addEventListener('message', (event) => {
-  if (event.data === 'donation') {
-    showDonation();
-  }
-});
+// --- مثال تست ---
+//showDonation("میلاد کاتاکوری", 50000, "خیلی خوشحالم از حمایتتون!");
+
+
+// دریافت Webhook از Pipedream
+async function pollWebhook() {
+    try {
+        const res = await fetch('https://eoyf8grpms15wjd.m.pipedream.net');
+        const data = await res.json();
+        // داده‌ها باید شامل: name, amount, message
+        if(data && data.name && data.amount){
+            showDonation(data.name, data.amount, data.message);
+        }
+    } catch(e){
+        console.warn("خطا در دریافت وبهوک:", e);
+    }
+    setTimeout(pollWebhook, 5000); // هر 5 ثانیه چک کن
+}
+
+pollWebhook();
 </script>
 
 </body>
