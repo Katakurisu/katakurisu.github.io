@@ -4,36 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎁 حمایت از میلاد کاتاکوری</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;900&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000;
+  background-color: #000000 !important;
   color: #00ff99;
   text-align: center;
   direction: rtl;
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
-/* === عنوان اصلی نئونی با انیمیشن Glow === */
+/* عنوان اصلی */
 h1 {
-  margin: 60px 0 30px 0;
-  font-size: 3em;
-  font-weight: 900;
-  color: #00ff99;
-  text-shadow: 0 0 10px #00ff99, 0 0 20px #00ff99, 0 0 30px #00ff99, 0 0 40px #00ff99;
-  animation: neonGlow 2s ease-in-out infinite alternate;
+  margin: 60px 0 50px 0;
+  font-size: 2.4em;
+  text-shadow: 0 0 15px #00ff99;
 }
 
-@keyframes neonGlow {
-  0% { text-shadow: 0 0 5px #00ff99,0 0 10px #00ff99,0 0 20px #00ff99,0 0 30px #00ff99; }
-  100% { text-shadow: 0 0 15px #00ff99,0 0 30px #00ff99,0 0 45px #00ff99,0 0 60px #00ff99; }
-}
-
-/* دکمه‌ها با Glow بیشتر */
+/* دکمه‌ها */
 .button-container {
   display: flex;
   justify-content: center;
@@ -41,142 +33,125 @@ h1 {
   flex-wrap: wrap;
   margin-bottom: 50px;
 }
+
 .btn {
   display: inline-block;
-  padding: 18px 36px;
-  font-size: 1.4em;
-  font-weight: 600;
+  padding: 16px 32px;
+  font-size: 1.2em;
   color: #00ff99;
   text-decoration: none;
   border: 2px solid #00ff99;
-  border-radius: 14px;
-  box-shadow: 0 0 20px #00ff99, 0 0 40px #00ff99, 0 0 60px #00ff99;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #00ff99;
   transition: all 0.3s ease;
 }
 .btn:hover {
   background: #00ff99;
-  color: #000;
-  box-shadow: 0 0 40px #00ff99,0 0 80px #00ff99,0 0 120px #00ff99;
-  transform: scale(1.08);
+  color: #000000;
+  box-shadow: 0 0 30px #00ff99;
+  transform: scale(1.05);
 }
 
-/* ساعت و تاریخ زنده با Glow و انیمیشن */
+/* بخش تاریخ و ساعت */
 #datetime {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  font-size: 1.4em;
-  font-weight: 600;
+  margin-bottom: 40px;
+  font-size: 1.3em;
   color: #00ff99;
-  text-shadow: 0 0 10px #00ff99,0 0 20px #00ff99;
-  animation: glowPulse 2s ease-in-out infinite alternate;
+  text-shadow: 0 0 10px #00ff99;
 }
 
-@keyframes glowPulse {
-  0% { text-shadow: 0 0 5px #00ff99,0 0 10px #00ff99; }
-  100% { text-shadow: 0 0 15px #00ff99,0 0 30px #00ff99; }
-}
-
-/* انتخاب زبان */
-#lang-select {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  font-size: 1em;
-  background: #000;
-  color: #00ff99;
-  border: 2px solid #00ff99;
-  border-radius: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
-}
-
-/* Donation Alert */
+/* Overlay برای Donation Alert */
 #overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
 }
+
 #donation-alert {
   position: absolute;
   top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background: rgba(0,0,0,0.95);
+  background: rgba(0,0,0,0.9);
   border: 2px solid #00ff99;
-  box-shadow: 0 0 60px #00ff99;
-  border-radius: 22px;
-  padding: 35px 45px;
+  box-shadow: 0 0 50px #00ff99;
+  border-radius: 20px;
+  padding: 30px 40px;
   display: none;
   z-index: 10;
   animation: popin 0.5s ease;
 }
+
 #donation-gif {
-  width: 200px;
-  height: 200px;
-  border-radius: 14px;
+  width: 180px;
+  height: 180px;
+  border-radius: 12px;
   margin-bottom: 15px;
 }
+
 #donor-name {
-  font-size: 1.8em;
-  font-weight: 700;
-  text-shadow: 0 0 20px #00ff99;
+  font-size: 1.6em;
+  font-weight: 600;
+  text-shadow: 0 0 15px #00ff99;
   margin-bottom: 5px;
 }
+
 #donor-amount {
-  font-size: 1.5em;
+  font-size: 1.4em;
   color: #ccffdd;
 }
 
-/* Stats */
+/* بخش آمار */
 #stats {
   position: fixed;
   bottom: 8%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 1.4em;
-  background: rgba(0,0,0,0.9);
-  border-radius: 16px;
-  padding: 22px 35px;
+  font-size: 1.3em;
+  background: rgba(0,0,0,0.85);
+  border-radius: 14px;
+  padding: 20px 30px;
   color: #00ff99;
-  text-shadow: 0 0 15px #00ff99;
+  text-shadow: 0 0 12px #00ff99;
   line-height: 1.8;
   z-index: 5;
 }
 
+/* انیمیشن popup */
 @keyframes popin {
   from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
   to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* ریسپانسیو */
+/* ریسپانسیو موبایل */
 @media (max-width: 500px) {
-  .btn { padding: 14px 28px; font-size: 1.1em; }
-  h1 { font-size: 2.5em; margin: 40px 0 30px 0; }
-  #donation-gif { width: 150px; height: 150px; }
-  #stats { padding: 18px 25px; font-size: 1.2em; }
-  #datetime { font-size: 1.2em; }
-  #lang-select { font-size: 0.95em; padding: 4px 8px; }
+  .btn { padding: 12px 20px; font-size: 1em; }
+  h1 { font-size: 2em; margin: 40px 0 40px 0; }
+  #donation-gif { width: 140px; height: 140px; }
+  #stats { padding: 15px 20px; font-size: 1.1em; }
+  #datetime { font-size: 1.1em; }
 }
 </style>
 </head>
+
 <body>
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
+<!-- تاریخ و ساعت -->
+<div id="datetime">
+  <p id="date"></p>
+  <p id="time"></p>
+</div>
+
+<!-- دکمه‌های پرداخت -->
 <div class="button-container">
   <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
   <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
 </div>
 
-<div id="datetime"></div>
-
-<select id="lang-select">
-  <option value="fa">فارسی</option>
-  <option value="en">English</option>
-</select>
-
+<!-- Donation Alert و Stats -->
 <div id="overlay">
   <div id="donation-alert">
     <img id="donation-gif" src="https://media.giphy.com/media/3o7TKPcehQvZqg2rZu/giphy.gif" alt="Donation">
@@ -195,18 +170,24 @@ h1 {
 </audio>
 
 <script>
-// ساعت و تاریخ زنده
+// ========== تاریخ و ساعت زنده ==========
 function updateDateTime() {
   const now = new Date();
-  const lang = document.getElementById('lang-select').value;
-  const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit', second:'2-digit' };
-  document.getElementById('datetime').textContent = now.toLocaleString(lang==='fa'?'fa-IR':'en-US', options);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  const persianDate = new Intl.DateTimeFormat('fa-IR', options).format(now);
+  const parts = persianDate.split(' '); // ["1404", "مهر", "18"]
+  const newDate = `${parts[2]} ${parts[1]} ${parts[0]}`; // 18 مهر 1404
+  document.getElementById('date').textContent = newDate;
+
+  const hours = String(now.getHours()).padStart(2,'0');
+  const minutes = String(now.getMinutes()).padStart(2,'0');
+  const seconds = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
 }
 setInterval(updateDateTime, 1000);
 updateDateTime();
-document.getElementById('lang-select').addEventListener('change', updateDateTime);
 
-// Donation Alert و آمار
+// ========== Donation Alert ==========
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
@@ -218,7 +199,6 @@ let total = 0;
 const target = 60000000;
 const seenDonations = new Set();
 const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
-
 const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
 
 function showDonation(d) {
@@ -257,7 +237,6 @@ async function fetchDonations() {
     console.warn("❗ خطا در دریافت داده:", err.message);
   }
 }
-
 fetchDonations();
 setInterval(fetchDonations, 5000);
 </script>
