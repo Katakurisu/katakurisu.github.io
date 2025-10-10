@@ -44,82 +44,27 @@ h1 {
   box-shadow: 0 0 30px #00ff99;
   transform: scale(1.05);
 }
-#overlay {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-}
-#donation-alert {
-  position: absolute;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  background: rgba(0,0,0,0.9);
-  border: 2px solid #00ff99;
-  box-shadow: 0 0 50px #00ff99;
-  border-radius: 20px;
-  padding: 30px 40px;
-  display: none;
-  z-index: 10;
-  animation: popin 0.5s ease;
-}
-#donation-gif {
-  width: 180px;
-  height: 180px;
-  border-radius: 12px;
-  margin-bottom: 15px;
-}
-#donor-name {
-  font-size: 1.6em;
-  font-weight: 600;
-  text-shadow: 0 0 15px #00ff99;
-  margin-bottom: 5px;
-}
-#donor-amount {
-  font-size: 1.4em;
-  color: #ccffdd;
-}
-#stats {
-  position: fixed;
-  bottom: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.3em;
-  background: rgba(0,0,0,0.85);
-  border-radius: 14px;
-  padding: 20px 30px;
-  color: #00ff99;
-  text-shadow: 0 0 12px #00ff99;
-  line-height: 1.8;
-  z-index: 5;
-}
-@keyframes popin {
-  from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
-  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-}
 #datetime-container {
   position: fixed;
   top: 10px;
   left: 10px;
   background: rgba(0,0,0,0.8);
-  padding: 10px 15px;
+  padding: 8px 12px;
   border-radius: 12px;
-  text-align: left;
   font-size: 1em;
   color: #00ff99;
   text-shadow: 0 0 8px #00ff99;
-  z-index: 20;
   display: flex;
   align-items: center;
   gap: 10px;
+  z-index: 20;
 }
 #lang-select {
   background: #000;
   color: #00ff99;
   border: 1px solid #00ff99;
   border-radius: 8px;
-  padding: 4px 8px;
+  padding: 2px 6px;
   font-size: 1em;
   cursor: pointer;
 }
@@ -134,23 +79,6 @@ h1 {
   <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
   <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
 </div>
-
-<div id="overlay">
-  <div id="donation-alert">
-    <img id="donation-gif" src="https://media.giphy.com/media/3o7TKPcehQvZqg2rZu/giphy.gif" alt="Donation">
-    <p id="donor-name"></p>
-    <p id="donor-amount"></p>
-  </div>
-
-  <div id="stats">
-    <p>💰 جمع کل: <span id="total">0</span> ریال</p>
-    <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
-  </div>
-</div>
-
-<audio id="alert-sound" preload="auto">
-  <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
-</audio>
 
 <div id="datetime-container">
   <select id="lang-select">
@@ -191,7 +119,6 @@ function toJalali(gDate){
   return {jy: jy+1, jm: jm+1, jd: jd};
 }
 
-// به‌روزرسانی تاریخ و ساعت
 const dateEl = document.getElementById('date');
 const timeEl = document.getElementById('time');
 const weekdayEl = document.getElementById('weekday');
@@ -229,53 +156,6 @@ function updateDateTime(){
 langSelect.addEventListener('change', updateDateTime);
 setInterval(updateDateTime, 1000);
 updateDateTime();
-
-// Donation popup
-const alertBox = document.getElementById('donation-alert');
-const donorName = document.getElementById('donor-name');
-const donorAmount = document.getElementById('donor-amount');
-const totalEl = document.getElementById('total');
-const percentEl = document.getElementById('percent');
-const alertSound = document.getElementById('alert-sound');
-
-let total = 0;
-const target = 60000000;
-const seenDonations = new Set();
-const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
-const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
-
-function showDonation(d){
-  let rate = currencyRates[d.currency] || 0;
-  let amountIRR = d.amount * rate;
-  total += amountIRR;
-  donorName.textContent = d.name || "حامی ناشناس";
-  donorAmount.textContent = amountIRR.toLocaleString("fa-IR")+" ریال";
-  totalEl.textContent = total.toLocaleString("fa-IR");
-  percentEl.textContent = Math.min(((total/target)*100).toFixed(1),100);
-  alertBox.style.display="block";
-  alertSound.currentTime=0;
-  alertSound.play().catch(()=>{});
-  setTimeout(()=>{alertBox.style.display="none";},4000);
-}
-
-async function fetchDonations(){
-  try{
-    const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});
-    if(!res.ok) throw new Error("Fetch failed");
-    const data = await res.json();
-    if(!Array.isArray(data)) return;
-    data.forEach(d=>{
-      if(d.ts && !seenDonations.has(d.ts)){
-        seenDonations.add(d.ts);
-        showDonation(d);
-      }
-    });
-  }catch(err){ console.warn("❗ خطا در دریافت داده:", err.message); }
-}
-
-fetchDonations();
-setInterval(fetchDonations,5000);
-
 </script>
 </body>
 </html>
