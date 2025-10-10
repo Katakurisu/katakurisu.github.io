@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
 body{margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;transition:background 0.3s,color 0.3s}
-h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99}
+h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99}
 .button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px}
 .btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease}
 .btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05)}
@@ -18,19 +18,17 @@ h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99}
 #donor-amount{font-size:1.4em;color:#ccffdd}
 #stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5}
 @keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
-@media(max-width:500px){.btn{padding:12px 20px;font-size:1em}h1{font-size:2em;margin:40px 0 40px 0}#donation-gif{width:140px;height:140px}#stats{padding:15px 20px;font-size:1.1em}}
-/* تم یینگ-یانگ */
-#theme-toggle{position:fixed;top:15px;left:15px;width:80px;height:40px;cursor:pointer;z-index:20}
+#theme-toggle{position:fixed;top:15px;left:15px;width:80px;height:80px;cursor:pointer;z-index:20}
 #theme-toggle svg{width:100%;height:100%}
-#theme-toggle.dark .yang{fill:black} #theme-toggle.dark .yin{fill:white}
-#theme-toggle.light .yang{fill:black} #theme-toggle.light .yin{fill:#ddd} /* ملایم برای لایت */
-#theme-toggle .selected{stroke:#00ff99;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
-/* تاریخ و ساعت */
-#datetime{position:fixed;top:15px;right:15px;font-size:1.2em;line-height:1.4;text-align:right;z-index:20}
+#datetime{position:fixed;top:30px;right:20px;font-size:1.2em;color:#00ff99;line-height:1.2;text-align:right;z-index:20}
+.light{background:#f0e6d2;color:#111}
+.light .btn{color:#111;border-color:#111;box-shadow:0 0 10px #111}
+.light .btn:hover{background:#111;color:#f0e6d2;box-shadow:0 0 20px #111}
 </style>
 </head>
 <body>
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
+
 <div class="button-container">
   <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
   <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
@@ -48,76 +46,43 @@ h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99}
   </div>
 </div>
 
-<audio id="alert-sound" preload="auto"><source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg"></audio>
-
-<!-- تم یینگ-یانگ -->
-<div id="theme-toggle" class="dark">
-<svg viewBox="0 0 100 50">
-  <circle cx="25" cy="25" r="20" class="yang"/>
-  <circle cx="75" cy="25" r="20" class="yin"/>
-</svg>
+<div id="theme-toggle">
+  <svg viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="50" fill="white"/>
+    <circle cx="50" cy="50" r="50" fill="black" clip-path="polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)"/>
+  </svg>
 </div>
 
-<!-- تاریخ و ساعت -->
 <div id="datetime"></div>
 
+<audio id="alert-sound" preload="auto">
+  <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/localeData.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/jalali.js"></script>
 <script>
-// --- تم ---
+dayjs.extend(dayjs_plugin_localeData);
+dayjs.extend(dayjs_plugin_jalali);
+
 const themeToggle=document.getElementById('theme-toggle');
-function applyTheme(theme){
-  themeToggle.className=theme;
-  document.body.style.background=theme==='dark'?'#000':'#f0f0e0';
-  document.body.style.color=theme==='dark'?'#00ff99':'#333';
-}
-themeToggle.addEventListener('click',()=>{
-  applyTheme(themeToggle.classList.contains('dark')?'light':'dark');
-});
-applyTheme('dark');
+const body=document.body;
+themeToggle.addEventListener('click',()=>{body.classList.toggle('light')});
 
-// --- تاریخ شمسی و ساعت ---
-function toShamsi(date){
-  const gy=date.getFullYear(),gm=date.getMonth()+1,gd=date.getDate();
-  const g_d_m=[0,31,28,31,30,31,30,31,31,30,31,30,31];
-  let jy,jm,jd;
-  let gy2=gy-1600; let gm2=gm-1; let gd2=gd-1;
-  let g_day_no=365*gy2+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400);
-  for(let i=0;i<gm2;i++) g_day_no+=g_d_m[i];
-  if(gm2>1 && ((gy%4===0 && gy%100!==0) || (gy%400===0))) g_day_no++;
-  g_day_no+=gd2;
-  let j_day_no=g_day_no-79;
-  let j_np=Math.floor(j_day_no/12053); j_day_no%=12053;
-  jy=979+33*j_np+4*Math.floor(j_day_no/1461); j_day_no%=1461;
-  if(j_day_no>=366){jy+=Math.floor((j_day_no-1)/365); j_day_no=(j_day_no-1)%365;}
-  let jm,jd2;
-  const j_months=[31,31,31,31,31,31,30,30,30,30,30,29];
-  for(jm=0;jm<12;jm++){if(j_day_no<j_months[jm]) break; j_day_no-=j_months[jm];}
-  jd2=j_day_no+1;
-  return [jy,jm+1,jd2];
-}
-function updateDateTime(){
-  const now=new Date();
-  const days=["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"];
-  const [jy,jm,jd]=toShamsi(now);
-  const dayName=days[now.getDay()];
-  const h=now.getHours().toString().padStart(2,'0');
-  const m=now.getMinutes().toString().padStart(2,'0');
-  const s=now.getSeconds().toString().padStart(2,'0');
-  document.getElementById('datetime').textContent=`${jy}/${jm.toString().padStart(2,'0')}/${jd.toString().padStart(2,'0')} | ${dayName} | ${h}:${m}:${s}`;
-}
-updateDateTime();
-setInterval(updateDateTime,1000);
-
-// --- نمایش حمایت ---
 const alertBox=document.getElementById('donation-alert');
 const donorName=document.getElementById('donor-name');
 const donorAmount=document.getElementById('donor-amount');
 const totalEl=document.getElementById('total');
 const percentEl=document.getElementById('percent');
 const alertSound=document.getElementById('alert-sound');
-let total=0; const target=60000000;
+
+let total=0;
+const target=60000000;
 const seenDonations=new Set();
 const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";
 const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
+
 function showDonation(d){
   let rate=currencyRates[d.currency]||0;
   let amountIRR=d.amount*rate;
@@ -130,16 +95,31 @@ function showDonation(d){
   alertSound.currentTime=0; alertSound.play().catch(()=>{});
   setTimeout(()=>{alertBox.style.display="none"},4000);
 }
+
 async function fetchDonations(){
   try{
     const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});
-    if(!res.ok) throw new Error("Fetch failed");
+    if(!res.ok)throw new Error("Fetch failed");
     const data=await res.json();
-    if(!Array.isArray(data)) return;
-    data.forEach(d=>{if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d);}});
+    if(!Array.isArray(data))return;
+    data.forEach(d=>{
+      if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d);}
+    });
   }catch(err){console.warn("❗ خطا در دریافت داده:",err.message);}
 }
-fetchDonations(); setInterval(fetchDonations,5000);
+
+fetchDonations();
+setInterval(fetchDonations,5000);
+
+function updateDateTime(){
+  const now=dayjs();
+  const sh=now.format('jYYYY/jMM/jDD');
+  const week=now.format('dddd');
+  const time=now.format('HH:mm:ss');
+  document.getElementById('datetime').innerHTML=`${time} | ${week} | ${sh}`;
+}
+updateDateTime();
+setInterval(updateDateTime,1000);
 </script>
 </body>
 </html>
