@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎁 حمایت از میلاد کاتاکوری</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
@@ -16,7 +17,6 @@ body {
   text-align: center;
   direction: rtl;
   min-height: 100vh;
-  position: relative;
 }
 
 /* === عنوان اصلی === */
@@ -34,7 +34,6 @@ h1 {
   flex-wrap: wrap;
   margin-bottom: 80px;
 }
-
 .btn {
   display: inline-block;
   padding: 16px 32px;
@@ -53,13 +52,12 @@ h1 {
   transform: scale(1.05);
 }
 
-/* === اعلان پاپ‌آپ === */
+/* === Popup Donation === */
 #overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
 }
-
 #donation-alert {
   position: absolute;
   top: 35%;
@@ -75,27 +73,24 @@ h1 {
   z-index: 10;
   animation: popin 0.5s ease;
 }
-
 #donation-gif {
   width: 180px;
   height: 180px;
   border-radius: 12px;
   margin-bottom: 15px;
 }
-
 #donor-name {
   font-size: 1.6em;
   font-weight: 600;
   text-shadow: 0 0 15px #00ff99;
   margin-bottom: 5px;
 }
-
 #donor-amount {
   font-size: 1.4em;
   color: #ccffdd;
 }
 
-/* === آمار در پایین صفحه === */
+/* === آمار پایین صفحه === */
 #stats {
   position: fixed;
   bottom: 8%;
@@ -111,35 +106,40 @@ h1 {
   z-index: 5;
 }
 
-/* === بخش تاریخ و زبان گوشه بالا === */
-#top-right {
+/* === انیمیشن Popup === */
+@keyframes popin {
+  from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* === تاریخ و ساعت در گوشه بالا === */
+#datetime-container {
   position: fixed;
-  top: 15px;
-  right: 20px;
-  background: rgba(0,0,0,0.7);
+  top: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.8);
   padding: 10px 15px;
   border-radius: 12px;
+  text-align: left;
   font-size: 1em;
   color: #00ff99;
+  text-shadow: 0 0 8px #00ff99;
+  z-index: 20;
   display: flex;
   gap: 10px;
   align-items: center;
-  z-index: 20;
 }
+#date, #time { min-width: 90px; }
 
+/* === انتخاب زبان === */
 #lang-select {
   background: #000;
   color: #00ff99;
   border: 1px solid #00ff99;
   border-radius: 8px;
-  padding: 3px 6px;
-  font-size: 0.9em;
-}
-
-/* === انیمیشن popup === */
-@keyframes popin {
-  from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
-  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  padding: 4px 8px;
+  font-size: 1em;
+  cursor: pointer;
 }
 
 /* === ریسپانسیو موبایل === */
@@ -160,10 +160,7 @@ h1 {
     padding: 15px 20px;
     font-size: 1.1em;
   }
-  #top-right {
-    flex-direction: column;
-    font-size: 0.9em;
-  }
+  #datetime-container { font-size: 0.9em; }
 }
 </style>
 </head>
@@ -190,21 +187,82 @@ h1 {
   </div>
 </div>
 
-<div id="top-right">
-  <span id="date">1404/07/18</span>
-  <span id="time">00:00:00</span>
-  <select id="lang-select">
-    <option value="fa">فارسی</option>
-    <option value="en">English</option>
-  </select>
-</div>
-
 <audio id="alert-sound" preload="auto">
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
 
+<!-- تاریخ، ساعت و انتخاب زبان -->
+<div id="datetime-container">
+  <select id="lang-select">
+    <option value="fa">فارسی</option>
+    <option value="en">English</option>
+  </select>
+  <div id="date"></div>
+  <div id="time"></div>
+</div>
+
 <script>
-// ======= Donation System =======
+// ======== تغییر اعداد به فارسی ========
+function toPersianDigits(str){
+  const en = '0123456789';
+  const fa = '۰۱۲۳۴۵۶۷۸۹';
+  return str.replace(/\d/g, d=>fa[d]);
+}
+
+// ======== تبدیل میلادی به شمسی ========
+function toJalali(gDate){
+  const gy = gDate.getFullYear();
+  const gm = gDate.getMonth() + 1;
+  const gd = gDate.getDate();
+  let g_d_m = [0,31,59,90,120,151,181,212,243,273,304,334];
+  let jy = (gy <= 1600)?0:979;
+  gy -= (gy <= 1600)?621:1600;
+  let days = 365*gy + Math.floor((gy+3)/4) - Math.floor((gy+99)/100) + Math.floor((gy+399)/400) + gd + g_d_m[gm-1] - 1;
+  jy += 33 * Math.floor(days/12053); days %= 12053;
+  jy += 4 * Math.floor(days/1461); days %= 1461;
+  if(days > 365){ jy += Math.floor((days-1)/365); days = (days-1)%365; }
+  let jm, jd;
+  const sal_a = [0,31,62,93,124,155,186,216,246,276,306,336,365];
+  for(jm=0;jm<12;jm++){ if(days < sal_a[jm+1]) break; }
+  jd = days - sal_a[jm] + 1;
+  return {jy: jy+1, jm: jm+1, jd: jd};
+}
+
+// ======== تاریخ و ساعت زنده ========
+const dateEl = document.getElementById('date');
+const timeEl = document.getElementById('time');
+const langSelect = document.getElementById('lang-select');
+
+function updateDateTime(){
+  const now = new Date();
+  let year = now.getFullYear();
+  let month = (now.getMonth()+1).toString().padStart(2,'0');
+  let day = now.getDate().toString().padStart(2,'0');
+  let hours = now.getHours().toString().padStart(2,'0');
+  let minutes = now.getMinutes().toString().padStart(2,'0');
+  let seconds = now.getSeconds().toString().padStart(2,'0');
+
+  let dateStr = '';
+  let timeStr = `${hours}:${minutes}:${seconds}`;
+
+  if(langSelect.value === 'fa'){
+    const jDate = toJalali(now);
+    dateStr = `${jDate.jy}/${jDate.jm.toString().padStart(2,'0')}/${jDate.jd.toString().padStart(2,'0')}`;
+    dateStr = toPersianDigits(dateStr);
+    timeStr = toPersianDigits(timeStr);
+  } else {
+    dateStr = `${year}/${month}/${day}`;
+  }
+
+  dateEl.textContent = dateStr;
+  timeEl.textContent = timeStr;
+}
+
+langSelect.addEventListener('change', updateDateTime);
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+// ======== Donation Popup ========
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
@@ -216,6 +274,7 @@ let total = 0;
 const target = 60000000;
 const seenDonations = new Set();
 const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
+
 const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
 
 function showDonation(d) {
@@ -234,9 +293,7 @@ function showDonation(d) {
   alertSound.currentTime = 0;
   alertSound.play().catch(()=>{});
 
-  setTimeout(() => {
-    alertBox.style.display = "none";
-  }, 4000);
+  setTimeout(() => { alertBox.style.display = "none"; }, 4000);
 }
 
 async function fetchDonations() {
@@ -259,81 +316,6 @@ async function fetchDonations() {
 
 fetchDonations();
 setInterval(fetchDonations, 5000);
-
-// ======= Date & Time with Language =======
-const dateEl = document.getElementById('date');
-const timeEl = document.getElementById('time');
-const langSelect = document.getElementById('lang-select');
-
-function toPersianDigits(str) {
-  const map = {'0':'۰','1':'۱','2':'۲','3':'۳','4':'۴','5':'۵','6':'۶','7':'۷','8':'۸','9':'۹'};
-  return str.replace(/\d/g, d => map[d]);
-}
-
-function updateDateTime() {
-  const now = new Date();
-  
-  // ====== Gregorian or Persian ======
-  let year = now.getFullYear();
-  let month = now.getMonth() +1;
-  let day = now.getDate();
-  let hours = now.getHours();
-  let minutes = now.getMinutes();
-  let seconds = now.getSeconds();
-
-  // تبدیل به فرمت دو رقمی
-  month = month.toString().padStart(2,'0');
-  day = day.toString().padStart(2,'0');
-  hours = hours.toString().padStart(2,'0');
-  minutes = minutes.toString().padStart(2,'0');
-  seconds = seconds.toString().padStart(2,'0');
-
-  let dateStr = '';
-  let timeStr = `${hours}:${minutes}:${seconds}`;
-
-  if(langSelect.value === 'fa'){
-    // تبدیل به شمسی
-    const jDate = toJalali(now);
-    dateStr = `${jDate.jy}/${jDate.jm.toString().padStart(2,'0')}/${jDate.jd.toString().padStart(2,'0')}`;
-    timeStr = toPersianDigits(timeStr);
-  } else {
-    dateStr = `${year}/${month}/${day}`;
-  }
-
-  dateEl.textContent = dateStr;
-  timeEl.textContent = timeStr;
-}
-
-// ======= Simple Jalali Converter =======
-function toJalali(g) {
-  const gy = g.getFullYear();
-  const gm = g.getMonth() +1;
-  const gd = g.getDate();
-  let g_d_m = [0,31,59,90,120,151,181,212,243,273,304,334];
-  let jy = (gy <= 1600) ? 0 : 979;
-  let gy2 = gy - 1600;
-  let gm2 = gm -1;
-  let gd2 = gd -1;
-  let g_day_no = 365*gy2 + Math.floor((gy2+3)/4) - Math.floor((gy2+99)/100) + Math.floor((gy2+399)/400);
-  g_day_no += gd2 + g_d_m[gm2];
-  if (gm>2 && ((gy%4===0 && gy%100!==0) || (gy%400===0))) g_day_no++;
-  let j_day_no = g_day_no - 79;
-  let j_np = Math.floor(j_day_no / 12053);
-  j_day_no %= 12053;
-  jy += 33*j_np + 4*Math.floor(j_day_no/1461);
-  j_day_no %= 1461;
-  if(j_day_no>=366){
-    jy += Math.floor((j_day_no-1)/365);
-    j_day_no = (j_day_no-1)%365;
-  }
-  const jm = (j_day_no < 186) ? 1 + Math.floor(j_day_no/31) : 7 + Math.floor((j_day_no-186)/30);
-  const jd = 1 + ((j_day_no <186) ? (j_day_no %31) : ((j_day_no-186)%30));
-  return {jy,jm,jd};
-}
-
-updateDateTime();
-setInterval(updateDateTime,1000);
-langSelect.addEventListener('change',updateDateTime);
 </script>
 
 </body>
