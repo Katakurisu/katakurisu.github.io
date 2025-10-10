@@ -18,7 +18,7 @@ h1 {margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
 #donor-amount {font-size:1.4em;color:#ccffdd;}
 #stats {position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
 @keyframes popin {from {transform:translate(-50%,-60%) scale(0.9);opacity:0;} to {transform:translate(-50%,-50%) scale(1);opacity:1;}}
-#date-time {position:fixed;top:10px;right:20px;color:#00ff99;font-size:1.2em;text-align:right;white-space:nowrap;display:flex;gap:8px;align-items:center;justify-content:flex-end;}
+#clock {position:fixed;top:10px;right:20px;font-size:1.4em;color:#00ff99;z-index:20;}
 @media (max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
 </style>
 </head>
@@ -41,19 +41,12 @@ h1 {margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
   </div>
 </div>
 
-<div id="date-time">
-  <span id="time"></span>
-  <span>|</span>
-  <span id="date"></span>
-  <span>|</span>
-  <span id="week-day"></span>
-</div>
+<div id="clock"></div>
 
 <audio id="alert-sound" preload="auto">
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
 
-<script src="https://cdn.jsdelivr.net/gh/fzerorubigd/js-persian-date/dist/persian-date.min.js"></script>
 <script>
 const alertBox=document.getElementById('donation-alert');
 const donorName=document.getElementById('donor-name');
@@ -96,14 +89,15 @@ async function fetchDonations(){
 fetchDonations();
 setInterval(fetchDonations,5000);
 
-function updateDateTime(){
-  const pd=new persianDate();
-  document.getElementById("date").textContent=pd.format("YYYY/MM/DD");
-  document.getElementById("week-day").textContent=pd.format("dddd");
-  document.getElementById("time").textContent=pd.format("HH:mm:ss");
+function updateClock(){
+  const now=new Date();
+  const h=String(now.getHours()).padStart(2,'0');
+  const m=String(now.getMinutes()).padStart(2,'0');
+  const s=String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent=`${h}:${m}:${s}`;
 }
-updateDateTime();
-setInterval(updateDateTime,1000);
+updateClock();
+setInterval(updateClock,1000);
 </script>
 </body>
 </html>
