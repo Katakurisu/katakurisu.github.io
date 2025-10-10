@@ -6,24 +6,31 @@
 <title>🎁 حمایت از میلاد کاتاکوری</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;}
-h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
-.button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
-.btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
-.btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
-#overlay{position:fixed;inset:0;pointer-events:none;}
-#donation-alert{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);text-align:center;background:rgba(0,0,0,0.9);border:2px solid #00ff99;box-shadow:0 0 50px #00ff99;border-radius:20px;padding:30px 40px;display:none;z-index:10;animation:popin 0.5s ease;}
-#donation-gif{width:180px;height:180px;border-radius:12px;margin-bottom:15px;}
-#donor-name{font-size:1.6em;font-weight:600;text-shadow:0 0 15px #00ff99;margin-bottom:5px;}
-#donor-amount{font-size:1.4em;color:#ccffdd;}
-#stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
-@keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0;}to{transform:translate(-50%,-50%) scale(1);opacity:1;}}
-@media(max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
-#datetime{position:fixed;top:20px;right:20px;font-size:1.2em;text-align:right;}
+body {
+  margin:0;
+  font-family: 'Vazirmatn', sans-serif;
+  background-color:#000;
+  color:#00ff99;
+  text-align:center;
+  direction:rtl;
+  min-height:100vh;
+}
+h1 {margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
+.button-container {display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
+.btn {display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
+.btn:hover {background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
+#overlay {position:fixed;inset:0;pointer-events:none;}
+#donation-alert {position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);text-align:center;background:rgba(0,0,0,0.9);border:2px solid #00ff99;box-shadow:0 0 50px #00ff99;border-radius:20px;padding:30px 40px;display:none;z-index:10;animation:popin 0.5s ease;}
+#donation-gif {width:180px;height:180px;border-radius:12px;margin-bottom:15px;}
+#donor-name {font-size:1.6em;font-weight:600;text-shadow:0 0 15px #00ff99;margin-bottom:5px;}
+#donor-amount {font-size:1.4em;color:#ccffdd;}
+#stats {position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
+@keyframes popin {from{transform:translate(-50%,-60%) scale(0.9);opacity:0;}to{transform:translate(-50%,-50%) scale(1);opacity:1;}}
+#datetime {position:fixed;top:15px;right:15px;font-size:1.1em;text-align:right;line-height:1.4;z-index:20;}
+@media (max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}#datetime{font-size:0.9em;}}
 </style>
 </head>
 <body>
-
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
 <div class="button-container">
@@ -37,17 +44,18 @@ h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
     <p id="donor-name"></p>
     <p id="donor-amount"></p>
   </div>
+
   <div id="stats">
     <p>💰 جمع کل: <span id="total">0</span> ریال</p>
     <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
   </div>
 </div>
 
-<div id="datetime"></div>
-
 <audio id="alert-sound" preload="auto">
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
+
+<div id="datetime"></div>
 
 <script>
 const alertBox=document.getElementById('donation-alert');
@@ -56,11 +64,13 @@ const donorAmount=document.getElementById('donor-amount');
 const totalEl=document.getElementById('total');
 const percentEl=document.getElementById('percent');
 const alertSound=document.getElementById('alert-sound');
+
 let total=0;
 const target=60000000;
 const seenDonations=new Set();
-const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";
+const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0";
 const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
+
 function showDonation(d){
   let rate=currencyRates[d.currency]||0;
   let amountIRR=d.amount*rate;
@@ -70,9 +80,11 @@ function showDonation(d){
   totalEl.textContent=total.toLocaleString("fa-IR");
   percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);
   alertBox.style.display="block";
-  alertSound.currentTime=0;alertSound.play().catch(()=>{});
+  alertSound.currentTime=0;
+  alertSound.play().catch(()=>{});
   setTimeout(()=>{alertBox.style.display="none";},4000);
 }
+
 async function fetchDonations(){
   try{
     const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});
@@ -87,25 +99,24 @@ async function fetchDonations(){
     });
   }catch(err){console.warn("❗ خطا در دریافت داده:",err.message);}
 }
+
 fetchDonations();
 setInterval(fetchDonations,5000);
 
-// شمسی سازی تاریخ و ساعت
-function updateDateTime(){
-  const dt=document.getElementById('datetime');
-  const today=new Date();
-  const weekdays=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
-  const jDate=jalaali.toJalaali(today);
-  const y=jDate.jy,m=jDate.jm,d=jDate.jd;
-  const weekday=weekdays[today.getDay()];
-  const hh=String(today.getHours()).padStart(2,'0');
-  const mm=String(today.getMinutes()).padStart(2,'0');
-  const ss=String(today.getSeconds()).padStart(2,'0');
-  dt.textContent=`${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}  |  ${weekday}  |  ${hh}:${mm}:${ss}`;
+// ====== تاریخ و ساعت شمسی ======
+const datetimeEl=document.getElementById('datetime');
+function toShamsi(date){
+  const persian=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{weekday:'long',year:'numeric',month:'2-digit',day:'2-digit'}).format(date);
+  const time=new Intl.DateTimeFormat('fa-IR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(date);
+  return {persian,time};
 }
-setInterval(updateDateTime,1000);
+function updateDateTime(){
+  const now=new Date();
+  const s=toShamsi(now);
+  datetimeEl.innerHTML=`${s.persian} | ${s.time}`;
+}
 updateDateTime();
+setInterval(updateDateTime,1000);
 </script>
-<script src="https://cdn.jsdelivr.net/npm/jalaali-js@1.1.0/dist/jalaali.min.js"></script>
 </body>
 </html>
