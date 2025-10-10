@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Overlay حمایت</title>
+<title>Overlay حمایت - صف پرداخت ها</title>
 <style>
 /* ____________________ 🎬 استایل Overlay 🎬 ____________________ */
 body {
@@ -32,7 +32,6 @@ body {
   padding:20px 30px;
   display:none;
   z-index:10;
-  animation:fadein 0.5s ease;
 }
 #donation-video {
   width:180px;
@@ -43,8 +42,9 @@ body {
 #donor-text {
   font-size:1.3em;
   text-shadow:0 0 12px #00ff99;
+  opacity:0;
+  transition: opacity 0.7s ease-in-out;
 }
-@keyframes fadein {from{opacity:0;}to{opacity:1;}}
 @media(max-width:500px){
   #donation-video{width:140px;height:140px;}
   #donor-text{font-size:1.1em;}
@@ -67,6 +67,10 @@ const alertBox = document.getElementById('donation-alert');
 const donorText = document.getElementById('donor-text');
 const videoEl = document.getElementById('donation-video');
 
+/* ____________________ 🟢 صف پرداخت ها 🟢 ____________________ */
+let donationQueue = [];
+let isShowing = false;
+
 /* ____________________ 🌐 اتصال به وبهوک دریافت پرداخت ها 🌐 ____________________ */
 async function fetchDonations(){
   try{
@@ -75,21 +79,41 @@ async function fetchDonations(){
     data.forEach(d => {
       if(!d.handled){
         d.handled = true;
-        showDonation(d);
+        donationQueue.push(d); // اضافه کردن به صف
+        showNextDonation();
       }
     });
   } catch(e){console.warn(e);}
 }
 setInterval(fetchDonations, 5000);
 
-/* ____________________ 🎬 نمایش پرداخت جدید 🎬 ____________________ */
-function showDonation(d){
+/* ____________________ 🎬 نمایش پرداخت ها از صف 🎬 ____________________ */
+function showNextDonation(){
+  if(isShowing || donationQueue.length === 0) return;
+  const d = donationQueue.shift();
+  isShowing = true;
+  
   const amountIRR = d.amount*d.currency_rate || d.amount || 0;
   donorText.textContent = (d.name||'حامی ناشناس') + ' | ' + amountIRR.toLocaleString('fa-IR') + ' ریال' + (d.message?(' | '+d.message):'');
+  
+  // نمایش overlay و پخش ویدیو
   alertBox.style.display='block';
   videoEl.currentTime=0;
   videoEl.play();
-  setTimeout(()=>{alertBox.style.display='none';},13000);
+  
+  // انیمیشن Fade in متن
+  donorText.style.opacity = 0;
+  setTimeout(()=>{donorText.style.opacity = 1;}, 50);
+  
+  // Fade out و مخفی کردن overlay بعد از 13 ثانیه
+  setTimeout(()=>{
+    donorText.style.opacity = 0;
+    setTimeout(()=>{
+      alertBox.style.display='none';
+      isShowing = false;
+      showNextDonation(); // نمایش بعدی از صف
+    }, 700);
+  },13000);
 }
 </script>
 
