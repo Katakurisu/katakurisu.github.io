@@ -3,131 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎯 هدف حمایت (OBS)</title>
+<title>🎯 هدف حمایت</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
 body {
   margin:0;
-  background: transparent;
-  font-family: 'Vazirmatn', sans-serif;
-  overflow: hidden;
-  direction: rtl;
+  background:transparent;
+  font-family:'Vazirmatn',sans-serif;
+  color:#00ff99;
+  direction:rtl;
+  overflow:hidden;
 }
 
-/* والد برای وسط صفحه و بزرگ شدن */
-#goal-wrapper {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(2);
-  transform-origin: center center;
-  z-index: 10;
-  text-align: right;
-}
-
-/* کانتینر هدف */
 #goal-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  direction: rtl; /* اضافه شد */
-  text-align: right; /* اضافه شد */
+  width:600px;
+  margin:50px auto;
+  text-align:right;
 }
 
-/* عنوان هدف */
 #goal-title {
-  font-size: 2em;
-  font-weight: 600;
-  color: red;
-  text-shadow: 0 0 8px red;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  direction: rtl; /* اضافه شد */
-  text-align: right; /* اضافه شد */
+  font-size:1.8em;
+  margin-bottom:10px;
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:10px;
 }
 
 #goal-title img {
-  width: 40px;
-  height: 40px;
+  width:40px;
+  height:40px;
 }
 
-/* نوار هدف */
 #goal-bar-wrapper {
-  position: relative;
-  width: 400px;
-  height: 40px;
-  background: transparent;
-  border: 4px solid yellow;
-  border-radius: 20px;
-  padding: 2px;
-  box-sizing: border-box;
-  overflow: hidden;
+  position:relative;
+  width:100%;
+  height:40px;
+  border:3px solid yellow;
+  border-radius:20px;
+  overflow:hidden;
+  background:transparent;
 }
 
-/* نوار پر شونده */
 #goal-bar {
-  height: 100%;
-  width: 0%;
-  background-color: #00ff99; /* سبز فسفری */
-  border-radius: 16px;
+  position:absolute;
+  top:0; right:0;
+  height:100%;
+  width:0%;
+  background:#00ff99;
+  border-radius:16px 0 0 16px; /* فقط سمت چپ پر میشه */
   transition: width 0.5s ease;
-  position: relative;
 }
 
-/* درصد سمت راست */
 #goal-percent {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.2em;
-  color: #fff;
-  font-weight: bold;
-  text-shadow: 0 0 5px #000;
-  direction: rtl; /* اضافه شد */
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  font-weight:bold;
+  font-size:1.2em;
 }
 
-/* قلب سمت چپ */
 #goal-heart {
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  position:absolute;
+  left:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:28px; height:28px;
 }
 
-/* متن پایین نوار */
 #goal-text {
-  margin-top: 10px;
-  font-size: 1.2em;
-  color: #00ff99;
-  text-shadow: 0 0 5px #000;
-  text-align: right; /* اضافه شد */
-  direction: rtl; /* اضافه شد */
+  margin-top:8px;
+  font-size:1.4em;
+  text-align:right;
+  direction:rtl;
 }
 
+/* برای موبایل */
+@media(max-width:500px){
+  #goal-container{width:90%;}
+  #goal-title{font-size:1.4em;}
+  #goal-bar-wrapper{height:30px;}
+  #goal-bar{border-radius:12px 0 0 12px;}
+  #goal-percent{font-size:1em;}
+  #goal-text{font-size:1.1em;}
+}
 </style>
 </head>
 <body>
 
-<div id="goal-wrapper">
-  <div id="goal-container">
-    <div id="goal-title">
-      هدف: خرید وبکم
-      <img src="https://katakurisu.github.io/gift.png" alt="هدیه">
-    </div>
-    <div id="goal-bar-wrapper">
-      <div id="goal-bar"></div>
-      <div id="goal-heart">
-        <img src="https://katakurisu.github.io/heart.png" alt="♥" width="24" height="24">
-      </div>
-      <div id="goal-percent">۰%</div>
-    </div>
-    <div id="goal-text">تاکنون ۰ از ۶۰۰۰۰۰ تومان حمایت شده</div>
+<div id="goal-container">
+  <div id="goal-title">
+    هدف: خرید وبکم
+    <img src="https://katakurisu.github.io/gift.png" alt="هدیه">
   </div>
+  <div id="goal-bar-wrapper">
+    <div id="goal-bar"></div>
+    <div id="goal-heart">
+      <img src="https://katakurisu.github.io/heart.png" alt="♥">
+    </div>
+    <div id="goal-percent">۰%</div>
+  </div>
+  <div id="goal-text">تاکنون ۰ از ۶۰۰۰۰۰ تومان حمایت شده</div>
 </div>
 
 <script>
@@ -137,35 +114,30 @@ const percentText = document.getElementById('goal-percent');
 const heart = document.getElementById('goal-heart');
 
 let total = 0;
-const target = 600000; // تومان
+let target = 600000; // تومان
 
 function toPersian(num) {
-  return num.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  return num.toString().replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
 }
 
 function addDonation(amount) {
   total += amount;
   if(total > target) total = target;
-  const percent = Math.floor((total / target) * 100);
+  const percent = Math.floor((total/target)*100);
 
-  // پر شدن نوار
+  // پر شدن نوار از راست به چپ
   goalBar.style.width = percent + '%';
+  percentText.textContent = toPersian(percent)+'%';
+  heart.style.left = `calc(8px + ${percent}% - 14px)`;
 
-  // درصد فارسی سمت راست
-  percentText.textContent = toPersian(percent) + '%';
-
-  // قلب سمت چپ هم همراه نوار حرکت می‌کند
-  heart.style.left = `calc(8px + ${percent}% - 12px)`; // -12px برای وسط کردن قلب
-
-  // متن پایین نوار
   goalText.textContent = `تاکنون ${toPersian(total)} از ${toPersian(target)} تومان حمایت شده`;
 }
 
-// تست اولیه هر 5 ثانیه
-setInterval(() => {
-  const randomDonation = Math.floor(Math.random() * 50000);
-  addDonation(randomDonation);
-}, 5000);
+// تست
+setInterval(()=>{
+  // uncomment to auto test
+  //addDonation(Math.floor(Math.random()*50000));
+},5000);
 </script>
 
 </body>
