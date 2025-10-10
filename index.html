@@ -4,14 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎁 حمایت از میلاد کاتاکوری</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
-
 <style>
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000000;
+  background-color: #000;
   color: #00ff99;
   text-align: center;
   direction: rtl;
@@ -42,7 +40,7 @@ h1 {
 }
 .btn:hover {
   background: #00ff99;
-  color: #000000;
+  color: #000;
   box-shadow: 0 0 30px #00ff99;
   transform: scale(1.05);
 }
@@ -113,12 +111,8 @@ h1 {
   text-shadow: 0 0 8px #00ff99;
   z-index: 20;
   display: flex;
-  gap: 10px;
   align-items: center;
-}
-#date, #weekday, #time { min-width: 80px; }
-#weekday {
-  padding: 0 5px;
+  gap: 10px;
 }
 #lang-select {
   background: #000;
@@ -129,28 +123,9 @@ h1 {
   font-size: 1em;
   cursor: pointer;
 }
-@media (max-width: 500px) {
-  .btn {
-    padding: 12px 20px;
-    font-size: 1em;
-  }
-  h1 {
-    font-size: 2em;
-    margin: 40px 0 40px 0;
-  }
-  #donation-gif {
-    width: 140px;
-    height: 140px;
-  }
-  #stats {
-    padding: 15px 20px;
-    font-size: 1.1em;
-  }
-  #datetime-container { font-size: 0.9em; }
-}
+#date, #weekday, #time { min-width: 80px; text-align:center; }
 </style>
 </head>
-
 <body>
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
@@ -190,20 +165,22 @@ h1 {
 </div>
 
 <script>
+// اعداد فارسی
 function toPersianDigits(str){
   const en = '0123456789';
   const fa = '۰۱۲۳۴۵۶۷۸۹';
   return str.replace(/\d/g, d=>fa[d]);
 }
 
+// تبدیل تاریخ میلادی به جلالی
 function toJalali(gDate){
   const gy = gDate.getFullYear();
   const gm = gDate.getMonth() + 1;
   const gd = gDate.getDate();
-  let g_d_m = [0,31,59,90,120,151,181,212,243,273,304,334];
+  const g_d_m = [0,31,59,90,120,151,181,212,243,273,304,334];
   let jy = (gy <= 1600)?0:979;
-  gy -= (gy <= 1600)?621:1600;
-  let days = 365*gy + Math.floor((gy+3)/4) - Math.floor((gy+99)/100) + Math.floor((gy+399)/400) + gd + g_d_m[gm-1] - 1;
+  let gy2 = (gy <= 1600)?gy-621:gy-1600;
+  let days = 365*gy2 + Math.floor((gy2+3)/4) - Math.floor((gy2+99)/100) + Math.floor((gy2+399)/400) + gd + g_d_m[gm-1] - 1;
   jy += 33 * Math.floor(days/12053); days %= 12053;
   jy += 4 * Math.floor(days/1461); days %= 1461;
   if(days > 365){ jy += Math.floor((days-1)/365); days = (days-1)%365; }
@@ -214,6 +191,7 @@ function toJalali(gDate){
   return {jy: jy+1, jm: jm+1, jd: jd};
 }
 
+// به‌روزرسانی تاریخ و ساعت
 const dateEl = document.getElementById('date');
 const timeEl = document.getElementById('time');
 const weekdayEl = document.getElementById('weekday');
@@ -221,9 +199,6 @@ const langSelect = document.getElementById('lang-select');
 
 function updateDateTime(){
   const now = new Date();
-  let year = now.getFullYear();
-  let month = (now.getMonth()+1).toString().padStart(2,'0');
-  let day = now.getDate().toString().padStart(2,'0');
   let hours = now.getHours().toString().padStart(2,'0');
   let minutes = now.getMinutes().toString().padStart(2,'0');
   let seconds = now.getSeconds().toString().padStart(2,'0');
@@ -234,10 +209,13 @@ function updateDateTime(){
     const jDate = toJalali(now);
     dateStr = `${jDate.jy}/${jDate.jm.toString().padStart(2,'0')}/${jDate.jd.toString().padStart(2,'0')}`;
     dateStr = toPersianDigits(dateStr);
-    const weekdaysFa = ["یک‌شنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنج‌شنبه","جمعه","شنبه"];
+    const weekdaysFa = ["شنبه","یک‌شنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنج‌شنبه","جمعه"];
     weekdayStr = weekdaysFa[now.getDay()];
     timeStr = toPersianDigits(timeStr);
   } else {
+    const year = now.getFullYear();
+    const month = (now.getMonth()+1).toString().padStart(2,'0');
+    const day = now.getDate().toString().padStart(2,'0');
     dateStr = `${year}/${month}/${day}`;
     const weekdaysEn = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     weekdayStr = weekdaysEn[now.getDay()];
@@ -252,7 +230,7 @@ langSelect.addEventListener('change', updateDateTime);
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
-// Donation Popup
+// Donation popup
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
@@ -264,10 +242,9 @@ let total = 0;
 const target = 60000000;
 const seenDonations = new Set();
 const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
-
 const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
 
-function showDonation(d) {
+function showDonation(d){
   let rate = currencyRates[d.currency] || 0;
   let amountIRR = d.amount * rate;
   total += amountIRR;
@@ -298,7 +275,7 @@ async function fetchDonations(){
 
 fetchDonations();
 setInterval(fetchDonations,5000);
-</script>
 
+</script>
 </body>
 </html>
