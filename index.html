@@ -8,19 +8,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* === فونت و بک‌گراند اولیه === */
+/* === فونت و استایل پایه === */
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000;
-  color: #00ff99;
   direction: rtl;
   text-align: center;
   min-height: 100vh;
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* === تم لایت === */
+/* === تم ها === */
+body.dark {
+  background-color: #000;
+  color: #00ff99;
+}
 body.light {
   background-color: #f5f5f5;
   color: #222;
@@ -41,7 +43,6 @@ h1 {
   flex-wrap: wrap;
   margin-bottom: 80px;
 }
-
 .btn {
   display: inline-block;
   padding: 16px 32px;
@@ -59,7 +60,7 @@ h1 {
   transform: scale(1.05);
 }
 
-/* === پوزیشن ثابت تم بالا سمت چپ === */
+/* === تم فیکس بالا سمت چپ === */
 #theme-toggle {
   position: fixed;
   top: 15px;
@@ -69,7 +70,6 @@ h1 {
   align-items: center;
   z-index: 100;
 }
-
 .theme-icon {
   font-size: 1.5em;
   width: 36px;
@@ -78,17 +78,21 @@ h1 {
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background: rgba(0,0,0,0.3);
   cursor: pointer;
   transition: all 0.2s;
-  color: inherit;
 }
 .theme-icon.active {
-  box-shadow: 0 0 8px 2px currentColor;
   border: 2px solid currentColor;
+  box-shadow: 0 0 8px 2px currentColor;
+}
+.theme-icon.sun {
+  color: orange;
+}
+.theme-icon.moon {
+  color: white;
 }
 
-/* === پوزیشن ثابت بالا سمت راست: زبان + تاریخ/ساعت === */
+/* === بالای صفحه: زبان + تاریخ/ساعت سمت راست === */
 #top-bar {
   position: fixed;
   top: 15px;
@@ -99,8 +103,6 @@ h1 {
   z-index: 100;
   font-size: 1em;
 }
-
-/* === دکمه زبان === */
 #language-select {
   padding: 6px 12px;
   border-radius: 8px;
@@ -109,11 +111,9 @@ h1 {
   color: inherit;
   cursor: pointer;
 }
-
-/* === تاریخ و ساعت === */
 #date-time {
   display: flex;
-  gap: 5px;
+  gap: 4px;
   align-items: center;
   font-weight: 600;
 }
@@ -124,7 +124,6 @@ h1 {
   inset: 0;
   pointer-events: none;
 }
-
 #donation-alert {
   position: absolute;
   top: 35%;
@@ -140,21 +139,18 @@ h1 {
   z-index: 10;
   animation: popin 0.5s ease;
 }
-
 #donation-gif {
   width: 180px;
   height: 180px;
   border-radius: 12px;
   margin-bottom: 15px;
 }
-
 #donor-name {
   font-size: 1.6em;
   font-weight: 600;
   text-shadow: 0 0 15px currentColor;
   margin-bottom: 5px;
 }
-
 #donor-amount {
   font-size: 1.4em;
   color: #ccffdd;
@@ -184,38 +180,20 @@ h1 {
 
 /* === ریسپانسیو موبایل === */
 @media (max-width: 500px) {
-  .btn {
-    padding: 12px 20px;
-    font-size: 1em;
-  }
-  h1 {
-    font-size: 2em;
-    margin: 40px 0 40px 0;
-  }
-  #donation-gif {
-    width: 140px;
-    height: 140px;
-  }
-  #stats {
-    padding: 15px 20px;
-    font-size: 1.1em;
-  }
-  #top-bar {
-    flex-direction: column;
-    right: 10px;
-    top: 10px;
-    gap: 6px;
-  }
+  .btn { padding: 12px 20px; font-size: 1em; }
+  h1 { font-size: 2em; margin: 40px 0 40px 0; }
+  #donation-gif { width: 140px; height: 140px; }
+  #stats { padding: 15px 20px; font-size: 1.1em; }
+  #top-bar { flex-direction: column; right: 10px; top: 10px; gap: 6px; }
 }
 </style>
 </head>
-
-<body>
+<body class="dark">
 
 <!-- === تم بالا سمت چپ === -->
 <div id="theme-toggle">
-  <span id="dark-icon" class="theme-icon active" style="color:white">⏾</span>
-  <span id="light-icon" class="theme-icon" style="color:orange">🔆</span>
+  <span id="dark-icon" class="theme-icon moon active">⏾</span>
+  <span id="light-icon" class="theme-icon sun">🔆</span>
 </div>
 
 <!-- === بالای صفحه: زبان + تاریخ/ساعت سمت راست === -->
@@ -256,36 +234,29 @@ h1 {
 </audio>
 
 <script>
-// === مدیریت تاریخ، ساعت و روز هفته ===
-const clockEl = document.getElementById('clock');
-const dateEl = document.getElementById('date');
-const weekdayEl = document.getElementById('weekday');
-const languageSelect = document.getElementById('language-select');
+// === تاریخ و ساعت و زبان ===
+const clockEl=document.getElementById('clock');
+const dateEl=document.getElementById('date');
+const weekdayEl=document.getElementById('weekday');
+const languageSelect=document.getElementById('language-select');
 
 function pad(n){return n<10?'0'+n:n;}
 function toPersianNum(n){return n.toString().replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);}
 
 function getJalaliDate(date){
-  const gy=date.getFullYear();
-  const gm=date.getMonth()+1;
-  const gd=date.getDate();
+  const gy=date.getFullYear(), gm=date.getMonth()+1, gd=date.getDate();
   const weekdays=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
-  const weekday=weekdays[date.getDay()];
-  return {year: gy, month: gm, day: gd, weekday: weekday};
+  return {year: gy, month: gm, day: gd, weekday: weekdays[date.getDay()]};
 }
 
 function updateClock(){
   const now=new Date();
-  let h=pad(now.getHours());
-  let m=pad(now.getMinutes());
-  let s=pad(now.getSeconds());
-
+  let h=pad(now.getHours()), m=pad(now.getMinutes()), s=pad(now.getSeconds());
   let dateStr, weekdayStr;
-
   if(languageSelect.value==='fa'){
-    const jDate=getJalaliDate(now);
-    dateStr=toPersianNum(`${pad(jDate.year)}/${pad(jDate.month)}/${pad(jDate.day)}`);
-    weekdayStr=jDate.weekday;
+    const j=getJalaliDate(now);
+    dateStr=toPersianNum(`${j.year}/${pad(j.month)}/${pad(j.day)}`);
+    weekdayStr=j.weekday;
     clockEl.textContent=toPersianNum(`${h}:${m}:${s}`);
   }else{
     const weekdays=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -300,25 +271,22 @@ setInterval(updateClock,1000);
 updateClock();
 languageSelect.addEventListener('change',updateClock);
 
-// === مدیریت تم ===
+// === مدیریت تم و رنگ‌ها پویا ===
 const body=document.body;
 const darkIcon=document.getElementById('dark-icon');
 const lightIcon=document.getElementById('light-icon');
-
 function setTheme(theme){
   if(theme==='dark'){
-    body.classList.remove('light');
-    darkIcon.classList.add('active');
-    lightIcon.classList.remove('active');
+    body.classList.remove('light'); body.classList.add('dark');
+    darkIcon.classList.add('active'); lightIcon.classList.remove('active');
   }else{
-    body.classList.add('light');
-    darkIcon.classList.remove('active');
-    lightIcon.classList.add('active');
+    body.classList.remove('dark'); body.classList.add('light');
+    darkIcon.classList.remove('active'); lightIcon.classList.add('active');
   }
 }
 darkIcon.addEventListener('click',()=>setTheme('dark'));
 lightIcon.addEventListener('click',()=>setTheme('light'));
-setTheme('dark'); // پیش‌فرض
+setTheme('dark');
 
 // === مدیریت Donations ===
 const alertBox=document.getElementById('donation-alert');
@@ -344,4 +312,26 @@ function showDonation(d){
   percentEl.textContent=(languageSelect.value==='fa'?toPersianNum(Math.min(((total/target)*100).toFixed(1),100)):Math.min(((total/target)*100).toFixed(1),100));
   alertBox.style.display="block";
   alertSound.currentTime=0; alertSound.play().catch(()=>{});
-  setTimeout(()=>{alertBox.style.display="no
+  setTimeout(()=>{alertBox.style.display="none";},4000);
+}
+
+async function fetchDonations(){
+  try{
+    const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});
+    if(!res.ok) throw new Error("Fetch failed");
+    const data=await res.json();
+    if(!Array.isArray(data)) return;
+    data.forEach(d=>{
+      if(d.ts&&!seenDonations.has(d.ts)){
+        seenDonations.add(d.ts);
+        showDonation(d);
+      }
+    });
+  }catch(err){console.warn("❗ خطا:",err.message);}
+}
+fetchDonations();
+setInterval(fetchDonations,5000);
+</script>
+
+</body>
+</html>
