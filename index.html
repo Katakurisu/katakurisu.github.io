@@ -1,87 +1,158 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Donation Overlay - Katakuri</title>
-<style>
-body{margin:0;font-family:Arial,sans-serif;background:transparent;color:#fff;text-align:center;}
-h1{margin-top:20px;}
-.btn{display:inline-block;margin:10px;padding:15px 30px;background:#ff5f5f;color:#fff;text-decoration:none;border-radius:10px;font-size:18px;}
-.btn:hover{background:#ff2f2f;}
-#overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;}
-#donation-alert{position:absolute;top:20%;left:50%;transform:translateX(-50%);text-align:center;background:rgba(0,0,0,0.6);padding:20px;border-radius:15px;animation:fadein 1s;display:none;}
-#donation-gif{width:150px;height:150px;}
-#stats{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);text-align:center;font-size:24px;}
-@keyframes fadein{from{opacity:0;}to{opacity:1;}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حمایت از میلاد کاتاکوری</title>
+  <style>
+    /* تم دارک شفاف با افکت بلور */
+    body {
+      margin: 0;
+      font-family: "Arial", sans-serif;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      color: #E0FFE0;
+      text-align: center;
+      overflow: hidden;
+    }
+    h1 {
+      margin-top: 20px;
+      font-size: 2em;
+      color: #7FFFD4; /* سبز فسفری */
+    }
+    .btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 15px 30px;
+      background: #00FFAA;
+      color: #000;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 18px;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn:hover {
+      background: #00E595;
+      transform: scale(1.05);
+    }
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    #donation-alert {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 15px;
+      animation: fadein 1s;
+      display: none;
+    }
+    #donation-gif {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 10px;
+    }
+    #stats {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 24px;
+    }
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
 
-<h1>حمایت کنید ❤️</h1>
+  <h1>حمایت از میلاد کاتاکوری</h1>
 
-<a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
-<a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
+  <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
+  <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
 
-<div id="overlay">
-  <div id="donation-alert">
-    <img id="donation-gif" src="https://media.giphy.com/media/3o7TKPcehQvZqg2rZu/giphy.gif" alt="Donation">
-    <p id="donor-name"></p>
-    <p id="donor-amount"></p>
+  <div id="overlay">
+    <div id="donation-alert">
+      <img id="donation-gif" src="https://media.giphy.com/media/3o7TKPcehQvZqg2rZu/giphy.gif" alt="Donation">
+      <p id="donor-name" style="font-size:1.5em; color: #7FFFD4;"></p>
+      <p id="donor-amount" style="font-size:1.3em; color: #E0FFE0;"></p>
+    </div>
+    <div id="stats">
+      <p>جمع کل: <span id="total">0</span> ریال</p>
+      <p>درصد هدف: <span id="percent">0</span>%</p>
+    </div>
   </div>
-  <div id="stats">
-    <p>جمع کل: <span id="total">0</span> ریال</p>
-    <p>درصد هدف: <span id="percent">0</span>%</p>
-  </div>
-</div>
 
-<audio id="alert-sound" src="https://www.myinstants.com/media/sounds/alert.mp3"></audio>
+  <audio id="alert-sound" src="https://www.myinstants.com/media/sounds/alert.mp3"></audio>
 
-<script>
-const alertBox = document.getElementById('donation-alert');
-const donorName = document.getElementById('donor-name');
-const donorAmount = document.getElementById('donor-amount');
-const totalEl = document.getElementById('total');
-const percentEl = document.getElementById('percent');
-const alertSound = document.getElementById('alert-sound');
+  <script>
+    const alertBox = document.getElementById('donation-alert');
+    const donorName = document.getElementById('donor-name');
+    const donorAmount = document.getElementById('donor-amount');
+    const totalEl = document.getElementById('total');
+    const percentEl = document.getElementById('percent');
+    const alertSound = document.getElementById('alert-sound');
 
-let total = 0;
-const target = 1000000;
-let seenDonations = new Set();
+    let total = 0;
+    const target = 60000000; // هدف: ۶۰٬۰۰۰٬۰۰۰ ریال
+    const seenDonations = new Set();
 
-// 🔹 لینک JSON عمومی دونیت‌ها (مثلاً npoint.io یا webhook.site)
-const DONATIONS_URL = "https://api.npoint.io/xxxxxx"; // ← بعداً اینو می‌ذاری
+    // لینک JSON دونیت‌ها (که خودت دادیش)
+    const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
 
-function showDonation(d){
-  let amountIRR = d.currency==="IRR" ? d.amount : d.amount*1400000000;
-  total += amountIRR;
-  donorName.innerText = d.name;
-  donorAmount.innerText = amountIRR.toLocaleString() + " ریال";
-  alertBox.style.display = "block";
-  alertSound.play();
-  totalEl.innerText = total.toLocaleString();
-  percentEl.innerText = Math.min((total/target*100).toFixed(1),100);
-  setTimeout(()=>alertBox.style.display="none",4000);
-}
-
-// 🔹 بررسی هر 5 ثانیه برای دونیت‌های جدید
-async function fetchDonations(){
-  try{
-    const res = await fetch(DONATIONS_URL+"?t="+Date.now());
-    const data = await res.json();
-    data.forEach(d=>{
-      if(!seenDonations.has(d.ts)){
-        seenDonations.add(d.ts);
-        showDonation(d);
+    function showDonation(d) {
+      let amountIRR = 0;
+      if (d.currency === "IRR") {
+        amountIRR = d.amount;
+      } else {
+        // تبدیل ارزهای دیجیتال به ریال (نرخ تقریبی)
+        const rates = { BTC: 1400000000, ETH: 90000000, USDT: 50000 };
+        amountIRR = d.amount * (rates[d.currency] || 0);
       }
-    });
-  }catch(e){
-    console.log("Error fetching donations",e);
-  }
-}
 
-setInterval(fetchDonations,5000);
-</script>
+      total += amountIRR;
+
+      donorName.innerText = d.name;
+      donorAmount.innerText = amountIRR.toLocaleString() + " ریال";
+      alertBox.style.display = "block";
+      alertSound.play();
+
+      totalEl.innerText = total.toLocaleString();
+      percentEl.innerText = Math.min(((total / target) * 100).toFixed(1), 100);
+
+      setTimeout(() => {
+        alertBox.style.display = "none";
+      }, 4000);
+    }
+
+    async function fetchDonations() {
+      try {
+        const res = await fetch(DONATIONS_URL + "?t=" + Date.now());
+        const data = await res.json();
+        data.forEach(d => {
+          if (!seenDonations.has(d.ts)) {
+            seenDonations.add(d.ts);
+            showDonation(d);
+          }
+        });
+      } catch (e) {
+        console.error("Error fetching donations:", e);
+      }
+    }
+
+    // هر ۵ ثانیه بررسی کن
+    setInterval(fetchDonations, 5000);
+  </script>
 
 </body>
 </html>
