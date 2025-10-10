@@ -6,29 +6,24 @@
 <title>🎁 حمایت از میلاد کاتاکوری</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;transition:background 0.3s,color 0.3s}
-h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99}
-.button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px}
-.btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease}
-.btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05)}
-#overlay{position:fixed;inset:0;pointer-events:none}
-#donation-alert{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);text-align:center;background:rgba(0,0,0,0.9);border:2px solid #00ff99;box-shadow:0 0 50px #00ff99;border-radius:20px;padding:30px 40px;display:none;z-index:10;animation:popin 0.5s ease}
-#donation-gif{width:180px;height:180px;border-radius:12px;margin-bottom:15px}
-#donor-name{font-size:1.6em;font-weight:600;text-shadow:0 0 15px #00ff99;margin-bottom:5px}
-#donor-amount{font-size:1.4em;color:#ccffdd}
-#stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5}
-@keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
-#theme-container{position:fixed;top:15px;left:15px;display:flex;gap:10px;z-index:20}
-.theme-btn{width:50px;height:50px;cursor:pointer;border-radius:50%;border:2px solid transparent;transition:all 0.3s}
-.theme-btn.active{border:3px solid #00ff99}
-.theme-btn img{width:100%;height:100%;border-radius:50%}
-#datetime{position:fixed;top:30px;right:20px;font-size:1.2em;color:#00ff99;line-height:1.2;text-align:right;z-index:20}
-.light{background:#f0e6d2;color:#111}
-.light .btn{color:#111;border-color:#111;box-shadow:0 0 10px #111}
-.light .btn:hover{background:#111;color:#f0e6d2;box-shadow:0 0 20px #111}
+body{margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;}
+h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
+.button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
+.btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
+.btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
+#overlay{position:fixed;inset:0;pointer-events:none;}
+#donation-alert{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);text-align:center;background:rgba(0,0,0,0.9);border:2px solid #00ff99;box-shadow:0 0 50px #00ff99;border-radius:20px;padding:30px 40px;display:none;z-index:10;animation:popin 0.5s ease;}
+#donation-gif{width:180px;height:180px;border-radius:12px;margin-bottom:15px;}
+#donor-name{font-size:1.6em;font-weight:600;text-shadow:0 0 15px #00ff99;margin-bottom:5px;}
+#donor-amount{font-size:1.4em;color:#ccffdd;}
+#stats{position:fixed;bottom:8%;left:50%;transform:translateX(-50%);font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;}
+@keyframes popin{from{transform:translate(-50%,-60%) scale(0.9);opacity:0;}to{transform:translate(-50%,-50%) scale(1);opacity:1;}}
+@media(max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#donation-gif{width:140px;height:140px;}#stats{padding:15px 20px;font-size:1.1em;}}
+#datetime{position:fixed;top:20px;right:20px;font-size:1.2em;text-align:right;}
 </style>
 </head>
 <body>
+
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
 <div class="button-container">
@@ -48,56 +43,24 @@ h1{margin:60px 0 50px;font-size:2.4em;text-shadow:0 0 15px #00ff99}
   </div>
 </div>
 
-<div id="theme-container">
-  <div class="theme-btn" id="dark-theme"><img src="https://i.postimg.cc/T1dYwD7m/moon.png" alt="ماه"></div>
-  <div class="theme-btn" id="light-theme"><img src="https://i.postimg.cc/3JxQrQn6/sun.png" alt="خورشید"></div>
-</div>
-
 <div id="datetime"></div>
 
 <audio id="alert-sound" preload="auto">
   <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
 </audio>
 
-<script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/localeData.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/jalali.js"></script>
 <script>
-dayjs.extend(dayjs_plugin_localeData);
-dayjs.extend(dayjs_plugin_jalali);
-
-const darkBtn=document.getElementById('dark-theme');
-const lightBtn=document.getElementById('light-theme');
-const body=document.body;
-
-function setActive(btn){
-  darkBtn.classList.remove('active');
-  lightBtn.classList.remove('active');
-  btn.classList.add('active');
-}
-
-darkBtn.addEventListener('click',()=>{
-  body.classList.remove('light');
-  setActive(darkBtn);
-});
-lightBtn.addEventListener('click',()=>{
-  body.classList.add('light');
-  setActive(lightBtn);
-});
-
 const alertBox=document.getElementById('donation-alert');
 const donorName=document.getElementById('donor-name');
 const donorAmount=document.getElementById('donor-amount');
 const totalEl=document.getElementById('total');
 const percentEl=document.getElementById('percent');
 const alertSound=document.getElementById('alert-sound');
-
 let total=0;
 const target=60000000;
 const seenDonations=new Set();
 const DONATIONS_URL="https://api.npoint.io/9617d42448d95d736b0d";
 const currencyRates={BTC:1400000000,ETH:90000000,USDT:50000,IRR:1};
-
 function showDonation(d){
   let rate=currencyRates[d.currency]||0;
   let amountIRR=d.amount*rate;
@@ -107,10 +70,9 @@ function showDonation(d){
   totalEl.textContent=total.toLocaleString("fa-IR");
   percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);
   alertBox.style.display="block";
-  alertSound.currentTime=0; alertSound.play().catch(()=>{});
-  setTimeout(()=>{alertBox.style.display="none"},4000);
+  alertSound.currentTime=0;alertSound.play().catch(()=>{});
+  setTimeout(()=>{alertBox.style.display="none";},4000);
 }
-
 async function fetchDonations(){
   try{
     const res=await fetch(DONATIONS_URL+"?t="+Date.now(),{cache:"no-store"});
@@ -118,23 +80,32 @@ async function fetchDonations(){
     const data=await res.json();
     if(!Array.isArray(data))return;
     data.forEach(d=>{
-      if(d.ts&&!seenDonations.has(d.ts)){seenDonations.add(d.ts);showDonation(d);}
+      if(d.ts&&!seenDonations.has(d.ts)){
+        seenDonations.add(d.ts);
+        showDonation(d);
+      }
     });
   }catch(err){console.warn("❗ خطا در دریافت داده:",err.message);}
 }
-
 fetchDonations();
 setInterval(fetchDonations,5000);
 
+// شمسی سازی تاریخ و ساعت
 function updateDateTime(){
-  const now=dayjs();
-  const sh=now.format('jYYYY/jMM/jDD');
-  const week=now.format('dddd');
-  const time=now.format('HH:mm:ss');
-  document.getElementById('datetime').innerHTML=`${sh} | ${week} | ${time}`;
+  const dt=document.getElementById('datetime');
+  const today=new Date();
+  const weekdays=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+  const jDate=jalaali.toJalaali(today);
+  const y=jDate.jy,m=jDate.jm,d=jDate.jd;
+  const weekday=weekdays[today.getDay()];
+  const hh=String(today.getHours()).padStart(2,'0');
+  const mm=String(today.getMinutes()).padStart(2,'0');
+  const ss=String(today.getSeconds()).padStart(2,'0');
+  dt.textContent=`${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}  |  ${weekday}  |  ${hh}:${mm}:${ss}`;
 }
-updateDateTime();
 setInterval(updateDateTime,1000);
+updateDateTime();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/jalaali-js@1.1.0/dist/jalaali.min.js"></script>
 </body>
 </html>
