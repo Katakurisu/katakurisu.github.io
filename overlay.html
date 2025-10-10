@@ -86,16 +86,6 @@ body {
   animation:shakeGrow 1s ease;
 }
 
-@keyframes fadein {from{opacity:0;}to{opacity:1;}}
-@keyframes shakeGrow {
-  0%{transform:scale(1) translate(0,0);}
-  20%{transform:scale(1.1) translate(-3px,2px);}
-  40%{transform:scale(1.05) translate(2px,-2px);}
-  60%{transform:scale(1.1) translate(-2px,1px);}
-  80%{transform:scale(1.05) translate(1px,-1px);}
-  100%{transform:scale(1) translate(0,0);}
-}
-
 /* -------------------- 🎯 بوردر متحرک -------------------- */
 #donation-border {
   position:absolute;
@@ -107,7 +97,30 @@ body {
   pointer-events:none;
 }
 
-/* انیمیشن هماهنگ با ویدیو (13 ثانیه) */
+/* دکمه تست */
+button#test-btn {
+  position:fixed;
+  top:60px;
+  right:20px;
+  z-index:20;
+  padding:10px 20px;
+  font-size:1em;
+  background:#000;
+  color:#00ff99;
+  border:2px solid #00ff99;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+@keyframes fadein {from{opacity:0;}to{opacity:1;}}
+@keyframes shakeGrow {
+  0%{transform:scale(1) translate(0,0);}
+  20%{transform:scale(1.1) translate(-3px,2px);}
+  40%{transform:scale(1.05) translate(2px,-2px);}
+  60%{transform:scale(1.1) translate(-2px,1px);}
+  80%{transform:scale(1.05) translate(1px,-1px);}
+  100%{transform:scale(1) translate(0,0);}
+}
 @keyframes borderFade {
   0%{opacity:0;}
   10%{opacity:1;}
@@ -140,6 +153,9 @@ body {
 
 <div id="clock"></div>
 
+<!-- دکمه تست گیف دونیت -->
+<button id="test-btn" onclick="testDonation()">Test Donation</button>
+
 <script>
 /* -------------------- ⏰ ساعت زنده -------------------- */
 function updateClock(){
@@ -152,7 +168,7 @@ function updateClock(){
 setInterval(updateClock,1000);
 updateClock();
 
-/* -------------------- 💰 اتصالات وبهوک -------------------- */
+/* -------------------- 💰 المان‌ها -------------------- */
 const alertBox=document.getElementById('donation-alert');
 const donorText=document.getElementById('donor-text');
 const videoEl=document.getElementById('donation-video');
@@ -163,51 +179,41 @@ const donationBorder=document.getElementById('donation-border');
 
 let total=0,target=60000000;
 
-async function fetchDonations(){
-  try{
-    const res=await fetch('https://eoyf8grpms15wjd.m.pipedream.net',{cache:'no-store'});
-    const data=await res.json();
-    data.forEach(d=>{
-      if(!d.handled){
-        d.handled=true;
-        showDonation(d);
-      }
-    });
-  }catch(e){console.warn(e);}
-}
-setInterval(fetchDonations,5000);
-
 /* -------------------- 🎥 نمایش دونیت و افکت -------------------- */
 function showDonation(d){
   let amountIRR=d.amount*d.currency_rate||d.amount||0;
   total+=amountIRR;
   donorText.textContent=(d.name||'حامی ناشناس')+' | '+amountIRR.toLocaleString('fa-IR')+' ریال'+(d.message?(' | '+d.message):'');
-
   totalEl.textContent=total.toLocaleString('fa-IR');
   percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);
 
-  // نمایش Alert و ویدیو
   alertBox.style.display='block';
   videoEl.currentTime=0;
   videoEl.play();
 
-  // نمایش متن افکت با انیمیشن لرزش و بزرگ شدن
   donationEffect.style.display='block';
   donationEffect.style.animation='shakeGrow 1s ease';
 
-  // نمایش بوردر نازک با انیمیشن هماهنگ با ویدیو (13 ثانیه)
   donationBorder.style.animation='borderFade 13s linear';
   donationBorder.style.opacity='1';
 
-  // مخفی کردن بعد از 13 ثانیه
   setTimeout(()=>{
     alertBox.style.display='none';
     donationEffect.style.display='none';
     donationBorder.style.opacity='0';
   },13000);
 }
+
+/* -------------------- تابع دکمه تست -------------------- */
+function testDonation(){
+  showDonation({
+    name:'حامی تست',
+    amount:50000,
+    currency_rate:1,
+    message:'این یک تست است'
+  });
+}
 </script>
 
 </body>
 </html>
-
