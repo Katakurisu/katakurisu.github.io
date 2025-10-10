@@ -11,37 +11,37 @@
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000; /* دارک بک‌گراند */
+  background: radial-gradient(circle at center, #000000 0%, #050505 100%);
   color: #00ff99;
-  overflow: hidden;
   text-align: center;
   direction: rtl;
+  min-height: 100vh;
 }
 
 h1 {
-  margin-top: 60px; /* فاصله بیشتر از بالا */
-  margin-bottom: 40px;
-  color: #00ff99;
-  text-shadow: 0 0 15px #00ff99;
-  font-size: 2.2em;
+  margin: 60px 0 50px 0;
+  font-size: 2.4em;
+  text-shadow: 0 0 12px #00ff99;
 }
 
-.buttons {
-  margin-bottom: 60px; /* فاصله بین دکمه‌ها و آمار */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 70px;
 }
 
 .btn {
   display: inline-block;
-  margin: 0 12px;
-  padding: 14px 28px;
-  background: transparent;
-  color: #00ff99;
-  border: 2px solid #00ff99;
-  border-radius: 10px;
-  text-decoration: none;
+  padding: 16px 32px;
   font-size: 1.1em;
+  color: #00ff99;
+  text-decoration: none;
+  border: 2px solid #00ff99;
+  border-radius: 12px;
+  box-shadow: 0 0 10px #00ff99;
   transition: all 0.3s ease;
-  box-shadow: 0 0 8px #00ff99;
 }
 .btn:hover {
   background: #00ff99;
@@ -62,29 +62,28 @@ h1 {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0,0,0,0.85);
   border: 2px solid #00ff99;
   box-shadow: 0 0 40px #00ff99;
-  border-radius: 18px;
-  padding: 28px;
+  border-radius: 20px;
+  padding: 30px;
   display: none;
-  animation: popin 0.5s ease;
   z-index: 10;
+  animation: popin 0.5s ease;
 }
 
 #donation-gif {
   width: 180px;
   height: 180px;
-  border-radius: 12px;
   margin-bottom: 15px;
+  border-radius: 12px;
 }
 
 #donor-name {
   font-size: 1.6em;
   font-weight: 600;
-  color: #00ff99;
   text-shadow: 0 0 15px #00ff99;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 #donor-amount {
@@ -93,31 +92,49 @@ h1 {
 }
 
 #stats {
-  position: absolute;
+  position: fixed;
   bottom: 8%;
   left: 50%;
   transform: translateX(-50%);
   font-size: 1.3em;
-  color: #00ff99;
-  text-shadow: 0 0 8px #00ff99;
   background: rgba(0,0,0,0.7);
-  border-radius: 12px;
-  padding: 15px 25px;
-  line-height: 1.8; /* فاصله بین خطوط */
+  border-radius: 14px;
+  padding: 20px 30px;
+  color: #00ff99;
+  text-shadow: 0 0 10px #00ff99;
+  line-height: 1.8;
 }
 
 @keyframes popin {
   from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
   to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
+
+@media (max-width: 500px) {
+  .btn {
+    padding: 12px 20px;
+    font-size: 1em;
+  }
+  h1 {
+    font-size: 2em;
+    margin: 40px 0 40px 0;
+  }
+  #donation-gif {
+    width: 140px;
+    height: 140px;
+  }
+  #stats {
+    padding: 15px 20px;
+    font-size: 1.1em;
+  }
+}
 </style>
 </head>
-
 <body>
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
-<div class="buttons">
+<div class="button-container">
   <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
   <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
 </div>
@@ -196,5 +213,6 @@ async function fetchDonations() {
 fetchDonations();
 setInterval(fetchDonations, 5000);
 </script>
+
 </body>
 </html>
