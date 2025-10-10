@@ -3,24 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>حمایت از میلاد کاتاکوری</title>
+<title>🎁 حمایت از میلاد کاتاکوری</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap');
-
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background: radial-gradient(circle at center, #000000 60%, #050505 100%);
-  color: #00FF99;
+  background: radial-gradient(circle at center, #000 60%, #050505 100%);
+  color: #00ff99;
   overflow: hidden;
   text-align: center;
+  direction: rtl;
 }
 
 h1 {
-  margin-top: 30px;
-  color: #00FF99;
-  text-shadow: 0 0 10px #00FF99;
+  margin-top: 40px;
+  color: #00ff99;
+  text-shadow: 0 0 12px #00ff99;
   font-size: 2.2em;
 }
 
@@ -29,41 +30,38 @@ h1 {
   margin: 12px;
   padding: 14px 28px;
   background: transparent;
-  color: #00FF99;
-  border: 2px solid #00FF99;
-  border-radius: 8px;
+  color: #00ff99;
+  border: 2px solid #00ff99;
+  border-radius: 10px;
   text-decoration: none;
   font-size: 1.1em;
   transition: all 0.3s ease;
-  box-shadow: 0 0 8px #00FF99;
+  box-shadow: 0 0 8px #00ff99;
 }
 .btn:hover {
-  background: #00FF99;
+  background: #00ff99;
   color: #000;
-  box-shadow: 0 0 20px #00FF99;
+  box-shadow: 0 0 25px #00ff99;
   transform: scale(1.05);
 }
 
 #overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   pointer-events: none;
 }
 
 #donation-alert {
   position: absolute;
-  top: 30%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background: rgba(0, 0, 0, 0.7);
-  border: 2px solid #00FF99;
-  box-shadow: 0 0 30px #00FF99;
-  border-radius: 20px;
-  padding: 30px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00ff99;
+  box-shadow: 0 0 40px #00ff99;
+  border-radius: 18px;
+  padding: 28px;
   display: none;
   animation: popin 0.5s ease;
 }
@@ -71,20 +69,20 @@ h1 {
 #donation-gif {
   width: 180px;
   height: 180px;
-  margin-bottom: 15px;
-  border-radius: 10px;
+  border-radius: 12px;
+  margin-bottom: 12px;
 }
 
 #donor-name {
   font-size: 1.6em;
   font-weight: 600;
-  color: #00FF99;
-  text-shadow: 0 0 15px #00FF99;
+  color: #00ff99;
+  text-shadow: 0 0 15px #00ff99;
 }
 
 #donor-amount {
   font-size: 1.4em;
-  color: #CCFFDD;
+  color: #ccffdd;
 }
 
 #stats {
@@ -93,8 +91,11 @@ h1 {
   left: 50%;
   transform: translateX(-50%);
   font-size: 1.3em;
-  color: #00FF99;
-  text-shadow: 0 0 8px #00FF99;
+  color: #00ff99;
+  text-shadow: 0 0 8px #00ff99;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  padding: 10px 20px;
 }
 
 @keyframes popin {
@@ -117,13 +118,16 @@ h1 {
     <p id="donor-name"></p>
     <p id="donor-amount"></p>
   </div>
+
   <div id="stats">
     <p>💰 جمع کل: <span id="total">0</span> ریال</p>
     <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
   </div>
 </div>
 
-<audio id="alert-sound" src="https://www.myinstants.com/media/sounds/alert.mp3"></audio>
+<audio id="alert-sound" preload="auto">
+  <source src="https://www.myinstants.com/media/sounds/alert.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 const alertBox = document.getElementById('donation-alert');
@@ -134,26 +138,32 @@ const percentEl = document.getElementById('percent');
 const alertSound = document.getElementById('alert-sound');
 
 let total = 0;
-const target = 60000000; // هدف: ۶۰٬۰۰۰٬۰۰۰ ریال
+const target = 60000000; // 🎯 هدف: ۶۰٬۰۰۰٬۰۰۰ ریال
 const seenDonations = new Set();
 const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
 
+const currencyRates = {
+  BTC: 1400000000,
+  ETH: 90000000,
+  USDT: 50000,
+  IRR: 1
+};
+
 function showDonation(d) {
-  let amountIRR = 0;
-  if (d.currency === "IRR") amountIRR = d.amount;
-  else {
-    const rates = { BTC: 1400000000, ETH: 90000000, USDT: 50000 };
-    amountIRR = d.amount * (rates[d.currency] || 0);
-  }
+  let rate = currencyRates[d.currency] || 0;
+  let amountIRR = d.amount * rate;
 
   total += amountIRR;
-  donorName.textContent = d.name;
-  donorAmount.textContent = amountIRR.toLocaleString() + " ریال";
-  alertBox.style.display = "block";
-  alertSound.play();
 
-  totalEl.textContent = total.toLocaleString();
+  donorName.textContent = d.name || "حامی ناشناس";
+  donorAmount.textContent = amountIRR.toLocaleString("fa-IR") + " ریال";
+
+  totalEl.textContent = total.toLocaleString("fa-IR");
   percentEl.textContent = Math.min(((total / target) * 100).toFixed(1), 100);
+
+  alertBox.style.display = "block";
+  alertSound.currentTime = 0;
+  alertSound.play().catch(()=>{});
 
   setTimeout(() => {
     alertBox.style.display = "none";
@@ -162,20 +172,26 @@ function showDonation(d) {
 
 async function fetchDonations() {
   try {
-    const res = await fetch(DONATIONS_URL + "?t=" + Date.now());
+    const res = await fetch(DONATIONS_URL + "?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error("Fetch failed");
     const data = await res.json();
+    
+    if (!Array.isArray(data)) return;
+    
     data.forEach(d => {
-      if (!seenDonations.has(d.ts)) {
+      if (d.ts && !seenDonations.has(d.ts)) {
         seenDonations.add(d.ts);
         showDonation(d);
       }
     });
-  } catch (e) {
-    console.error("Error fetching donations:", e);
+  } catch (err) {
+    console.warn("❗ خطا در دریافت داده:", err.message);
   }
 }
 
-// هر ۵ ثانیه بررسی کن
+// اولین بار فوراً اجرا شود
+fetchDonations();
+// سپس هر ۵ ثانیه تکرار شود
 setInterval(fetchDonations, 5000);
 </script>
 </body>
