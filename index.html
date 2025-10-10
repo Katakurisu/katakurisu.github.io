@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎁 حمایت از میلاد کاتاکوری</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
 /* === دارک تم + نئون سبز متحرک === */
 body {
@@ -20,7 +22,11 @@ body {
 /* === انیمیشن flicker برای متن === */
 @keyframes flicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-    text-shadow: 0 0 5px #00ff99, 0 0 10px #00ff99, 0 0 20px #00ff99, 0 0 40px #00ff99;
+    text-shadow:
+      0 0 5px #00ff99,
+      0 0 10px #00ff99,
+      0 0 20px #00ff99,
+      0 0 40px #00ff99;
     opacity: 1;
   }
   20%, 24%, 55% {
@@ -37,6 +43,15 @@ h1 {
 }
 
 /* === دکمه‌ها با flicker glow === */
+@keyframes neon-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px #00ff99, 0 0 10px #00ff99, 0 0 20px #00ff99;
+  }
+  50% {
+    box-shadow: 0 0 10px #00ff99, 0 0 20px #00ff99, 0 0 40px #00ff99;
+  }
+}
+
 .button-container {
   display: flex;
   justify-content: center;
@@ -55,22 +70,21 @@ h1 {
   border-radius: 12px;
   box-shadow: 0 0 5px #00ff99, 0 0 10px #00ff99, 0 0 20px #00ff99;
   transition: all 0.3s ease;
-  animation: neon-glow 2s infinite;
+  animation: neon-glow 1.5s infinite alternate;
 }
 .btn:hover {
   background: #00ff99;
   color: #000000;
-  box-shadow: 0 0 10px #00ff99, 0 0 20px #00ff99, 0 0 40px #00ff99;
+  box-shadow: 0 0 10px #00ff99, 0 0 20px #00ff99, 0 0 50px #00ff99;
   transform: scale(1.08);
 }
 
-@keyframes neon-glow {
-  0%, 100% { box-shadow: 0 0 5px #00ff99, 0 0 10px #00ff99, 0 0 20px #00ff99; }
-  50% { box-shadow: 0 0 10px #00ff99, 0 0 20px #00ff99, 0 0 40px #00ff99; }
-}
-
 /* === Overlay donation alert با glow === */
-#overlay { position: fixed; inset: 0; pointer-events: none; }
+#overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
 
 #donation-alert {
   position: absolute;
@@ -80,7 +94,10 @@ h1 {
   text-align: center;
   background: rgba(0,0,0,0.95);
   border: 2px solid #00ff99;
-  box-shadow: 0 0 20px #00ff99, 0 0 40px #00ff99, 0 0 60px #00ff99;
+  box-shadow:
+    0 0 20px #00ff99,
+    0 0 40px #00ff99,
+    0 0 60px #00ff99;
   border-radius: 20px;
   padding: 30px 40px;
   display: none;
@@ -99,13 +116,19 @@ h1 {
 #donor-name {
   font-size: 1.6em;
   font-weight: 600;
-  text-shadow: 0 0 5px #00ff99, 0 0 10px #00ff99, 0 0 20px #00ff99;
+  text-shadow:
+    0 0 5px #00ff99,
+    0 0 10px #00ff99,
+    0 0 20px #00ff99;
   margin-bottom: 5px;
 }
 
-#donor-amount { font-size: 1.4em; color: #ccffdd; }
+#donor-amount {
+  font-size: 1.4em;
+  color: #ccffdd;
+}
 
-/* === کارت آمار با نئون glow === */
+/* === کارت آمار با glow === */
 #stats {
   position: fixed;
   bottom: 8%;
@@ -176,17 +199,47 @@ let total = 0;
 const target = 60000000;
 const seenDonations = new Set();
 const DONATIONS_URL = "https://api.npoint.io/9617d42448d95d736b0d";
+
 const currencyRates = { BTC: 1400000000, ETH: 90000000, USDT: 50000, IRR: 1 };
 
 function showDonation(d) {
   let rate = currencyRates[d.currency] || 0;
   let amountIRR = d.amount * rate;
+
   total += amountIRR;
+
   donorName.textContent = d.name || "حامی ناشناس";
   donorAmount.textContent = amountIRR.toLocaleString("fa-IR") + " ریال";
+
   totalEl.textContent = total.toLocaleString("fa-IR");
   percentEl.textContent = Math.min(((total / target) * 100).toFixed(1), 100);
+
   alertBox.style.display = "block";
   alertSound.currentTime = 0;
   alertSound.play().catch(()=>{});
-  setTimeout
+
+  setTimeout(() => { alertBox.style.display = "none"; }, 4000);
+}
+
+async function fetchDonations() {
+  try {
+    const res = await fetch(DONATIONS_URL + "?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error("Fetch failed");
+    const data = await res.json();
+    if (!Array.isArray(data)) return;
+    
+    data.forEach(d => {
+      if (d.ts && !seenDonations.has(d.ts)) {
+        seenDonations.add(d.ts);
+        showDonation(d);
+      }
+    });
+  } catch (err) { console.warn("❗ خطا در دریافت داده:", err.message); }
+}
+
+fetchDonations();
+setInterval(fetchDonations, 5000);
+</script>
+
+</body>
+</html>
