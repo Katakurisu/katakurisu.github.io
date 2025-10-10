@@ -1,141 +1,83 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>حمایت مالی - Katakuri</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎁 حمایت از میلاد کاتاکوری</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  body {
-    font-family: "Vazir", sans-serif;
-    background-color: #e7e5dc;
-    color: #222;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    overflow: hidden;
-  }
-
-  /* ساعت بالا راست */
-  #clock {
-    position: fixed;
-    top: 20px;
-    right: 25px;
-    font-size: 1.4rem;
-    background: rgba(255, 255, 255, 0.4);
-    padding: 8px 14px;
-    border-radius: 10px;
-    backdrop-filter: blur(6px);
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-
-  h1 {
-    font-size: 2.2rem;
-    margin-bottom: 30px;
-  }
-
-  .goal-box {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-
-  .goal {
-    font-size: 1.4rem;
-    margin: 8px 0;
-  }
-
-  .donate-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .donate-btn {
-    font-size: 1.2rem;
-    padding: 15px 35px;
-    border-radius: 30px;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-
-  .donate-btn:hover {
-    transform: scale(1.05);
-  }
-
-  .crypto {
-    background-color: #f7931a;
-    color: white;
-  }
-
-  .rial {
-    background-color: #4caf50;
-    color: white;
-  }
-
-  /* نوتیفیکیشن آلارم */
-  #notification {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255,255,255,0.9);
-    color: #111;
-    padding: 25px 40px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.25);
-    font-size: 1.5rem;
-    display: none;
-    z-index: 10;
-  }
+body{margin:0;font-family:'Vazirmatn',sans-serif;background-color:#000;color:#00ff99;text-align:center;direction:rtl;min-height:100vh;}
+h1{margin:60px 0 50px 0;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
+.button-container{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:80px;}
+.btn{display:inline-block;padding:16px 32px;font-size:1.2em;color:#00ff99;text-decoration:none;border:2px solid #00ff99;border-radius:12px;box-shadow:0 0 15px #00ff99;transition:all 0.3s ease;}
+.btn:hover{background:#00ff99;color:#000;box-shadow:0 0 30px #00ff99;transform:scale(1.05);}
+#stats{font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;display:inline-block;}
+#clock{font-size:1.4em;margin-bottom:30px;text-shadow:0 0 12px #00ff99;}
+@media(max-width:500px){.btn{padding:12px 20px;font-size:1em;}h1{font-size:2em;margin:40px 0 40px 0;}#stats{padding:15px 20px;font-size:1.1em;}}
 </style>
 </head>
-
 <body>
-  <div id="clock"></div>
 
-  <h1>💖 حمایت از استریم کاتاکوری</h1>
+<h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
-  <div class="goal-box">
-    <div class="goal">🎯 هدف: ۵٬۰۰۰٬۰۰۰ تومان</div>
-    <div class="goal">💰 جمع فعلی: ۲٬۳۵۰٬۰۰۰ تومان</div>
-  </div>
+<div id="clock">--:--:--</div>
 
-  <div class="donate-buttons">
-    <button class="donate-btn rial" onclick="window.open('https://zarinp.al/katakuri','_blank')">پرداخت ریالی</button>
-    <button class="donate-btn crypto" onclick="window.open('https://nowpayments.io/donation?api_key=0289ad3c-32ce-4361-96a2-d2951b0ee943','_blank')">پرداخت کریپتو</button>
-  </div>
+<div class="button-container">
+  <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
+  <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank">₿ پرداخت کریپتو</a>
+</div>
 
-  <div id="notification">✅ پرداخت جدید دریافت شد!</div>
+<div id="stats">
+  💰 جمع کل: <span id="total">0</span> ریال<br>
+  🎯 درصد هدف: <span id="percent">0</span>%
+</div>
+
+<audio id="alert-sound" preload="auto">
+  <source src="alert-sound.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-  // تبدیل اعداد انگلیسی به فارسی
-  function toPersianDigits(num) {
-    return num.toString().replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
-  }
+const totalEl=document.getElementById('total');
+const percentEl=document.getElementById('percent');
+const alertSound=document.getElementById('alert-sound');
+let total=0,target=60000000;
 
-  // ساعت زنده با اعداد فارسی
-  function updateClock() {
-    const now = new Date();
-    const h = now.getHours().toString().padStart(2, '0');
-    const m = now.getMinutes().toString().padStart(2, '0');
-    const s = now.getSeconds().toString().padStart(2, '0');
-    document.getElementById('clock').textContent = toPersianDigits(`${h}:${m}:${s}`);
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
+// تابع نمایش ساعت فارسی
+function updateClock(){
+  const now=new Date();
+  let h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+  const pad=(n)=>n.toString().padStart(2,'0');
+  totalEl.textContent = total.toLocaleString('fa-IR');
+  document.getElementById('clock').textContent=`${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+setInterval(updateClock,1000);
+updateClock();
 
-  // نمایش نوتیفیکیشن شبیه تست پرداخت
-  function showNotification() {
-    const n = document.getElementById("notification");
-    n.style.display = "block";
-    setTimeout(() => n.style.display = "none", 13000);
-  }
+// دریافت دونیت‌ها از وبهوک Pipedream
+async function fetchDonations(){
+  try{
+    const res=await fetch('https://eoyf8grpms15wjd.m.pipedream.net',{cache:'no-store'});
+    if(!res.ok)throw new Error('Fetch failed');
+    const data=await res.json();
+    if(!Array.isArray(data))return;
+    data.forEach(d=>{
+      if(d.amount){
+        total+=d.amount;
+        percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);
+        totalEl.textContent=total.toLocaleString('fa-IR');
+        alertSound.currentTime=0;
+        alertSound.play().catch(()=>{});
+        // پیام به overlay ارسال شود
+        const overlay = window.open('overlay.html', 'overlay');
+        if(overlay) overlay.postMessage('donation','*');
+      }
+    });
+  }catch(err){console.warn(err);}
+}
 
-  // تست دستی آلارم (برای آزمایش)
-  // showNotification();
+// بررسی وبهوک هر 5 ثانیه
+setInterval(fetchDonations,5000);
 </script>
+
 </body>
 </html>
