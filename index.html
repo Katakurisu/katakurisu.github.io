@@ -12,7 +12,7 @@
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background-color: #000000 !important; /* بک‌گراند مشکی خالص */
+  background-color: #000000 !important;
   color: #00ff99;
   text-align: center;
   direction: rtl;
@@ -21,9 +21,34 @@ body {
 
 /* === عنوان اصلی === */
 h1 {
-  margin: 60px 0 50px 0;
+  margin: 60px 0 30px 0;
   font-size: 2.4em;
   text-shadow: 0 0 15px #00ff99;
+}
+
+/* === ساعت و تاریخ بالای صفحه === */
+#clock {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  font-size: 1.2em;
+  color: #00ff99;
+  text-shadow: 0 0 10px #00ff99;
+  z-index: 20;
+}
+
+/* === انتخاب زبان بالای صفحه === */
+#language-selector {
+  position: fixed;
+  top: 15px;
+  left: 20px;
+  font-size: 1em;
+  background: #000;
+  border: 2px solid #00ff99;
+  border-radius: 8px;
+  color: #00ff99;
+  padding: 5px 10px;
+  z-index: 20;
 }
 
 /* === دکمه‌ها در container با فاصله مناسب === */
@@ -125,7 +150,7 @@ h1 {
   }
   h1 {
     font-size: 2em;
-    margin: 40px 0 40px 0;
+    margin: 40px 0 30px 0;
   }
   #donation-gif {
     width: 140px;
@@ -135,11 +160,27 @@ h1 {
     padding: 15px 20px;
     font-size: 1.1em;
   }
+  #clock {
+    font-size: 1em;
+  }
+  #language-selector {
+    font-size: 0.9em;
+    padding: 4px 8px;
+  }
 }
 </style>
 </head>
 
 <body>
+
+<!-- ساعت و تاریخ -->
+<div id="clock"></div>
+
+<!-- انتخاب زبان -->
+<select id="language-selector">
+  <option value="fa">فارسی</option>
+  <option value="en">English</option>
+</select>
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
@@ -166,6 +207,31 @@ h1 {
 </audio>
 
 <script>
+// === ساعت و تاریخ زنده ===
+function updateClock() {
+  const now = new Date();
+  const hours = now.getHours().toString().padStart(2,"0");
+  const minutes = now.getMinutes().toString().padStart(2,"0");
+  const seconds = now.getSeconds().toString().padStart(2,"0");
+  const day = now.getDate().toString().padStart(2,"0");
+  const month = (now.getMonth()+1).toString().padStart(2,"0");
+  const year = now.getFullYear();
+  const lang = document.getElementById("language-selector").value;
+  let timeString;
+  if(lang==="fa"){
+    timeString = `🕒 ${hours}:${minutes}:${seconds} | 📅 ${day}/${month}/${year}`;
+  }else{
+    timeString = `🕒 ${hours}:${minutes}:${seconds} | 📅 ${year}-${month}-${day}`;
+  }
+  document.getElementById("clock").textContent = timeString;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// === تغییر زبان ===
+document.getElementById("language-selector").addEventListener("change", updateClock);
+
+// === Donation Alert ===
 const alertBox = document.getElementById('donation-alert');
 const donorName = document.getElementById('donor-name');
 const donorAmount = document.getElementById('donor-amount');
