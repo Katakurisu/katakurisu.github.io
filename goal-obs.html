@@ -6,81 +6,84 @@
 <title>🎯 هدف حمایت (OBS)</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  body {
-    margin:0;
-    background: transparent; /* شفافیت برای OBS */
-    font-family: 'Vazirmatn', sans-serif;
-    overflow: hidden;
-  }
+body {
+  margin:0;
+  background: transparent;
+  font-family: 'Vazirmatn', sans-serif;
+  overflow: hidden;
+  direction: rtl; /* برای پر شدن از راست به چپ */
+}
 
-  /* -------------------- والد برای وسط و بزرگ کردن -------------------- */
-  #goal-wrapper {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(2); /* بزرگ شدن 2 برابر */
-    transform-origin: center center;
-    z-index: 10;
-  }
+/* والد برای وسط صفحه و بزرگ شدن */
+#goal-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(2);
+  transform-origin: center center;
+  z-index: 10;
+  text-align: right;
+}
 
-  /* -------------------- کانتینر هدف -------------------- */
-  #goal-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+/* کانتینر هدف */
+#goal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
 
-  /* -------------------- عنوان هدف -------------------- */
-  #goal-title {
-    font-size: 2em;
-    font-weight: 600;
-    color: red;
-    text-shadow: 0 0 8px red;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+/* عنوان هدف */
+#goal-title {
+  font-size: 2em;
+  font-weight: 600;
+  color: red;
+  text-shadow: 0 0 8px red;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  #goal-title img {
-    width: 40px;
-    height: 40px;
-  }
+#goal-title img {
+  width: 40px;
+  height: 40px;
+}
 
-  /* -------------------- نوار هدف -------------------- */
-  #goal-bar-wrapper {
-    width: 400px;
-    height: 40px;
-    background: transparent;
-    border: 4px solid yellow; /* دور نوار زرد */
-    border-radius: 20px;
-    padding: 2px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-  }
+/* نوار هدف */
+#goal-bar-wrapper {
+  width: 400px;
+  height: 40px;
+  background: transparent;
+  border: 4px solid yellow;
+  border-radius: 20px;
+  padding: 2px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
 
-  #goal-bar {
-    height: 100%;
-    width: 0%;
-    background-color: #00ff99; /* سبز فسفری */
-    border-radius: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 10px;
-    box-sizing: border-box;
-    color: black;
-    font-weight: bold;
-    text-shadow: 0 0 5px #fff;
-    font-size: 1em;
-  }
+#goal-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #00ff99; /* سبز فسفری */
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+  color: black;
+  font-weight: bold;
+  text-shadow: 0 0 5px #fff;
+  font-size: 1em;
+  direction: ltr; /* برای جدا شدن درصد و مبلغ داخل نوار */
+}
 
-  /* -------------------- متن درصد -------------------- */
-  #goal-percent {
-    font-weight: bold;
-    color: black;
-  }
+/* درصد و مقدار */
+#goal-percent { font-weight: bold; color: black; }
+#goal-amount { font-weight: bold; color: black; }
+
 </style>
 </head>
 <body>
@@ -89,41 +92,44 @@
   <div id="goal-container">
     <div id="goal-title">
       هدف: خرید وبکم
-      <img src="https://i.postimg.cc/3wXgFsh5/gift.png" alt="هدیه">
+      <img src="https://katakurisu.github.io/gift.png" alt="هدیه">
     </div>
     <div id="goal-bar-wrapper">
       <div id="goal-bar">
-        <span id="goal-percent">0%</span>
-        <span id="goal-amount">0 از 600000 تومان</span>
+        <span id="goal-percent">۰%</span>
+        <span id="goal-amount">۰ از ۶۰۰۰۰۰ تومان</span>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  // -------------------- متغیرها --------------------
-  let total = 0;
-  const target = 600000; // مبلغ هدف به تومان
-  const goalBar = document.getElementById('goal-bar');
-  const percentText = document.getElementById('goal-percent');
-  const amountText = document.getElementById('goal-amount');
+const goalBar = document.getElementById('goal-bar');
+const percentText = document.getElementById('goal-percent');
+const amountText = document.getElementById('goal-amount');
 
-  // -------------------- تست آپدیت هدف --------------------
-  // این تابع برای تست در مرورگره، در OBS واقعی با وبهوک جایگزین میشه
-  function addDonation(amount) {
-    total += amount;
-    if(total > target) total = target;
-    const percent = Math.floor((total / target) * 100);
-    percentText.textContent = percent + '%';
-    amountText.textContent = total.toLocaleString('fa-IR') + ' از ' + target.toLocaleString('fa-IR') + ' تومان';
-    goalBar.style.width = percent + '%';
-  }
+let total = 0;
+const target = 600000; // تومان
 
-  // -------------------- تست اولیه --------------------
-  setInterval(() => {
-    const randomDonation = Math.floor(Math.random() * 50000); // تست
-    addDonation(randomDonation);
-  }, 5000);
+function toPersian(num) {
+  return num.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+}
+
+// برای تست پر شدن نوار
+function addDonation(amount) {
+  total += amount;
+  if(total > target) total = target;
+  const percent = Math.floor((total / target) * 100);
+  percentText.textContent = toPersian(percent) + '%';
+  amountText.textContent = toPersian(total) + ' از ' + toPersian(target) + ' تومان';
+  goalBar.style.width = percent + '%';
+}
+
+// تست اولیه هر 5 ثانیه
+setInterval(() => {
+  const randomDonation = Math.floor(Math.random() * 50000);
+  addDonation(randomDonation);
+}, 5000);
 </script>
 
 </body>
