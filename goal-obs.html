@@ -6,18 +6,16 @@
 <title>Overlay حمایت (ویژه OBS)</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* -------------------- ⚙️ تنظیمات پایه و تم -------------------- */
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background: transparent; /* شفافیت برای OBS */
+  background: transparent;
   color: #00ff99;
   text-align: center;
   direction: rtl;
   overflow: hidden;
 }
 
-/* -------------------- 🎬 جعبه نمایش دونیت -------------------- */
 #overlay {
   position: fixed;
   inset: 0;
@@ -25,7 +23,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  pointer-events: none; /* اجازه نده ماوس روش بیاد */
+  pointer-events: none;
 }
 
 #donation-alert {
@@ -33,7 +31,7 @@ body {
   text-align: center;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 20px;
-  padding: 25px 35px;
+  padding: 30px 40px;
   display: none;
   z-index: 10;
   overflow: hidden;
@@ -41,8 +39,8 @@ body {
 }
 
 #donation-video {
-  width: 200px;
-  height: 200px;
+  width: 250px;
+  height: 250px;
   border-radius: 14px;
   margin-bottom: 15px;
   object-fit: cover;
@@ -50,7 +48,7 @@ body {
 }
 
 #donor-text {
-  font-size: 1.3em;
+  font-size: 1.5em;
   text-shadow: 0 0 15px #00ff99;
   color: #00ff99;
 }
@@ -68,70 +66,79 @@ body {
 @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
 @keyframes borderFade { 0% { opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }
 
-@media (max-width: 500px) {
-  #donation-video { width: 140px; height: 140px; }
-  #donor-text { font-size: 1.1em; }
-}
-
-/* -------------------- 🎯 نوار هدف -------------------- */
 #goal-container {
   position: fixed;
   bottom: 20px;
   left: 20px;
-  width: 320px;
-  padding: 5px;
+  width: 400px;
+  padding: 10px;
   z-index: 5;
+}
+
+#goal-title-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+#goal-icon {
+  width: 40px;
+  height: 40px;
+  margin-left: 10px;
 }
 
 #goal-title {
   color: #ff0000;
   font-weight: bold;
+  font-size: 1.6em;
   text-shadow: 0 0 5px #ff0000;
-  margin-bottom: 5px;
 }
 
 #goal-bar {
   position: relative;
   width: 100%;
-  height: 25px;
-  background: rgba(255, 255, 255, 0.05); /* شفاف */
-  border-radius: 12px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
   overflow: hidden;
-  border: 2px solid #FFD700; /* دور نوار */
+  border: 3px solid #FFD700;
 }
 
 #goal-fill {
   height: 100%;
   width: 0%;
-  background: #00FF99; /* رنگ پر شدن */
-  border-radius: 12px 0 0 12px;
-  transition: width 0.5s ease;
+  background: #00FF99;
+  border-radius: 15px 0 0 15px;
+  transition: width 0.7s ease; /* پرش کوتاه */
 }
 
 #goal-text-left {
   position: absolute;
-  left: 5px;
+  left: 8px;
   top: 50%;
   transform: translateY(-50%);
-  color: #ffffff;
+  color: #000;
   font-weight: bold;
-  text-shadow: 0 0 5px #000;
+  text-shadow: 0 0 5px #FFF;
+  font-size: 1.1em;
 }
 
 #goal-text-right {
   position: absolute;
-  right: 5px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  color: #ffffff;
+  color: #000;
   font-weight: bold;
-  text-shadow: 0 0 5px #000;
+  text-shadow: 0 0 5px #FFF;
+  font-size: 1.1em;
 }
+
 </style>
 </head>
 <body>
 
-<!-- -------------------- 🎁 نمایش دونیت -------------------- -->
 <div id="overlay">
   <div id="donation-alert">
     <div id="donation-border"></div>
@@ -140,9 +147,11 @@ body {
   </div>
 </div>
 
-<!-- -------------------- 🎯 نوار هدف -------------------- -->
 <div id="goal-container">
-  <div id="goal-title">خرید وبکم</div>
+  <div id="goal-title-container">
+    <div id="goal-title">هدف: خرید وبکم</div>
+    <img id="goal-icon" src="https://cdn-icons-png.flaticon.com/512/149/149218.png" alt="کادو">
+  </div>
   <div id="goal-bar">
     <div id="goal-fill"></div>
     <div id="goal-text-left">0%</div>
@@ -151,16 +160,14 @@ body {
 </div>
 
 <script>
-/* -------------------- 🎮 متغیرها -------------------- */
 const alertBox = document.getElementById('donation-alert');
 const donorText = document.getElementById('donor-text');
 const videoEl = document.getElementById('donation-video');
 const donationBorder = document.getElementById('donation-border');
 
 let total = 0;
-const target = 60000; // تومان
+const target = 60000;
 
-/* -------------------- 🌐 اتصال وبهوک -------------------- */
 async function fetchDonations() {
   try {
     const res = await fetch('https://eoyf8grpms15wjd.m.pipedream.net', { cache: 'no-store' });
@@ -176,9 +183,8 @@ async function fetchDonations() {
 }
 setInterval(fetchDonations, 5000);
 
-/* -------------------- 🎬 نمایش ویدیو هنگام دونیت جدید -------------------- */
 function showDonation(d) {
-  const amountToman = Math.floor((d.amount * (d.currency_rate || 1)) / 10); // تبدیل ریال به تومان
+  const amountToman = Math.floor((d.amount * (d.currency_rate || 1)) / 10);
   total += amountToman;
   donorText.textContent = (d.name || 'حامی ناشناس') + ' | ' + amountToman.toLocaleString('fa-IR') + ' تومان' + (d.message ? (' | '+d.message) : '');
   alertBox.style.display = 'block';
@@ -192,7 +198,6 @@ function showDonation(d) {
   }, 13000);
 }
 
-/* -------------------- 🎯 به‌روزرسانی نوار هدف -------------------- */
 const goalFill = document.getElementById('goal-fill');
 const goalTextLeft = document.getElementById('goal-text-left');
 const goalTextRight = document.getElementById('goal-text-right');
