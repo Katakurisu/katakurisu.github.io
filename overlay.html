@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Overlay حمایت - صف پرداخت ها + آمار زنده</title>
+<title>Overlay حمایت</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* ____________________ 🎬 استایل Overlay 🎬 ____________________ */
 body {
   margin:0;
   font-family:'Vazirmatn',sans-serif;
@@ -16,138 +16,194 @@ body {
   overflow:hidden;
 }
 
-/* -------------------- پنل زنده جمع کل و درصد هدف -------------------- */
-#stats {
+/* -------------------- ⏰ ساعت ⏰ -------------------- */
+#clock {
   position:fixed;
-  bottom:10px;
-  left:10px;
+  top:20px;
+  right:20px;
   font-size:1.2em;
-  background:rgba(0,0,0,0.7);
-  border-radius:12px;
-  padding:15px 20px;
   color:#00ff99;
-  text-shadow:0 0 12px #00ff99;
-  z-index:5;
 }
 
-/* -------------------- Overlay هشدار پرداخت -------------------- */
+/* -------------------- 🎥 ویدیو دونیت -------------------- */
 #overlay {
   position:fixed;
   inset:0;
   pointer-events:none;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
 }
+
 #donation-alert {
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
+  position:relative;
   text-align:center;
-  background:rgba(0,0,0,0.7);
-  border:2px solid #00ff99;
+  background:rgba(0,0,0,0.85);
   border-radius:20px;
-  padding:20px 30px;
+  padding:30px 40px;
   display:none;
   z-index:10;
+  animation:fadein 0.5s ease;
+  overflow:hidden;
 }
+
 #donation-video {
-  width:180px;
-  height:180px;
+  width:200px;
+  height:200px;
   border-radius:12px;
   margin-bottom:15px;
 }
+
 #donor-text {
+  font-size:1.4em;
+  text-shadow:0 0 15px #00ff99;
+}
+
+/* -------------------- 💰 آمار کل و هدف -------------------- */
+#stats {
+  position:fixed;
+  bottom:8%;
+  left:50%;
+  transform:translateX(-50%);
   font-size:1.3em;
+  background:rgba(0,0,0,0.85);
+  border-radius:14px;
+  padding:20px 30px;
+  color:#00ff99;
   text-shadow:0 0 12px #00ff99;
+  line-height:1.8;
+  z-index:5;
+}
+
+/* -------------------- ✨ افکت پرداخت جدید -------------------- */
+#donation-text-effect {
+  font-size:2em;
+  color:#00ff99;
+  text-shadow:0 0 15px #00ff99;
+  margin-top:10px;
+  display:none;
+  animation:shakeGrow 1s ease;
+}
+
+@keyframes fadein {from{opacity:0;}to{opacity:1;}}
+@keyframes shakeGrow {
+  0%{transform:scale(1) translate(0,0);}
+  20%{transform:scale(1.1) translate(-3px,2px);}
+  40%{transform:scale(1.05) translate(2px,-2px);}
+  60%{transform:scale(1.1) translate(-2px,1px);}
+  80%{transform:scale(1.05) translate(1px,-1px);}
+  100%{transform:scale(1) translate(0,0);}
+}
+
+/* -------------------- 🎯 بوردر متحرک -------------------- */
+#donation-border {
+  position:absolute;
+  top:0; left:0; right:0; bottom:0;
+  border:2px solid #00ff99;
+  border-radius:20px;
+  box-shadow:0 0 10px #00ff99;
   opacity:0;
-  transition: opacity 0.7s ease-in-out;
+  pointer-events:none;
+}
+
+/* انیمیشن هماهنگ با ویدیو (13 ثانیه) */
+@keyframes borderFade {
+  0%{opacity:0;}
+  10%{opacity:1;}
+  90%{opacity:1;}
+  100%{opacity:0;}
 }
 
 @media(max-width:500px){
   #donation-video{width:140px;height:140px;}
-  #donor-text{font-size:1.1em;}
-  #stats{font-size:1em;padding:10px 15px;}
+  #stats{padding:15px 20px;font-size:1.1em;}
+  #donor-text{font-size:1.2em;}
+  #donation-text-effect{font-size:1.5em;}
 }
 </style>
 </head>
 <body>
 
-<!-- ____________________ 🎬 Overlay هشدار پرداخت 🎬 ____________________ -->
 <div id="overlay">
   <div id="donation-alert">
+    <div id="donation-border"></div>
     <video id="donation-video" src="alert-donate.mp4" autoplay muted></video>
     <p id="donor-text"></p>
+    <p id="donation-text-effect">💚 حمایت جدید دریافت شد</p>
+  </div>
+  <div id="stats">
+    <p>💰 جمع کل: <span id="total">0</span> ریال</p>
+    <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
   </div>
 </div>
 
-<!-- ____________________ 📊 پنل جمع کل و درصد هدف 📊 ____________________ -->
-<div id="stats">
-  <p>💰 جمع کل: <span id="total">0</span> ریال</p>
-  <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
-</div>
+<div id="clock"></div>
 
 <script>
-/* ____________________ 🎬 المان های DOM 🎬 ____________________ */
-const alertBox = document.getElementById('donation-alert');
-const donorText = document.getElementById('donor-text');
-const videoEl = document.getElementById('donation-video');
-const totalEl = document.getElementById('total');
-const percentEl = document.getElementById('percent');
+/* -------------------- ⏰ ساعت زنده -------------------- */
+function updateClock(){
+  let now=new Date();
+  let h=('0'+now.getHours()).slice(-2);
+  let m=('0'+now.getMinutes()).slice(-2);
+  let s=('0'+now.getSeconds()).slice(-2);
+  document.getElementById('clock').textContent=h+':'+m+':'+s;
+}
+setInterval(updateClock,1000);
+updateClock();
 
-/* ____________________ 🟢 صف پرداخت ها 🟢 ____________________ */
-let donationQueue = [];
-let isShowing = false;
+/* -------------------- 💰 اتصالات وبهوک -------------------- */
+const alertBox=document.getElementById('donation-alert');
+const donorText=document.getElementById('donor-text');
+const videoEl=document.getElementById('donation-video');
+const totalEl=document.getElementById('total');
+const percentEl=document.getElementById('percent');
+const donationEffect=document.getElementById('donation-text-effect');
+const donationBorder=document.getElementById('donation-border');
 
-/* ____________________ 🎯 تنظیمات هدف و جمع کل 🎯 ____________________ */
-let total = 0;
-const target = 60000000;
+let total=0,target=60000000;
 
-/* ____________________ 🌐 اتصال به وبهوک دریافت پرداخت ها 🌐 ____________________ */
 async function fetchDonations(){
   try{
-    const res = await fetch('https://eoyf8grpms15wjd.m.pipedream.net',{cache:'no-store'});
-    const data = await res.json();
-    data.forEach(d => {
+    const res=await fetch('https://eoyf8grpms15wjd.m.pipedream.net',{cache:'no-store'});
+    const data=await res.json();
+    data.forEach(d=>{
       if(!d.handled){
-        d.handled = true;
-        donationQueue.push(d); // اضافه کردن به صف
-        total += (d.amount*d.currency_rate || d.amount || 0); // اضافه کردن به جمع کل
-        updateStats();
-        showNextDonation();
+        d.handled=true;
+        showDonation(d);
       }
     });
-  } catch(e){console.warn(e);}
+  }catch(e){console.warn(e);}
 }
-setInterval(fetchDonations, 5000);
+setInterval(fetchDonations,5000);
 
-/* ____________________ 🔢 آپدیت جمع کل و درصد هدف 🔢 ____________________ */
-function updateStats(){
-  totalEl.textContent = total.toLocaleString('fa-IR');
-  percentEl.textContent = Math.min(((total/target)*100).toFixed(1),100);
-}
+/* -------------------- 🎥 نمایش دونیت و افکت -------------------- */
+function showDonation(d){
+  let amountIRR=d.amount*d.currency_rate||d.amount||0;
+  total+=amountIRR;
+  donorText.textContent=(d.name||'حامی ناشناس')+' | '+amountIRR.toLocaleString('fa-IR')+' ریال'+(d.message?(' | '+d.message):'');
 
-/* ____________________ 🎬 نمایش پرداخت ها از صف 🎬 ____________________ */
-function showNextDonation(){
-  if(isShowing || donationQueue.length === 0) return;
-  const d = donationQueue.shift();
-  isShowing = true;
-  
-  const amountIRR = d.amount*d.currency_rate || d.amount || 0;
-  donorText.textContent = (d.name||'حامی ناشناس') + ' | ' + amountIRR.toLocaleString('fa-IR') + ' ریال' + (d.message?(' | '+d.message):'');
-  
+  totalEl.textContent=total.toLocaleString('fa-IR');
+  percentEl.textContent=Math.min(((total/target)*100).toFixed(1),100);
+
+  // نمایش Alert و ویدیو
   alertBox.style.display='block';
   videoEl.currentTime=0;
   videoEl.play();
-  
-  donorText.style.opacity = 0;
-  setTimeout(()=>{donorText.style.opacity = 1;}, 50);
-  
+
+  // نمایش متن افکت با انیمیشن لرزش و بزرگ شدن
+  donationEffect.style.display='block';
+  donationEffect.style.animation='shakeGrow 1s ease';
+
+  // نمایش بوردر نازک با انیمیشن هماهنگ با ویدیو (13 ثانیه)
+  donationBorder.style.animation='borderFade 13s linear';
+  donationBorder.style.opacity='1';
+
+  // مخفی کردن بعد از 13 ثانیه
   setTimeout(()=>{
-    donorText.style.opacity = 0;
-    setTimeout(()=>{
-      alertBox.style.display='none';
-      isShowing = false;
-      showNextDonation(); // نمایش بعدی از صف
-    }, 700);
+    alertBox.style.display='none';
+    donationEffect.style.display='none';
+    donationBorder.style.opacity='0';
   },13000);
 }
 </script>
