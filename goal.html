@@ -44,7 +44,7 @@ body {
 #goal-bar-fill {
   height:100%;
   width:0%;
-  background:#00ff99; /* پر شدن سبز فسفری */
+  background:#00ff99;
   text-align:left;
   line-height:30px;
   padding-left:5px;
@@ -53,11 +53,7 @@ body {
   font-weight:bold;
   position:relative;
 }
-#goal-bar-fill span {
-  direction:ltr;
-  float:left;
-  margin-left:5px;
-}
+#goal-bar-fill span { direction:ltr; float:left; margin-left:5px; }
 #goal-text-bottom {
   margin-top:5px;
   font-size:1.2em;
@@ -68,15 +64,14 @@ body {
 </style>
 </head>
 <body>
+
 <div id="goal-container">
   <div id="goal-title">
     <img src="https://cdn-icons-png.flaticon.com/512/889/889692.png" alt="کادو">
     هدف: خرید وبکم
   </div>
   <div id="goal-bar-wrapper">
-    <div id="goal-bar-fill">
-      <span id="goal-percentage">0%</span>
-    </div>
+    <div id="goal-bar-fill"><span id="goal-percentage">0%</span></div>
   </div>
   <div id="goal-text-bottom">
     تاکنون 0 از 6,000,000 تومان حمایت شده
@@ -84,18 +79,15 @@ body {
 </div>
 
 <script>
-// عناصر DOM
 const goalBarFill = document.getElementById('goal-bar-fill');
 const goalPercentage = document.getElementById('goal-percentage');
 const goalTextBottom = document.getElementById('goal-text-bottom');
 const goalTitleElement = document.getElementById('goal-title');
 
-// مقادیر اولیه
 let currentAmount = parseInt(localStorage.getItem('currentAmount')) || 0;
 let goalAmount = parseInt(localStorage.getItem('goalAmount')) || 6000000;
 let goalTitle = localStorage.getItem('goalTitle') || 'خرید وبکم';
 
-// تابع آپدیت نوار هدف
 function updateGoalBar() {
   const percentage = Math.min((currentAmount / goalAmount) * 100, 100);
   goalBarFill.style.width = percentage + '%';
@@ -104,7 +96,6 @@ function updateGoalBar() {
   goalTitleElement.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/889/889692.png" alt="کادو"> هدف: ${goalTitle}`;
 }
 
-// ارتباط زنده با داشبورد
 const bc = new BroadcastChannel('goal_channel');
 bc.onmessage = (event) => {
   const data = event.data;
@@ -114,8 +105,8 @@ bc.onmessage = (event) => {
   updateGoalBar();
 };
 
-// آپدیت اولیه
 updateGoalBar();
 </script>
+
 </body>
 </html>
