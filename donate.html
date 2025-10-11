@@ -29,7 +29,6 @@ const alertBox=document.getElementById('donation-alert');
 const donorText=document.getElementById('donor-text');
 const videoEl=document.getElementById('donation-video');
 
-// نمایش حمایت جدید
 function showDonation(d){
   donorText.textContent=`${d.name||'حامی ناشناس'} | ${d.amount_usdt.toFixed(2)} USDT${d.message?(' | '+d.message):''}`;
   alertBox.style.display='block';
