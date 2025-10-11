@@ -15,6 +15,7 @@ body {
   align-items:center;
   height:100vh;
 }
+
 #goal-container {
   width:20%;
   min-width:200px;
@@ -22,6 +23,7 @@ body {
   flex-direction:column;
   align-items:flex-end;
 }
+
 #goal-title {
   font-size:1.5em;
   color:red;
@@ -31,10 +33,12 @@ body {
   align-items:center;
   gap:5px;
 }
+
 #goal-title img {
   width:24px;
   height:24px;
 }
+
 #goal-bar-wrapper {
   width:100%;
   height:30px;
@@ -44,10 +48,11 @@ body {
   position:relative;
   overflow:hidden;
 }
+
 #goal-bar-fill {
   height:100%;
   width:0%;
-  background:#00ff99;
+  background:#00ff99; /* بخش پرشدن */
   text-align:left;
   line-height:30px;
   padding-left:5px;
@@ -56,11 +61,13 @@ body {
   font-weight:bold;
   position:relative;
 }
+
 #goal-bar-fill span {
   direction:ltr;
   float:left;
   margin-left:5px;
 }
+
 #goal-text-bottom {
   margin-top:5px;
   font-size:1.2em;
@@ -90,27 +97,26 @@ body {
 </div>
 
 <script>
-// عناصر DOM
 const goalBarFill = document.getElementById('goal-bar-fill');
 const goalPercentage = document.getElementById('goal-percentage');
 const goalTextBottom = document.getElementById('goal-text-bottom');
 const goalTitleElement = document.getElementById('goal-title');
 
 // مقادیر اولیه
-let currentAmount = 0;
-let goalAmount = 6000000;
-let goalTitle = 'خرید وبکم';
+let currentAmount = parseInt(localStorage.getItem('currentAmount')) || 0;
+let goalAmount = parseInt(localStorage.getItem('goalAmount')) || 6000000;
+let goalTitle = localStorage.getItem('goalTitle') || 'خرید وبکم';
 
-// تابع آپدیت نوار هدف
+// آپدیت نوار
 function updateGoalBar() {
   const percentage = Math.min((currentAmount / goalAmount) * 100, 100);
   goalBarFill.style.width = percentage + '%';
-  goalPercentage.textContent = percentage.toLocaleString('fa-IR') + '%';
-  goalTextBottom.textContent = `تاکنون ${currentAmount.toLocaleString('fa-IR')} از ${goalAmount.toLocaleString('fa-IR')} تومان حمایت شده`;
+  goalPercentage.textContent = percentage.toFixed(0) + '%';
+  goalTextBottom.textContent = `تاکنون ${currentAmount.toLocaleString()} از ${goalAmount.toLocaleString()} تومان حمایت شده`;
   goalTitleElement.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/889/889692.png" alt="کادو"> هدف: ${goalTitle}`;
 }
 
-// ارتباط زنده با داشبورد
+// ارتباط زنده
 const bc = new BroadcastChannel('goal_channel');
 bc.onmessage = (event) => {
   const data = event.data;
@@ -123,6 +129,5 @@ bc.onmessage = (event) => {
 // آپدیت اولیه
 updateGoalBar();
 </script>
-
 </body>
 </html>
