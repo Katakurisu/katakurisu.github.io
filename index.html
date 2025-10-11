@@ -6,33 +6,61 @@
 <title>🎁 حمایت از میلاد کاتاکوری</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:'Vazirmatn',sans-serif; background:#000; color:#00ff99; text-align:center; direction:rtl; overflow-x:hidden;}
-h1 { margin:50px 0 30px; font-size:2.2em; text-shadow:0 0 15px #00ff99;}
-.button-container { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:50px;}
-.btn { display:inline-block; padding:14px 28px; font-size:1.2em; color:#000; background:#fff; text-decoration:none; border:1px solid #00ff99; border-radius:10px; box-shadow:0 0 10px #00ff99; transition:all 0.3s ease;}
-.btn:hover { transform:scale(1.05); box-shadow:0 0 20px #00ff99;}
-#overlay { position:fixed; inset:0; pointer-events:none;}
-#donation-alert { position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); text-align:center; background:rgba(0,0,0,0.9); border:1px solid #00ff99; border-radius:15px; padding:20px 30px; display:none; z-index:10; animation:fadein 0.5s ease;}
-#donation-video { width:180px; height:180px; border-radius:10px; margin-bottom:15px;}
-#donor-text { font-size:1.2em; text-shadow:0 0 15px #00ff99;}
-#stats { position:fixed; bottom:8%; left:50%; transform:translateX(-50%); font-size:1.2em; background:rgba(0,0,0,0.85); border-radius:12px; padding:15px 25px; color:#00ff99; text-shadow:0 0 12px #00ff99; line-height:1.6; z-index:5;}
-#clock { position:fixed; top:20px; right:20px; font-size:1.1em; color:#00ff99;}
-input, select, textarea { padding:10px; font-size:1em; border-radius:6px; border:1px solid #00ff99; background:#000; color:#00ff99; margin:5px 0; width:80%;}
+body {
+  margin:0;
+  font-family:'Vazirmatn',sans-serif;
+  background:#000;
+  color:#00ff99;
+  text-align:center;
+  direction:rtl;
+  overflow-x:hidden;
+}
+h1 {margin:50px 0 40px;font-size:2.4em;text-shadow:0 0 15px #00ff99;}
+.button-container {display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:60px;}
+.btn {
+  display:inline-block;padding:14px 28px;font-size:1.2em;color:#000;background:#fff;
+  text-decoration:none;border:1px solid #00ff99;border-radius:10px;box-shadow:0 0 12px #00ff99;transition:all 0.3s ease;
+}
+.btn:hover {background:#00ff99;color:#000;box-shadow:0 0 25px #00ff99;transform:scale(1.05);}
+#clock {position:fixed;top:20px;right:20px;font-size:1.2em;color:#00ff99;}
+#overlay {position:fixed;inset:0;pointer-events:none;}
+#donation-alert {
+  position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;background:rgba(0,0,0,0.9);border:1px solid #00ff99;border-radius:20px;padding:25px 35px;
+  display:none;z-index:10;animation:fadein 0.5s ease;
+}
+#donation-video {width:200px;height:200px;border-radius:12px;margin-bottom:15px;}
+#donor-text {font-size:1.3em;text-shadow:0 0 12px #00ff99;}
+#converted {margin-top:5px;font-size:1.2em;}
+#stats {
+  position:fixed;bottom:8%;left:50%;transform:translateX(-50%);
+  font-size:1.3em;background:rgba(0,0,0,0.85);border-radius:14px;padding:20px 30px;
+  color:#00ff99;text-shadow:0 0 12px #00ff99;line-height:1.8;z-index:5;
+}
+input, select {font-size:1em;padding:10px;border-radius:8px;border:1px solid #00ff99;background:#000;color:#00ff99;margin:5px 0;width:90%;}
+label {display:block;margin-top:10px;font-weight:600;}
 @keyframes fadein {from{opacity:0;}to{opacity:1;}}
-@media(max-width:500px){.btn{padding:10px 20px;font-size:1em;} h1{font-size:1.8em;margin:40px 0;} #donation-video{width:140px;height:140px;} #stats{padding:10px 15px;font-size:1.05em;}}
+@media(max-width:500px){
+  .btn{padding:12px 20px;font-size:1em;}
+  h1{font-size:2em;margin:40px 0;}
+  #donation-video{width:140px;height:140px;}
+  #stats{padding:15px 20px;font-size:1.1em;}
+}
 </style>
 </head>
 <body>
 
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 
-<form id="donate-form">
-  <input type="text" id="name" placeholder="نام (اختیاری)">
-  <input type="text" id="phone" placeholder="شماره تماس (اختیاری)">
-  <input type="number" id="amount" placeholder="مبلغ به تومان">
-  <textarea id="message" placeholder="پیام (اختیاری)"></textarea>
-  <p id="usdt-equivalent" style="margin:5px 0; color:#00ff99;"></p>
-  <a id="np-btn" class="btn" href="#" target="_blank">💳 حمایت با NowPayments</a>
+<form id="donation-form">
+  <label>نام (اختیاری)</label>
+  <input type="text" id="name" placeholder="نام شما">
+  <label>شماره تماس (اختیاری)</label>
+  <input type="text" id="phone" placeholder="مثال: 0912xxxxxxx">
+  <label>مبلغ به تومان</label>
+  <input type="number" id="amount" placeholder="مثال: 50000">
+  <div id="converted">۰ تومان = ۰ USDT</div>
+  <a class="btn" id="donate-btn" href="#" target="_blank">💰 حمایت با Tether (USDT)</a>
 </form>
 
 <div id="overlay">
@@ -41,7 +69,7 @@ input, select, textarea { padding:10px; font-size:1em; border-radius:6px; border
     <p id="donor-text"></p>
   </div>
   <div id="stats">
-    <p>💰 جمع کل: <span id="total">0</span> USDT</p>
+    <p>💰 جمع کل: <span id="total">0</span> تومان</p>
     <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
   </div>
 </div>
@@ -49,61 +77,65 @@ input, select, textarea { padding:10px; font-size:1em; border-radius:6px; border
 <div id="clock"></div>
 
 <script>
-const alertBox = document.getElementById('donation-alert');
-const donorText = document.getElementById('donor-text');
-const videoEl = document.getElementById('donation-video');
-const totalEl = document.getElementById('total');
-const percentEl = document.getElementById('percent');
-const amountInput = document.getElementById('amount');
-const usdtDisplay = document.getElementById('usdt-equivalent');
-const npBtn = document.getElementById('np-btn');
-let total = 0, target = 100; // هدف به USDT
-
 // ساعت زنده
 function updateClock(){
-  const now = new Date();
-  const h = ('0'+now.getHours()).slice(-2);
-  const m = ('0'+now.getMinutes()).slice(-2);
-  const s = ('0'+now.getSeconds()).slice(-2);
+  let now=new Date(), h=now.getHours(), m=now.getMinutes(), s=now.getSeconds();
+  h=('0'+h).slice(-2); m=('0'+m).slice(-2); s=('0'+s).slice(-2);
   document.getElementById('clock').textContent = h+':'+m+':'+s;
 }
 setInterval(updateClock,1000);
 updateClock();
 
-// محاسبه زنده تومان -> USDT (نرخ ثابت 1 USDT=50,000 تومان مثال)
-async function updateUSDT(){
-  const rate = await fetch('https://api.nobitex.ir/v2/ticker/?symbol=usdt-toman')
-    .then(r=>r.json())
-    .then(j=>parseFloat(j.last_price));
-  const amount = parseFloat(amountInput.value) || 0;
-  const usdt = (amount/rate).toFixed(2);
-  usdtDisplay.textContent = amount>0 ? `${amount.toLocaleString('fa-IR')} تومان = ${usdt} USDT` : '';
+// تبدیل تومان به USDT
+function convertToUSDT(toman){
+  const rate = 45000; // نرخ تقریبی، میشه از API نوبیتکس بگیری برای به روز
+  return (toman/rate).toFixed(2);
 }
-amountInput.addEventListener('input',updateUSDT);
 
-// NowPayments دکمه
-npBtn.addEventListener('click',function(e){
+// نمایش تبدیل لحظه‌ای
+const amountInput = document.getElementById('amount');
+const convertedDiv = document.getElementById('converted');
+amountInput.addEventListener('input', ()=>{
+  const t = parseFloat(amountInput.value)||0;
+  const u = convertToUSDT(t);
+  convertedDiv.textContent = `${t.toLocaleString('fa-IR')} تومان ≈ ${u} USDT`;
+});
+
+// دکمه حمایت
+document.getElementById('donate-btn').addEventListener('click', function(e){
   e.preventDefault();
-  const amount = parseFloat(amountInput.value) || 0;
-  if(amount<=0){ alert('مبلغ صحیح وارد کنید'); return; }
-  const url = `https://nowpayments.io/donation?api_key=MP94SK3-2RNMDJ4-PPKQWSS-GHCVMNJ&amount=${amount}&currency=usd`;
+  const name = document.getElementById('name').value||'حامی ناشناس';
+  const phone = document.getElementById('phone').value||'';
+  const amountToman = parseFloat(document.getElementById('amount').value)||0;
+  if(amountToman<=0){alert('مبلغ معتبر نیست'); return;}
+  const amountUSDT = convertToUSDT(amountToman);
+  const url = `https://nowpayments.io/donation?api_key=MP94SK3-2RNMDJ4-PPKQWSS-GHCVMNJ&price_amount=${amountUSDT}&price_currency=usdt&order_description=${encodeURIComponent(name+' | '+phone)}`;
   window.open(url,'_blank');
 });
 
-// شبیه‌سازی دریافت دونیت
-function showDonation(name='حامی ناشناس', usdtAmount=1, message=''){
-  total += parseFloat(usdtAmount);
-  donorText.textContent = `${name} | ${usdtAmount} USDT${message ? ' | '+message : ''}`;
-  totalEl.textContent = total.toFixed(2);
+// نمایش popup دونیت
+const alertBox = document.getElementById('donation-alert');
+const donorText = document.getElementById('donor-text');
+const videoEl = document.getElementById('donation-video');
+const totalEl = document.getElementById('total');
+const percentEl = document.getElementById('percent');
+let total = 0, target = 60000000;
+
+function showDonation(name, phone, amountToman){
+  const amountUSDT = convertToUSDT(amountToman);
+  total += amountToman;
+  donorText.textContent = `${name}${phone?(' | '+phone):''} | ${amountToman.toLocaleString('fa-IR')} تومان ≈ ${amountUSDT} USDT`;
+  totalEl.textContent = total.toLocaleString('fa-IR');
   percentEl.textContent = Math.min(((total/target)*100).toFixed(1),100);
   alertBox.style.display='block';
   videoEl.currentTime=0;
   videoEl.play();
-  setTimeout(()=>{alertBox.style.display='none';},5000);
+  setTimeout(()=>{alertBox.style.display='none';},13000);
 }
 
-// تست شبیه‌سازی دونیت
-// showDonation('میلاد', 0.04, 'پیام تست');
+// تست دستی (می‌تونی حذفش کنی)
+// showDonation('میلاد', '09121234567', 666000);
 </script>
+
 </body>
 </html>
