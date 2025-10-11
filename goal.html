@@ -3,67 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>هدف حمایت‌ها</title>
+<title>هدف حمایت – میلاد کاتاکوری</title>
 <style>
-    body { font-family: Tahoma, sans-serif; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .goal-container { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 100%; max-width: 420px; text-align: center; }
+    body { font-family: Tahoma, sans-serif; background: #f8f8f8; display: flex; justify-content: center; padding: 20px; }
+    .goal-box { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 100%; max-width: 400px; text-align: center; }
     h2 { margin-bottom: 20px; }
-    .progress-bar { width: 100%; background-color: #e0e0e0; border-radius: 10px; overflow: hidden; height: 25px; margin: 15px 0; }
-    .progress { height: 100%; width: 0%; background-color: #4caf50; text-align: center; color: #fff; line-height: 25px; font-weight: bold; transition: width 0.3s; }
-    .totals { margin-top: 15px; font-size: 1rem; font-weight: bold; }
+    .progress-container { background: #e0e0e0; border-radius: 12px; overflow: hidden; height: 30px; margin: 20px 0; }
+    .progress-bar { height: 100%; background: #4caf50; width: 0%; transition: width 0.5s; }
+    #totalDisplay { font-weight: bold; font-size: 1.2rem; }
 </style>
 </head>
 <body>
-<div class="goal-container">
-    <h2>هدف حمایت‌ها</h2>
-    <div class="progress-bar">
-        <div class="progress" id="progressBar">0%</div>
+
+<div class="goal-box">
+    <h2>پیشرفت هدف حمایت</h2>
+    <div id="totalDisplay">۰ تومان = ۰ USDT</div>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
     </div>
-    <div class="totals" id="totals">۰ تومان = ۰ USDT</div>
+    <div id="goalText"></div>
 </div>
 
 <script>
-const progressBar = document.getElementById('progressBar');
-const totalsDisplay = document.getElementById('totals');
-
-// نمونه داده هدف
-const targetUSDT = 100; // هدف به USDT
-let collectedUSDT = 0;   // جمع کل فعلی
-
-// نرخ لحظه‌ای تتر از نوبیتکس
 let usdtRate = 0;
+let totalToman = 0;
+const goalToman = 1000000; // مثال هدف 1,000,000 تومان
+
 async function fetchUSDT() {
     try {
         const res = await fetch('https://api.nobitex.ir/v2/orderbook/?market=usdt-irt');
         const data = await res.json();
         usdtRate = parseFloat(data.ticker.last);
-        updateDisplay();
-    } catch (e) {
+        updateGoalDisplay();
+    } catch(e) {
         console.error('خطا در دریافت نرخ تتر:', e);
     }
 }
 
-// تابع بروزرسانی نمایش و نوار پیشرفت
-function updateDisplay() {
-    const collectedToman = usdtRate ? (collectedUSDT * usdtRate / 10).toFixed(0) : 0;
-    totalsDisplay.textContent = `${parseInt(collectedToman).toLocaleString()} تومان = ${collectedUSDT.toFixed(2)} USDT`;
-    const progressPercent = Math.min((collectedUSDT / targetUSDT) * 100, 100);
-    progressBar.style.width = progressPercent + '%';
-    progressBar.textContent = progressPercent.toFixed(0) + '%';
+// این متغیر برای مثال هست، بعداً می‌تونی از پایگاه داده واقعی بگیری
+function fetchTotalDonations() {
+    // مثال: مجموع حمایت‌ها
+    totalToman = 666000; // این مقدار را واقعی کنید
 }
 
-// شبیه‌سازی دریافت دونیت‌ها
-function addDonation(usdt) {
-    collectedUSDT += usdt;
-    updateDisplay();
+function updateGoalDisplay() {
+    const usdtAmount = usdtRate ? (totalToman / usdtRate).toFixed(2) : 0;
+    document.getElementById('totalDisplay').textContent = `${totalToman.toLocaleString()} تومان = ${usdtAmount} USDT`;
+
+    const progressPercent = Math.min((totalToman / goalToman) * 100, 100);
+    document.getElementById('progressBar').style.width = progressPercent + '%';
+    document.getElementById('goalText').textContent = `پیشرفت: ${progressPercent.toFixed(2)}% از هدف`;
 }
 
-// رفرش نرخ تتر هر 30 ثانیه
+fetchTotalDonations();
 setInterval(fetchUSDT, 30000);
 fetchUSDT();
-
-// مثال: افزودن دونیت تستی هر 10 ثانیه
-// setInterval(() => addDonation(0.5), 10000);
 </script>
+
 </body>
 </html>
