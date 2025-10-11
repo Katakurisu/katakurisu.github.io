@@ -3,57 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📊 داشبورد حمایت‌ها</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<title>📊 داشبورد حمایت</title>
 <style>
-body{margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;}
-h1{margin:30px 0;font-size:2em;text-shadow:0 0 12px #00ff99;}
-table{width:90%;margin:0 auto;border-collapse:collapse;margin-bottom:30px;}
-th,td{padding:10px;border:1px solid #00ff99;text-align:center;}
-th{background:#111;}
-#stats{margin-bottom:40px;font-size:1.2em;text-shadow:0 0 10px #00ff99;}
+body { margin:0; font-family:sans-serif; background:#000; color:#00ff99; text-align:center; }
+h1 { margin:20px 0; }
+table { width:90%; margin:20px auto; border-collapse:collapse; }
+th, td { border:1px solid #00ff99; padding:10px; }
+th { background:rgba(0,255,153,0.2); }
 </style>
 </head>
 <body>
-
-<h1>📊 داشبورد زنده حمایت‌ها</h1>
-
-<div id="stats">
-💰 جمع کل: <span id="total">0</span> USDT | 🎯 درصد هدف: <span id="percent">0</span>%
-</div>
-
+<h1>📊 داشبورد حمایت زنده</h1>
 <table>
-  <thead>
-    <tr>
-      <th>نام حامی</th>
-      <th>مبلغ (USDT)</th>
-      <th>پیام</th>
-      <th>زمان</th>
-    </tr>
-  </thead>
-  <tbody id="donation-list"></tbody>
+<thead>
+<tr>
+<th>نام حامی</th>
+<th>مبلغ (USDT)</th>
+<th>پیام</th>
+</tr>
+</thead>
+<tbody id="donation-list">
+</tbody>
 </table>
 
 <script>
-let total=0,target=100;
-const donationList=document.getElementById('donation-list');
-const totalEl=document.getElementById('total');
-const percentEl=document.getElementById('percent');
-
-function addDonation(d){
-  const tr=document.createElement('tr');
-  const time=new Date().toLocaleTimeString('fa-IR');
-  tr.innerHTML=`<td>${d.name||'حامی ناشناس'}</td><td>${d.amount_usdt.toFixed(2)}</td><td>${d.message||''}</td><td>${time}</td>`;
-  donationList.prepend(tr);
-  total+=d.amount_usdt;
-  totalEl.textContent=total.toFixed(2);
-  percentEl.textContent=Math.min((total/target*100).toFixed(1),100);
+const donationList = document.getElementById('donation-list');
+function addDonation(donorName, amountUSDT, message='') {
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${donorName || 'حامی ناشناس'}</td><td>${amountUSDT.toFixed(4)}</td><td>${message}</td>`;
+    donationList.prepend(row);
 }
-
-// مثال تست
-setTimeout(()=>{addDonation({name:'میلاد',amount_usdt:1.23,message:'مرسی!'});},1000);
-setTimeout(()=>{addDonation({name:'کاربر۲',amount_usdt:0.5,message:'خیلی خوبه!'});},3000);
 </script>
-
 </body>
 </html>
