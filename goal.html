@@ -3,45 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎯 هدف حمایت از میلاد کاتاکوری</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<title>🎯 نوار هدف حمایت</title>
 <style>
-body { margin:0; font-family:'Vazirmatn',sans-serif; background:#000; color:#00ff99; text-align:center; direction:rtl; overflow-x:hidden;}
-h1 { margin:60px 0 50px; font-size:2.4em; text-shadow:0 0 15px #00ff99;}
-#stats { font-size:1.5em; background:rgba(0,0,0,0.85); border-radius:20px; padding:40px 50px; display:inline-block; text-align:center; text-shadow:0 0 15px #00ff99;}
-#progress-bar { width:80%; height:25px; background:rgba(0,255,153,0.2); border-radius:12px; margin:30px auto 0; overflow:hidden;}
-#progress { width:0%; height:100%; background:#00ff99; transition:width 0.5s ease;}
+body {margin:0; font-family:sans-serif; background:#000; color:#00ff99;}
+#goal-container {width:90%; max-width:800px; margin:50px auto;}
+#goal-bar {width:100%; background:#222; border-radius:20px; overflow:hidden;}
+#progress {height:40px; width:0%; background:#00ff99; border-radius:20px;}
+#stats {margin-top:10px; text-align:center;}
 </style>
 </head>
 <body>
 
-<h1>🎯 هدف حمایت از میلاد کاتاکوری</h1>
-<div id="stats">
-  <p>💰 جمع کل: <span id="total">0</span> USDT</p>
-  <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
-  <div id="progress-bar"><div id="progress"></div></div>
+<div id="goal-container">
+  <div id="goal-bar"><div id="progress"></div></div>
+  <div id="stats">
+    <p>💰 جمع کل: <span id="total">0</span> USDT</p>
+    <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
+  </div>
 </div>
 
 <script>
-let total = 0, target = 100; // هدف به USDT
-
 const totalEl = document.getElementById('total');
 const percentEl = document.getElementById('percent');
 const progressEl = document.getElementById('progress');
+let total = 0, target = 100;
 
-function updateStats(amountUSDT){
-  total += amountUSDT;
-  totalEl.textContent = total.toFixed(2);
-  const percent = Math.min((total/target)*100, 100);
-  percentEl.textContent = percent.toFixed(1);
-  progressEl.style.width = percent+'%';
+async function fetchGoal(){
+  try{
+    const res = await fetch('https://katakurisu.github.io/donations.json',{cache:'no-store'});
+    const data = await res.json();
+    total = data.reduce((sum,d)=>sum + parseFloat(d.usdt_amount),0);
+    totalEl.textContent = total.toFixed(2);
+    let percent = Math.min((total/target)*100,100);
+    percentEl.textContent = percent.toFixed(2);
+    progressEl.style.width = percent+'%';
+  }catch(e){console.warn(e);}
 }
-
-// شبیه‌سازی دریافت حمایت (بعداً با NowPayments جایگزین شود)
-function receiveDonation(){
-  updateStats(0.05); // مثال: هر 30 ثانیه 0.05 USDT
-}
-setInterval(receiveDonation, 30000);
+setInterval(fetchGoal,5000);
+fetchGoal();
 </script>
 </body>
 </html>
