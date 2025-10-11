@@ -31,6 +31,7 @@ button { padding:5px 10px; cursor:pointer; }
 <button id="update-btn">به‌روزرسانی هدف</button>
 
 <script>
+const bc = new BroadcastChannel('goal_channel');
 const updateBtn = document.getElementById('update-btn');
 
 updateBtn.addEventListener('click', () => {
@@ -42,7 +43,13 @@ updateBtn.addEventListener('click', () => {
   localStorage.setItem('goalAmount', newGoal);
   localStorage.setItem('currentAmount', newCurrent);
 
-  alert('هدف به‌روزرسانی شد! حالا صفحه OBS را رفرش کنید.');
+  bc.postMessage({
+    goalTitle: newTitle,
+    goalAmount: newGoal,
+    currentAmount: newCurrent
+  });
+
+  alert('هدف به‌روزرسانی شد! تغییرات در OBS به صورت زنده اعمال می‌شوند.');
 });
 </script>
 </body>
