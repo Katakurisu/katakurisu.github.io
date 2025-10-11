@@ -1,131 +1,141 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎯 هدف حمایت</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
-<style>
-body {
-  margin:0;
-  font-family:'Vazirmatn',sans-serif;
-  background:transparent;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هدف حمایت</title>
+    <style>
+        /* --------------------------------- استایل کلی ------------------------------- */
+        body {
+            margin: 0;
+            font-family: 'Vazirmatn', sans-serif;
+            background: transparent;
+            color: #00ff99;
+            text-align: center;
+            direction: rtl;
+            overflow: hidden;
+        }
 
-#goal-container {
-  width:70%;
-  max-width:800px;
-  background:rgba(0,0,0,0.25);
-  border-radius:15px;
-  padding:20px;
-  box-sizing:border-box;
-  text-align:right;
-}
+        /* ------------------------ نوار هدف ---------------------------- */
+        #goal-bar-container {
+            position: relative;
+            width: 100%;
+            height: 40px;
+            background: transparent;
+            border: 2px solid yellow;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
 
-#goal-title {
-  font-size:2em;
-  font-weight:600;
-  color:red;
-  text-shadow:0 0 5px red;
-  margin-bottom:10px;
-}
+        #goal-bar-fill {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: #00ff99; /* سبز فسفری */
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 10px;
+            box-sizing: border-box;
+            color: #fff;
+            font-weight: 600;
+        }
 
-#goal-title img {
-  vertical-align:middle;
-  margin-left:10px;
-  width:32px;
-  height:32px;
-}
+        #goal-percent {
+            font-size: 1.2em;
+            text-shadow: 0 0 5px #00ff99;
+        }
 
-#goal-bar-container {
-  position:relative;
-  width:100%;
-  height:40px;
-  background:transparent;
-  border:2px solid yellow;
-  border-radius:20px;
-  overflow:hidden;
-  margin-bottom:10px;
-}
+        #goal-percent::before {
+            content: '♥ ';
+        }
 
-#goal-bar-fill {
-  position:absolute;
-  right:0; /* پر شدن از راست به چپ */
-  top:0;
-  height:100%;
-  width:0%;
-  background:#00ff99; /* سبز فسفری */
-  transition:width 1s ease;
-}
+        /* ------------------------ نوشته‌های بالا و پایین نوار ------------------------ */
+        #goal-text {
+            font-size: 1.2em;
+            color: #00ff99;
+            text-align: right;
+            margin: 0 10px;
+        }
 
-#goal-percent {
-  position:absolute;
-  left:10px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:1.2em;
-  font-weight:600;
-  color:#00ff99;
-  text-shadow:0 0 5px #00ff99;
-}
+        #goal-heading {
+            font-size: 1.3em;
+            color: #ff0000;
+            text-align: right;
+            margin: 10px 10px;
+            font-weight: bold;
+        }
 
-#goal-percent::before {
-  content:'♥ ';
-}
+        /* ------------------------ آیکون کنار هدف ------------------------ */
+        #goal-icon {
+            font-size: 1.5em;
+            margin-left: 10px;
+            display: inline-block;
+            color: #ffcc00;
+        }
 
-#goal-text {
-  font-size:1.5em;
-  color:#00ff99;
-  text-align:right;
-  direction:rtl;
-  text-shadow:0 0 5px #00ff99;
-}
-
-</style>
+        /* ------------------------ استایل صفحه ------------------------ */
+        #goal-container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
-<div id="goal-container">
-  <div id="goal-title">
-    <img src="https://katakurisu.github.io/gift.png" alt="هدیه">
-    هدف: خرید وبکم
-  </div>
-  <div id="goal-bar-container">
-    <div id="goal-bar-fill"></div>
-    <div id="goal-percent"></div>
-  </div>
-  <div id="goal-text">تاکنون 0 از 60,000 تومان حمایت شده</div>
-</div>
+    <div id="goal-container">
+        <!-- عنوان هدف -->
+        <div id="goal-heading">
+            هدف: خرید وبکم
+            <span id="goal-icon">🎁</span> <!-- آیکون کادو -->
+        </div>
 
-<script>
-// تنظیمات اولیه
-let total=0; 
-const target=60000; // تومان
-const goalFill=document.getElementById('goal-bar-fill');
-const goalPercent=document.getElementById('goal-percent');
-const goalText=document.getElementById('goal-text');
+        <!-- نوار هدف -->
+        <div id="goal-bar-container">
+            <div id="goal-bar-fill">
+                <div id="goal-percent">۰%</div> <!-- درصد هدف -->
+            </div>
+        </div>
 
-// تابع آپدیت هدف
-function updateGoal(newAmount){
-  total=newAmount;
-  let percent=Math.min((total/target)*100,100);
-  let persianPercent=percent.toFixed(1).toString().replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
-  goalFill.style.width=percent+'%';
-  goalPercent.textContent=persianPercent+'%';
-  goalText.textContent='تاکنون '+total.toLocaleString('fa-IR')+' از '+target.toLocaleString('fa-IR')+' تومان حمایت شده';
-}
+        <!-- نوشته پایین نوار -->
+        <div id="goal-text">
+            تاکنون <span id="current-support">۰</span> از <span id="target-amount">۶۰۰۰۰۰۰</span> تومان حمایت شده
+        </div>
+    </div>
 
-// شبیه‌سازی دریافت داده جدید (تست)
-setInterval(()=>{
-  let randomAdd=Math.floor(Math.random()*5000);
-  let newAmount=Math.min(total+randomAdd,target);
-  updateGoal(newAmount);
-},5000);
+    <script>
+        // مقدار اولیه هدف (به تومان)
+        let target = 6000000; // 6 میلیون تومان
+        let total = 0; // حمایت شده فعلی
 
-</script>
+        const goalBarFill = document.getElementById('goal-bar-fill');
+        const goalPercent = document.getElementById('goal-percent');
+        const goalText = document.getElementById('goal-text');
+        const currentSupport = document.getElementById('current-support');
+        const targetAmount = document.getElementById('target-amount');
+
+        // بروزرسانی هدف با مقادیر جدید
+        function updateGoal(newAmount) {
+            total = newAmount;
+            let percent = Math.min((total / target) * 100, 100);
+            let persianPercent = percent.toFixed(1).toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+            goalBarFill.style.width = percent + '%';
+            goalPercent.textContent = persianPercent + '%'; // درصد داخل نوار
+            goalBarFill.textContent = goalPercent.textContent; // درصد داخل نوار
+            currentSupport.textContent = total.toLocaleString('fa-IR'); // مبلغ حمایت شده فعلی
+            goalText.textContent = 'تاکنون ' + total.toLocaleString('fa-IR') + ' از ' + target.toLocaleString('fa-IR') + ' تومان حمایت شده';
+        }
+
+        // نمونه‌ای برای تست بروزرسانی هدف
+        setInterval(() => {
+            total += 500000; // افزودن مقدار جدید هر 5 ثانیه
+            updateGoal(total);
+        }, 5000);
+    </script>
 </body>
 </html>
