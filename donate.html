@@ -4,41 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎁 حمایت از میلاد کاتاکوری</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;overflow:hidden;}
-#overlay{position:fixed;inset:0;pointer-events:none;}
-#donation-alert{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);text-align:center;background:rgba(0,0,0,0.9);border:2px solid #00ff99;border-radius:20px;padding:30px 40px;display:none;z-index:10;animation:fadein 0.5s ease;}
-#donation-video{width:200px;height:200px;border-radius:12px;margin-bottom:15px;}
-#donor-text{font-size:1.4em;text-shadow:0 0 15px #00ff99;}
-@keyframes fadein{from{opacity:0;}to{opacity:1;}}
-@media(max-width:500px){#donation-video{width:140px;height:140px;}}
+body { margin:0; background:#000; color:#00ff99; font-family:sans-serif; text-align:center; direction:rtl; }
+#donation-alert { position:fixed; inset:0; display:none; justify-content:center; align-items:center; background:rgba(0,0,0,0.7); z-index:9999; }
+#donation-video { width:400px; height:400px; border-radius:12px; }
+#donor-text { font-size:1.5em; margin-top:15px; }
 </style>
 </head>
 <body>
-
-<div id="overlay">
-  <div id="donation-alert">
+<div id="donation-alert">
+  <div>
     <video id="donation-video" src="donate.mp4" autoplay muted></video>
-    <p id="donor-text"></p>
+    <div id="donor-text"></div>
   </div>
 </div>
 
 <script>
-const alertBox=document.getElementById('donation-alert');
-const donorText=document.getElementById('donor-text');
-const videoEl=document.getElementById('donation-video');
+const alertBox = document.getElementById('donation-alert');
+const videoEl = document.getElementById('donation-video');
+const donorText = document.getElementById('donor-text');
 
-function showDonation(d){
-  donorText.textContent=`${d.name||'حامی ناشناس'} | ${d.amount_usdt.toFixed(2)} USDT${d.message?(' | '+d.message):''}`;
-  alertBox.style.display='block';
-  videoEl.currentTime=0;
-  videoEl.play();
-  setTimeout(()=>{alertBox.style.display='none';},d.duration||10000);
+function showDonation(donorName, amountUSDT, message='') {
+    donorText.textContent = `${donorName || 'حامی ناشناس'} | ${amountUSDT} USDT ${message ? '| '+message : ''}`;
+    alertBox.style.display='flex';
+    videoEl.currentTime=0;
+    videoEl.play();
+    videoEl.onended = () => { alertBox.style.display='none'; };
 }
-
-// مثال تست
-setTimeout(()=>{showDonation({name:'میلاد',amount_usdt:1.23,message:'مرسی!'});},1000);
 </script>
 </body>
 </html>
