@@ -3,60 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دونیت – میلاد کاتاکوری</title>
+<title>حمایت با تتر</title>
 <style>
-    body { font-family: Tahoma, sans-serif; background: #f8f8f8; display: flex; justify-content: center; padding: 20px; }
-    .donate-box { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 100%; max-width: 400px; }
-    h2 { text-align: center; margin-bottom: 20px; }
-    input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; }
-    #usdtDisplay { font-weight: bold; margin-bottom: 15px; text-align: center; }
-    .donate-btn { width: 100%; background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
-    .donate-btn img { margin-left: 10px; height: 24px; }
+body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+.container { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); width: 400px; }
+h2 { text-align: center; margin-bottom: 20px; }
+input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+button { background-color: #fff; border: 1px solid #888; cursor: pointer; font-weight: bold; }
+button:hover { background-color: #f0f0f0; }
+.result { margin-top: 10px; font-weight: bold; text-align: center; }
 </style>
 </head>
 <body>
-
-<div class="donate-box">
-    <h2>حمایت از میلاد کاتاکوری</h2>
-    <input type="text" id="name" placeholder="نام (اختیاری)">
-    <input type="text" id="phone" placeholder="شماره تماس (اختیاری)">
-    <input type="number" id="tomanInput" placeholder="مبلغ به تومان" min="1">
-    <div id="usdtDisplay">۰ تومان = ۰ USDT</div>
-    <a id="donateLink" href="#" target="_blank" class="donate-btn">
-        <img src="https://nowpayments.io/images/embeds/donation-button-white.svg" alt="NowPayments">
-        پرداخت
-    </a>
+<div class="container">
+  <h2>حمایت با تتر (USDT)</h2>
+  <label>نام (اختیاری)</label>
+  <input type="text" id="name" placeholder="نام شما">
+  
+  <label>شماره تماس (اختیاری)</label>
+  <input type="text" id="phone" placeholder="شماره تماس">
+  
+  <label>مبلغ (تومان)</label>
+  <input type="number" id="amount" placeholder="مثال: 500000">
+  
+  <div class="result" id="usdtResult">مقدار USDT: 0.00</div>
+  
+  <button id="donateBtn">پرداخت با NowPayments</button>
 </div>
 
 <script>
-let usdtRate = 0;
-let donationAmountToman = 0;
+// URL API نوبیتکس برای تتر
+const USDT_API_URL = 'https://api.nobitex.ir/market/ticker/USDTIRR';
 
-async function fetchUSDT() {
+const amountInput = document.getElementById('amount');
+const resultDiv = document.getElementById('usdtResult');
+const donateBtn = document.getElementById('donateBtn');
+
+let usdtRate = 0;
+
+// گرفتن نرخ لحظه‌ای USDT از Nobitex هر 30 ثانیه
+async function fetchRate() {
     try {
-        const res = await fetch('https://api.nobitex.ir/v2/orderbook/?market=usdt-irt');
+        const res = await fetch(USDT_API_URL);
         const data = await res.json();
-        usdtRate = parseFloat(data.ticker.last);
-        updateUSDTDisplay();
-    } catch(e) {
-        console.error('خطا در دریافت نرخ تتر:', e);
+        usdtRate = parseFloat(data.last_price); // آخرین قیمت IRR/USDT
+        updateResult();
+    } catch (e) {
+        console.error("خطا در دریافت نرخ تتر:", e);
     }
 }
 
-function updateUSDTDisplay() {
-    const usdtAmount = usdtRate ? (donationAmountToman / usdtRate).toFixed(2) : 0;
-    document.getElementById('usdtDisplay').textContent = `${donationAmountToman.toLocaleString()} تومان = ${usdtAmount} USDT`;
-    document.getElementById('donateLink').href = `https://nowpayments.io/donation?api_key=MP94SK3-2RNMDJ4-PPKQWSS-GHCVMNJ&amount=${usdtAmount}`;
+// بروزرسانی مقدار USDT
+function updateResult() {
+    const amountToman = parseFloat(amountInput.value);
+    if (!isNaN(amountToman) && usdtRate > 0) {
+        const amountUSDT = amountToman / usdtRate;
+        resultDiv.textContent = `${amountToman.toLocaleString('fa-IR')} تومان = ${amountUSDT.toFixed(2)} USDT`;
+    } else {
+        resultDiv.textContent = "مقدار USDT: 0.00";
+    }
 }
 
-document.getElementById('tomanInput').addEventListener('input', e => {
-    donationAmountToman = parseFloat(e.target.value) || 0;
-    updateUSDTDisplay();
+// داینامیک بروزرسانی هنگام تایپ
+amountInput.addEventListener('input', updateResult);
+
+// دکمه پرداخت
+donateBtn.addEventListener('click', () => {
+    const amountToman = parseFloat(amountInput.value);
+    if (isNaN(amountToman) || amountToman <= 0) {
+        alert("لطفاً یک مبلغ معتبر وارد کنید.");
+        return;
+    }
+    const amountUSDT = (amountToman / usdtRate).toFixed(2);
+    // باز کردن لینک NowPayments با مقدار دقیق USDT
+    const apiKey = 'MP94SK3-2RNMDJ4-PPKQWSS-GHCVMNJ';
+    const url = `https://nowpayments.io/donation?api_key=${apiKey}&amount=${amountUSDT}&currency=usdt`;
+    window.open(url, '_blank');
 });
 
-setInterval(fetchUSDT, 30000);
-fetchUSDT();
+// هر 30 ثانیه نرخ را آپدیت کن
+fetchRate();
+setInterval(fetchRate, 30000);
 </script>
-
 </body>
 </html>
