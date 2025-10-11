@@ -5,116 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>حمایت از میلاد کاتاکوری</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
-  .container {
-    background: #fff;
-    padding: 20px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    max-width: 400px;
-    width: 100%;
-  }
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-  }
-  input[type="text"], input[type="number"], input[type="tel"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  .converted {
-    margin-top: 5px;
-    font-size: 14px;
-    color: #333;
-  }
-  .donate-button {
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-    padding: 12px;
-    font-size: 18px;
-    color: #fff;
-    background: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  .donate-button img {
-    vertical-align: middle;
-    height: 25px;
-    margin-left: 10px;
-  }
+  body { font-family: Tahoma, sans-serif; background: #f8f8f8; display: flex; flex-direction: column; align-items: center; padding: 40px; }
+  h1 { color: #333; }
+  form { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+  label { display: block; margin: 15px 0 5px; font-size: 16px; }
+  input { width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+  .converted { margin-top: 5px; font-size: 14px; color: #555; }
+  button { margin-top: 20px; padding: 12px; font-size: 18px; width: 100%; border: none; border-radius: 5px; cursor: pointer; background: #fff; color: #000; border: 1px solid #ccc; }
+  button:hover { background: #f0f0f0; }
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>حمایت از میلاد کاتاکوری</h1>
-  
-  <label for="name">نام (اختیاری)</label>
-  <input type="text" id="name" placeholder="نام خود را وارد کنید">
+
+<h1>حمایت از میلاد کاتاکوری</h1>
+<form id="donationForm">
+  <label for="name">نام</label>
+  <input type="text" id="name" name="name" placeholder="نام خود را وارد کنید">
 
   <label for="phone">شماره تماس (اختیاری)</label>
-  <input type="tel" id="phone" placeholder="شماره تماس">
+  <input type="text" id="phone" name="phone" placeholder="مثال: 09121234567">
 
   <label for="amount">مبلغ به تومان</label>
-  <input type="number" id="amount" placeholder="مثال: 100000" min="1">
-  <div class="converted" id="converted">۰ تومان = ۰ USDT</div>
+  <input type="number" id="amount" name="amount" placeholder="مثال: 100000">
+  <div class="converted" id="converted">0 تومان = 0 USDT</div>
 
-  <a id="donateBtn" class="donate-button" href="https://nowpayments.io/donation?api_key=0289ad3c-32ce-4361-96a2-d2951b0ee943" target="_blank" rel="noreferrer noopener">
-    پرداخت
-    <img src="https://nowpayments.io/images/embeds/donation-button-white.svg" alt="Donate NowPayments">
+  <!-- دکمه NowPayments (بدون فیلد اضافی) -->
+  <a href="https://nowpayments.io/donation?api_key=0289ad3c-32ce-4361-96a2-d2951b0ee943" target="_blank" rel="noreferrer noopener">
+     <img src="https://nowpayments.io/images/embeds/donation-button-white.svg" alt="Crypto donation button by NOWPayments">
   </a>
-</div>
+
+  <!-- دکمه شاپرک -->
+  <button type="button" id="shaparakBtn">پرداخت با شاپرک</button>
+</form>
 
 <script>
-  const amountInput = document.getElementById('amount');
-  const convertedDiv = document.getElementById('converted');
+let usdtRate = 0;
 
-  // نرخ لحظه‌ای تتر به تومان (از API نوبیتکس یا مقدار ثابت موقت)
-  let usdtRate = 0;
-
-  async function fetchUSDT() {
-    try {
-      const res = await fetch('https://api.nobitex.ir/v2/orderbook?pair=USDTIRT');
-      const data = await res.json();
+async function fetchUSDT() {
+  try {
+    const res = await fetch('https://api.nobitex.ir/v2/orderbook?pair=USDTIRT');
+    const data = await res.json();
+    if (data && data.ticker && data.ticker.last) {
       usdtRate = parseFloat(data.ticker.last);
-      updateConverted();
-    } catch (err) {
-      console.error('خطا در دریافت نرخ USDT:', err);
-      usdtRate = 0; // fallback
+    } else {
+      console.error('ساختار پاسخ نوبیتکس تغییر کرده:', data);
+      usdtRate = 0;
     }
+    updateConverted();
+  } catch (err) {
+    console.error('خطا در دریافت نرخ USDT:', err);
+    usdtRate = 0;
+    updateConverted();
   }
+}
 
-  function updateConverted() {
-    const tToman = parseFloat(amountInput.value) || 0;
-    const tUSDT = usdtRate ? (tToman / usdtRate).toFixed(2) : 0;
-    convertedDiv.innerText = `${tToman.toLocaleString('fa-IR')} تومان = ${tUSDT} USDT`;
-  }
+function updateConverted() {
+  const amount = parseFloat(document.getElementById('amount').value) || 0;
+  const usdt = (usdtRate ? (amount / usdtRate).toFixed(6) : 0);
+  document.getElementById('converted').innerText = `${amount.toLocaleString('fa-IR')} تومان = ${usdt} USDT`;
+}
 
-  amountInput.addEventListener('input', updateConverted);
-  setInterval(fetchUSDT, 30000); // هر ۳۰ ثانیه بروزرسانی نرخ
-  fetchUSDT(); // دریافت اولیه
+document.getElementById('amount').addEventListener('input', updateConverted);
+
+document.getElementById('shaparakBtn').addEventListener('click', () => {
+  const amount = parseFloat(document.getElementById('amount').value);
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  
+  if (!amount || amount <= 0) { alert('لطفاً مبلغ صحیح وارد کنید'); return; }
+
+  // اینجا لینک پرداخت شاپرک بساز
+  const link = `https://katakurisu.github.io/payment?amount=${amount}&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}`;
+  window.open(link, '_blank');
+});
+
+// نرخ USDT هر 30 ثانیه آپدیت می‌شود
+fetchUSDT();
+setInterval(fetchUSDT, 30000);
 </script>
+
 </body>
 </html>
