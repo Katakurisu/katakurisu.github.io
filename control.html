@@ -3,56 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎛 داشبورد مدیریت حمایت‌ها</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<title>کنترل حمایت‌ها – میلاد کاتاکوری</title>
 <style>
-body { margin:0; font-family:'Vazirmatn',sans-serif; background:#000; color:#00ff99; direction:rtl;}
-h1 { text-align:center; margin:30px 0; font-size:2em; text-shadow:0 0 15px #00ff99;}
-#stats { text-align:center; font-size:1.2em; margin-bottom:20px; }
-#donation-list { width:90%; margin:0 auto; max-width:800px; }
-.donation-item { background:rgba(0,255,153,0.1); margin:10px 0; padding:15px 20px; border-radius:12px; box-shadow:0 0 10px #00ff99; }
-.donation-item p { margin:5px 0; }
+    body { font-family: Tahoma, sans-serif; background: #f4f4f4; padding: 20px; }
+    .control-box { max-width: 600px; margin: auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    h2 { text-align: center; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: center; }
+    th { background: #f0f0f0; }
 </style>
 </head>
 <body>
 
-<h1>🎛 داشبورد مدیریت حمایت‌ها</h1>
-<div id="stats">
-  💰 جمع کل: <span id="total">0</span> USDT<br>
-  🎯 درصد هدف: <span id="percent">0</span>%
+<div class="control-box">
+    <h2>آخرین حمایت‌ها</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>نام</th>
+                <th>مبلغ (تومان)</th>
+                <th>مبلغ (USDT)</th>
+                <th>تاریخ</th>
+            </tr>
+        </thead>
+        <tbody id="donationList">
+            <!-- دونیت‌ها اینجا اضافه می‌شوند -->
+        </tbody>
+    </table>
 </div>
 
-<div id="donation-list"></div>
-
 <script>
-let donations = [];
-let total = 0, target = 100;
+let usdtRate = 0;
 
-const totalEl = document.getElementById('total');
-const percentEl = document.getElementById('percent');
-const donationListEl = document.getElementById('donation-list');
-
-function addDonation(name, amountUSDT, message=''){
-  total += amountUSDT;
-  totalEl.textContent = total.toFixed(2);
-  const percent = Math.min((total/target)*100, 100);
-  percentEl.textContent = percent.toFixed(1);
-
-  const item = document.createElement('div');
-  item.className = 'donation-item';
-  item.innerHTML = `<p>👤 ${name || 'حامی ناشناس'}</p>
-                    <p>💵 ${amountUSDT.toFixed(4)} USDT</p>
-                    ${message?'<p>💬 '+message+'</p>':''}`;
-  donationListEl.prepend(item); // آخرین حمایت بالا نمایش داده شود
+// دریافت نرخ لحظه‌ای تتر
+async function fetchUSDT() {
+    try {
+        const res = await fetch('https://api.nobitex.ir/v2/orderbook/?market=usdt-irt');
+        const data = await res.json();
+        usdtRate = parseFloat(data.ticker.last);
+        updateDonationTable();
+    } catch(e) {
+        console.error('خطا در دریافت نرخ تتر:', e);
+    }
 }
 
-// شبیه‌سازی دریافت حمایت (بعداً با NowPayments یا API زنده جایگزین شود)
-function receiveDonation(){
-  const randomAmount = (Math.random()*0.1+0.01).toFixed(4);
-  addDonation('حامی نمونه', parseFloat(randomAmount), 'پیام نمونه');
-}
-setInterval(receiveDonation, 30000);
+// داده‌های نمونه، بعداً می‌تونی از پایگاه داده واقعی استفاده کنی
+let donations = [
+    {name: 'میلاد', amountToman: 666000, date: '1404/07/20'},
+    {name: 'کاربر ۲', amountToman: 350000, date: '1404/07/21'}
+];
 
+function updateDonationTable() {
+    const tbody = document.getElementById('donationList');
+    tbody.innerHTML = '';
+    donations.forEach(d => {
+        const amountUSDT = usdtRate ? (d.amountToman / usdtRate).toFixed(2) : 0;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${d.name}</td>
+            <td>${d.amountToman.toLocaleString()}</td>
+            <td>${amountUSDT}</td>
+            <td>${d.date}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+setInterval(fetchUSDT, 30000);
+fetchUSDT();
 </script>
+
 </body>
 </html>
