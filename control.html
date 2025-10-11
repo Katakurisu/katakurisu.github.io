@@ -3,94 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard کنترل هدف</title>
+<title>📊 داشبورد حمایت‌ها</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body {
-  font-family:'Vazirmatn',sans-serif;
-  padding:20px;
-  background:#111;
-  color:#0f0;
-  direction:rtl;
-}
-input, button {
-  font-size:1em;
-  padding:5px;
-  margin:5px 0;
-}
-#goal-container {
-  width:50%;
-  margin:auto;
-}
-#goal-title { font-size:1.5em; margin-bottom:10px; display:flex; align-items:center; gap:5px; }
-#goal-title img { width:24px; height:24px; }
-#goal-bar-wrapper { width:100%; height:30px; border:3px solid yellow; border-radius:8px; background:transparent; overflow:hidden; position:relative; }
-#goal-bar-fill { height:100%; width:0%; background:#00ff99; line-height:30px; text-align:left; padding-left:5px; color:#000; font-weight:bold; position:relative; }
-#goal-bar-fill span { direction:ltr; float:left; margin-left:5px; }
-#goal-text-bottom { margin-top:5px; font-size:1.2em; text-align:right; }
+body{margin:0;font-family:'Vazirmatn',sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;}
+h1{margin:30px 0;font-size:2em;text-shadow:0 0 12px #00ff99;}
+table{width:90%;margin:0 auto;border-collapse:collapse;margin-bottom:30px;}
+th,td{padding:10px;border:1px solid #00ff99;text-align:center;}
+th{background:#111;}
+#stats{margin-bottom:40px;font-size:1.2em;text-shadow:0 0 10px #00ff99;}
 </style>
 </head>
 <body>
 
-<h2>داشبورد کنترل هدف</h2>
+<h1>📊 داشبورد زنده حمایت‌ها</h1>
 
-<div id="goal-container">
-  <div id="goal-title">
-    <img src="https://cdn-icons-png.flaticon.com/512/889/889692.png" alt="کادو">
-    هدف: خرید وبکم
-  </div>
-  <div id="goal-bar-wrapper">
-    <div id="goal-bar-fill">
-      <span id="goal-percentage">0%</span>
-    </div>
-  </div>
-  <div id="goal-text-bottom">
-    تاکنون 0 از 6,000,000 تومان حمایت شده
-  </div>
+<div id="stats">
+💰 جمع کل: <span id="total">0</span> USDT | 🎯 درصد هدف: <span id="percent">0</span>%
 </div>
 
-<hr>
-
-<h3>تنظیمات هدف</h3>
-<label>عنوان هدف:</label>
-<input type="text" id="input-title" value="خرید وبکم"><br>
-<label>مقدار کنونی حمایت (تومان):</label>
-<input type="number" id="input-current" value="0"><br>
-<label>مقدار هدف نهایی (تومان):</label>
-<input type="number" id="input-goal" value="6000000"><br>
-<button id="btn-update">اعمال تغییرات</button>
+<table>
+  <thead>
+    <tr>
+      <th>نام حامی</th>
+      <th>مبلغ (USDT)</th>
+      <th>پیام</th>
+      <th>زمان</th>
+    </tr>
+  </thead>
+  <tbody id="donation-list">
+    <!-- حمایت‌ها اینجا اضافه می‌شن -->
+  </tbody>
+</table>
 
 <script>
-const goalBarFill = document.getElementById('goal-bar-fill');
-const goalPercentage = document.getElementById('goal-percentage');
-const goalTextBottom = document.getElementById('goal-text-bottom');
-const goalTitleElement = document.getElementById('goal-title');
+let total=0,target=100;
+const donationList = document.getElementById('donation-list');
+const totalEl = document.getElementById('total');
+const percentEl = document.getElementById('percent');
 
-let currentAmount = 0;
-let goalAmount = 6000000;
-let goalTitle = 'خرید وبکم';
-
-function updateGoalBar() {
-  const percentage = Math.min((currentAmount / goalAmount) * 100, 100);
-  goalBarFill.style.width = percentage + '%';
-  goalPercentage.textContent = percentage.toLocaleString('fa-IR') + '%';
-  goalTextBottom.textContent = `تاکنون ${currentAmount.toLocaleString()} از ${goalAmount.toLocaleString()} تومان حمایت شده`;
-  goalTitleElement.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/889/889692.png" alt="کادو"> هدف: ${goalTitle}`;
+// تابع اضافه کردن حمایت جدید
+function addDonation(d){
+  const tr = document.createElement('tr');
+  const time = new Date().toLocaleTimeString('fa-IR');
+  tr.innerHTML = `<td>${d.name||'حامی ناشناس'}</td><td>${d.amount_usdt.toFixed(2)}</td><td>${d.message||''}</td><td>${time}</td>`;
+  donationList.prepend(tr); // جدیدترین اول
+  total += d.amount_usdt;
+  totalEl.textContent = total.toFixed(2);
+  percentEl.textContent = Math.min((total/target*100).toFixed(1),100);
 }
 
-// اعمال تغییرات از فرم
-document.getElementById('btn-update').onclick = () => {
-  goalTitle = document.getElementById('input-title').value;
-  currentAmount = parseInt(document.getElementById('input-current').value) || 0;
-  goalAmount = parseInt(document.getElementById('input-goal').value) || 6000000;
-  updateGoalBar();
-  // ارسال به goal.html
-  const bc = new BroadcastChannel('goal_channel');
-  bc.postMessage({ currentAmount, goalAmount, goalTitle });
-};
-
-// آپدیت اولیه
-updateGoalBar();
+// مثال تست
+setTimeout(()=>{addDonation({name:'میلاد',amount_usdt:1.23,message:'مرسی!'});},1000);
+setTimeout(()=>{addDonation({name:'کاربر ۲',amount_usdt:0.5,message:'خیلی خوبه!'});},3000);
 </script>
 
 </body>
