@@ -3,34 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎯 هدف حمایت</title>
+<title>🎯 نوار هدف حمایت‌ها</title>
 <style>
-body{margin:0;font-family:sans-serif;background:#000;color:#00ff99;text-align:center;direction:rtl;overflow-x:hidden;}
-#goal-bar{width:80%;height:40px;background:#333;margin:50px auto;border-radius:20px;overflow:hidden;box-shadow:0 0 20px #00ff99;}
-#goal-fill{height:100%;width:0%;background:#00ff99;transition:width 0.5s;}
-#goal-text{margin-top:15px;font-size:1.5em;text-shadow:0 0 12px #00ff99;}
+body{margin:0;background:#000;color:#00ff99;font-family:sans-serif;text-align:center;}
+#goal-container{width:90%;background:#111;margin:50px auto;border-radius:20px;padding:20px;}
+#goal-bar{width:0%;height:40px;background:#00ff99;border-radius:20px;transition:width 0.5s;}
+#goal-text{margin-top:15px;font-size:1.2em;}
 </style>
 </head>
 <body>
 
-<div id="goal-bar">
-  <div id="goal-fill"></div>
+<div id="goal-container">
+  <div id="goal-bar"></div>
+  <div id="goal-text">💰 جمع کل: <span id="total">0</span> USDT | 🎯 درصد هدف: <span id="percent">0</span>%</div>
 </div>
-<p id="goal-text">جمع کل: 0 USDT | هدف: 100 USDT</p>
 
 <script>
-const fill = document.getElementById('goal-fill');
-const text = document.getElementById('goal-text');
 let total=0,target=100;
-function updateGoal(amount){
-  total += amount;
-  let perc = Math.min((total/target)*100,100);
-  fill.style.width = perc+'%';
-  text.textContent = 'جمع کل: '+total.toFixed(2)+' USDT | هدف: '+target+' USDT';
+const bar=document.getElementById('goal-bar');
+const totalEl=document.getElementById('total');
+const percentEl=document.getElementById('percent');
+
+function addDonation(d){
+  total+=d.amount_usdt;
+  totalEl.textContent=total.toFixed(2);
+  let p=Math.min((total/target*100),100);
+  percentEl.textContent=p.toFixed(1);
+  bar.style.width=p+'%';
 }
 
 // مثال تست
-setTimeout(()=>{updateGoal(1.23);},2000);
+setTimeout(()=>{addDonation({amount_usdt:1.23});},1000);
+setTimeout(()=>{addDonation({amount_usdt:0.5});},3000);
 </script>
 </body>
 </html>
