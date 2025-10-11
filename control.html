@@ -31,31 +31,28 @@ th{background:#111;}
       <th>زمان</th>
     </tr>
   </thead>
-  <tbody id="donation-list">
-    <!-- حمایت‌ها اینجا اضافه می‌شن -->
-  </tbody>
+  <tbody id="donation-list"></tbody>
 </table>
 
 <script>
 let total=0,target=100;
-const donationList = document.getElementById('donation-list');
-const totalEl = document.getElementById('total');
-const percentEl = document.getElementById('percent');
+const donationList=document.getElementById('donation-list');
+const totalEl=document.getElementById('total');
+const percentEl=document.getElementById('percent');
 
-// تابع اضافه کردن حمایت جدید
 function addDonation(d){
-  const tr = document.createElement('tr');
-  const time = new Date().toLocaleTimeString('fa-IR');
-  tr.innerHTML = `<td>${d.name||'حامی ناشناس'}</td><td>${d.amount_usdt.toFixed(2)}</td><td>${d.message||''}</td><td>${time}</td>`;
-  donationList.prepend(tr); // جدیدترین اول
-  total += d.amount_usdt;
-  totalEl.textContent = total.toFixed(2);
-  percentEl.textContent = Math.min((total/target*100).toFixed(1),100);
+  const tr=document.createElement('tr');
+  const time=new Date().toLocaleTimeString('fa-IR');
+  tr.innerHTML=`<td>${d.name||'حامی ناشناس'}</td><td>${d.amount_usdt.toFixed(2)}</td><td>${d.message||''}</td><td>${time}</td>`;
+  donationList.prepend(tr);
+  total+=d.amount_usdt;
+  totalEl.textContent=total.toFixed(2);
+  percentEl.textContent=Math.min((total/target*100).toFixed(1),100);
 }
 
 // مثال تست
 setTimeout(()=>{addDonation({name:'میلاد',amount_usdt:1.23,message:'مرسی!'});},1000);
-setTimeout(()=>{addDonation({name:'کاربر ۲',amount_usdt:0.5,message:'خیلی خوبه!'});},3000);
+setTimeout(()=>{addDonation({name:'کاربر۲',amount_usdt:0.5,message:'خیلی خوبه!'});},3000);
 </script>
 
 </body>
