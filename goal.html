@@ -3,44 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎯 نوار هدف حمایت</title>
+<title>هدف حمایت‌ها</title>
 <style>
-body {margin:0; font-family:sans-serif; background:#000; color:#00ff99;}
-#goal-container {width:90%; max-width:800px; margin:50px auto;}
-#goal-bar {width:100%; background:#222; border-radius:20px; overflow:hidden;}
-#progress {height:40px; width:0%; background:#00ff99; border-radius:20px;}
-#stats {margin-top:10px; text-align:center;}
+    body { font-family: Tahoma, sans-serif; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .goal-container { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 100%; max-width: 420px; text-align: center; }
+    h2 { margin-bottom: 20px; }
+    .progress-bar { width: 100%; background-color: #e0e0e0; border-radius: 10px; overflow: hidden; height: 25px; margin: 15px 0; }
+    .progress { height: 100%; width: 0%; background-color: #4caf50; text-align: center; color: #fff; line-height: 25px; font-weight: bold; transition: width 0.3s; }
+    .totals { margin-top: 15px; font-size: 1rem; font-weight: bold; }
 </style>
 </head>
 <body>
-
-<div id="goal-container">
-  <div id="goal-bar"><div id="progress"></div></div>
-  <div id="stats">
-    <p>💰 جمع کل: <span id="total">0</span> USDT</p>
-    <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
-  </div>
+<div class="goal-container">
+    <h2>هدف حمایت‌ها</h2>
+    <div class="progress-bar">
+        <div class="progress" id="progressBar">0%</div>
+    </div>
+    <div class="totals" id="totals">۰ تومان = ۰ USDT</div>
 </div>
 
 <script>
-const totalEl = document.getElementById('total');
-const percentEl = document.getElementById('percent');
-const progressEl = document.getElementById('progress');
-let total = 0, target = 100;
+const progressBar = document.getElementById('progressBar');
+const totalsDisplay = document.getElementById('totals');
 
-async function fetchGoal(){
-  try{
-    const res = await fetch('https://katakurisu.github.io/donations.json',{cache:'no-store'});
-    const data = await res.json();
-    total = data.reduce((sum,d)=>sum + parseFloat(d.usdt_amount),0);
-    totalEl.textContent = total.toFixed(2);
-    let percent = Math.min((total/target)*100,100);
-    percentEl.textContent = percent.toFixed(2);
-    progressEl.style.width = percent+'%';
-  }catch(e){console.warn(e);}
+// نمونه داده هدف
+const targetUSDT = 100; // هدف به USDT
+let collectedUSDT = 0;   // جمع کل فعلی
+
+// نرخ لحظه‌ای تتر از نوبیتکس
+let usdtRate = 0;
+async function fetchUSDT() {
+    try {
+        const res = await fetch('https://api.nobitex.ir/v2/orderbook/?market=usdt-irt');
+        const data = await res.json();
+        usdtRate = parseFloat(data.ticker.last);
+        updateDisplay();
+    } catch (e) {
+        console.error('خطا در دریافت نرخ تتر:', e);
+    }
 }
-setInterval(fetchGoal,5000);
-fetchGoal();
+
+// تابع بروزرسانی نمایش و نوار پیشرفت
+function updateDisplay() {
+    const collectedToman = usdtRate ? (collectedUSDT * usdtRate / 10).toFixed(0) : 0;
+    totalsDisplay.textContent = `${parseInt(collectedToman).toLocaleString()} تومان = ${collectedUSDT.toFixed(2)} USDT`;
+    const progressPercent = Math.min((collectedUSDT / targetUSDT) * 100, 100);
+    progressBar.style.width = progressPercent + '%';
+    progressBar.textContent = progressPercent.toFixed(0) + '%';
+}
+
+// شبیه‌سازی دریافت دونیت‌ها
+function addDonation(usdt) {
+    collectedUSDT += usdt;
+    updateDisplay();
+}
+
+// رفرش نرخ تتر هر 30 ثانیه
+setInterval(fetchUSDT, 30000);
+fetchUSDT();
+
+// مثال: افزودن دونیت تستی هر 10 ثانیه
+// setInterval(() => addDonation(0.5), 10000);
 </script>
 </body>
 </html>
