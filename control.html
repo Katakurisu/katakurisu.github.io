@@ -3,36 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📊 داشبورد حمایت</title>
+<title>🎛 داشبورد مدیریت حمایت‌ها</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:sans-serif; background:#000; color:#00ff99; text-align:center; }
-h1 { margin:20px 0; }
-table { width:90%; margin:20px auto; border-collapse:collapse; }
-th, td { border:1px solid #00ff99; padding:10px; }
-th { background:rgba(0,255,153,0.2); }
+body { margin:0; font-family:'Vazirmatn',sans-serif; background:#000; color:#00ff99; direction:rtl;}
+h1 { text-align:center; margin:30px 0; font-size:2em; text-shadow:0 0 15px #00ff99;}
+#stats { text-align:center; font-size:1.2em; margin-bottom:20px; }
+#donation-list { width:90%; margin:0 auto; max-width:800px; }
+.donation-item { background:rgba(0,255,153,0.1); margin:10px 0; padding:15px 20px; border-radius:12px; box-shadow:0 0 10px #00ff99; }
+.donation-item p { margin:5px 0; }
 </style>
 </head>
 <body>
-<h1>📊 داشبورد حمایت زنده</h1>
-<table>
-<thead>
-<tr>
-<th>نام حامی</th>
-<th>مبلغ (USDT)</th>
-<th>پیام</th>
-</tr>
-</thead>
-<tbody id="donation-list">
-</tbody>
-</table>
+
+<h1>🎛 داشبورد مدیریت حمایت‌ها</h1>
+<div id="stats">
+  💰 جمع کل: <span id="total">0</span> USDT<br>
+  🎯 درصد هدف: <span id="percent">0</span>%
+</div>
+
+<div id="donation-list"></div>
 
 <script>
-const donationList = document.getElementById('donation-list');
-function addDonation(donorName, amountUSDT, message='') {
-    const row = document.createElement('tr');
-    row.innerHTML = `<td>${donorName || 'حامی ناشناس'}</td><td>${amountUSDT.toFixed(4)}</td><td>${message}</td>`;
-    donationList.prepend(row);
+let donations = [];
+let total = 0, target = 100;
+
+const totalEl = document.getElementById('total');
+const percentEl = document.getElementById('percent');
+const donationListEl = document.getElementById('donation-list');
+
+function addDonation(name, amountUSDT, message=''){
+  total += amountUSDT;
+  totalEl.textContent = total.toFixed(2);
+  const percent = Math.min((total/target)*100, 100);
+  percentEl.textContent = percent.toFixed(1);
+
+  const item = document.createElement('div');
+  item.className = 'donation-item';
+  item.innerHTML = `<p>👤 ${name || 'حامی ناشناس'}</p>
+                    <p>💵 ${amountUSDT.toFixed(4)} USDT</p>
+                    ${message?'<p>💬 '+message+'</p>':''}`;
+  donationListEl.prepend(item); // آخرین حمایت بالا نمایش داده شود
 }
+
+// شبیه‌سازی دریافت حمایت (بعداً با NowPayments یا API زنده جایگزین شود)
+function receiveDonation(){
+  const randomAmount = (Math.random()*0.1+0.01).toFixed(4);
+  addDonation('حامی نمونه', parseFloat(randomAmount), 'پیام نمونه');
+}
+setInterval(receiveDonation, 30000);
+
 </script>
 </body>
 </html>
