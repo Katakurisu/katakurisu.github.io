@@ -3,106 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Goal Control Dashboard</title>
+<title>Control Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body {
-  margin:0;
-  font-family:'Vazirmatn',sans-serif;
-  background:#111;
-  color:#00ff99;
-  direction:rtl;
-  padding:20px;
-}
-h1 { text-align:center; color:#ff5555; }
-label { display:block; margin-top:15px; }
-input { padding:5px; font-size:1em; width:100%; margin-top:5px; }
-button { margin-top:10px; padding:8px 15px; font-size:1em; cursor:pointer; }
-#goal-display {
-  margin-top:30px;
-  border:2px solid yellow;
-  padding:15px;
-  border-radius:10px;
-}
+body { margin:0; font-family:'Vazirmatn',sans-serif; background:#111; color:#00ff99; }
+#dashboard { padding:20px; max-width:800px; margin:auto; }
+button { padding:10px 15px; margin:5px; font-size:1em; cursor:pointer; }
+#goal-preview { margin-top:20px; }
 </style>
 </head>
 <body>
+<div id="dashboard">
+  <h1>داشبورد کنترل</h1>
 
-<h1>داشبورد هدف</h1>
-
-<label>عنوان هدف:</label>
-<input type="text" id="goal-title-input">
-
-<label>مبلغ هدف (تومان):</label>
-<input type="number" id="goal-amount-input">
-
-<label>مبلغ فعلی حمایت شده (تومان):</label>
-<input type="number" id="current-amount-input">
-
-<button id="update-goal-btn">به‌روز رسانی هدف</button>
-<button id="add-donation-btn">افزودن حمایت جدید</button>
-
-<div id="goal-display">
-  <h2>نمایش زنده هدف:</h2>
-  <p id="goal-display-title"></p>
-  <p id="goal-display-bar"></p>
-  <p id="goal-display-text"></p>
-</div>
-
-<script>
-const bc = new BroadcastChannel('goal_channel');
-
-const goalTitleInput = document.getElementById('goal-title-input');
-const goalAmountInput = document.getElementById('goal-amount-input');
-const currentAmountInput = document.getElementById('current-amount-input');
-const updateBtn = document.getElementById('update-goal-btn');
-const addDonationBtn = document.getElementById('add-donation-btn');
-
-const displayTitle = document.getElementById('goal-display-title');
-const displayBar = document.getElementById('goal-display-bar');
-const displayText = document.getElementById('goal-display-text');
-
-// مقادیر اولیه
-let goalTitle = 'خرید وبکم';
-let goalAmount = 6000000;
-let currentAmount = 0;
-
-// آپدیت نمایش داخل داشبورد
-function updateDisplay() {
-  const percentage = Math.min((currentAmount / goalAmount) * 100, 100);
-  displayTitle.innerHTML = `🎁 هدف: ${goalTitle}`;
-  displayBar.innerHTML = `نوار: ${percentage.toFixed(0)}%`;
-  displayText.innerHTML = `تاکنون ${currentAmount.toLocaleString('fa-IR')} از ${goalAmount.toLocaleString('fa-IR')} تومان حمایت شده`;
-}
-
-// ارسال به OBS
-function broadcast() {
-  bc.postMessage({goalTitle, goalAmount, currentAmount});
-}
-
-// دکمه به‌روز رسانی هدف
-updateBtn.onclick = () => {
-  goalTitle = goalTitleInput.value || goalTitle;
-  goalAmount = parseInt(goalAmountInput.value) || goalAmount;
-  currentAmount = parseInt(currentAmountInput.value) || currentAmount;
-  updateDisplay();
-  broadcast();
-};
-
-// افزودن حمایت جدید
-addDonationBtn.onclick = () => {
-  const donation = parseInt(currentAmountInput.value) || 0;
-  currentAmount += donation;
-  updateDisplay();
-  broadcast();
-};
-
-// آپدیت اولیه
-goalTitleInput.value = goalTitle;
-goalAmountInput.value = goalAmount;
-currentAmountInput.value = currentAmount;
-updateDisplay();
-broadcast();
-</script>
-
-</body>
-</html>
+  <label>نام هدف: <
