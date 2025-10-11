@@ -6,7 +6,6 @@
 <title>🎁 حمایت از میلاد کاتاکوری</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* ____________________ 🌐 بدنه سایت و تم دارک فسفری 🌐 ____________________ */
 body {
   margin:0;
   font-family:'Vazirmatn',sans-serif;
@@ -17,16 +16,16 @@ body {
   overflow-x:hidden;
 }
 h1 {
-  margin:60px 0 50px;
+  margin:50px 0 30px;
   font-size:2.4em;
   text-shadow:0 0 15px #00ff99;
 }
-.button-container {
+.button-container, .form-container {
   display:flex;
   justify-content:center;
   gap:25px;
   flex-wrap:wrap;
-  margin-bottom:80px;
+  margin-bottom:50px;
 }
 .btn {
   display:inline-block;
@@ -38,6 +37,7 @@ h1 {
   border-radius:12px;
   box-shadow:0 0 15px #00ff99;
   transition:all 0.3s ease;
+  cursor:pointer;
 }
 .btn:hover {
   background:#00ff99;
@@ -45,8 +45,21 @@ h1 {
   box-shadow:0 0 30px #00ff99;
   transform:scale(1.05);
 }
-
-/* ____________________ ⏰ ساعت ⏰ ____________________ */
+input, select, textarea {
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid #00ff99;
+  background:#000;
+  color:#00ff99;
+  margin:5px;
+  width:220px;
+  font-size:1em;
+}
+label {
+  display:block;
+  margin-top:10px;
+  font-weight:600;
+}
 #clock {
   position:fixed;
   top:20px;
@@ -54,8 +67,6 @@ h1 {
   font-size:1.2em;
   color:#00ff99;
 }
-
-/* ____________________ 🎬 هشدار حمایت 🎬 ____________________ */
 #overlay {
   position:fixed;
   inset:0;
@@ -85,8 +96,6 @@ h1 {
   font-size:1.4em;
   text-shadow:0 0 15px #00ff99;
 }
-
-/* ____________________ 📊 آمار جمع کل و درصد هدف 📊 ____________________ */
 #stats {
   position:fixed;
   bottom:8%;
@@ -101,7 +110,6 @@ h1 {
   line-height:1.8;
   z-index:5;
 }
-
 @keyframes fadein {from{opacity:0;}to{opacity:1;}}
 @media(max-width:500px){
   .btn{padding:12px 20px;font-size:1em;}
@@ -113,72 +121,89 @@ h1 {
 </head>
 <body>
 
-<!-- ____________________ 🏷️ عنوان و دکمه های پرداخت 🏷️ ____________________ -->
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
-<div class="button-container">
-  <a class="btn" href="https://zarinp.al/katakuri" target="_blank">💳 پرداخت ریالی</a>
-  <a class="btn" href="https://nowpayments.io/donation?api_key=0289ad3c-32ce-4361-96a2-d2951b0ee943" target="_blank">₿ پرداخت کریپتو</a>
+
+<!-- فرم حمایت -->
+<div class="form-container">
+  <div>
+    <label>نام (اجباری)</label>
+    <input type="text" id="donorName" required>
+    <label>ایمیل (اختیاری)</label>
+    <input type="email" id="donorEmail">
+    <label>شماره تماس (اختیاری)</label>
+    <input type="text" id="donorPhone">
+    <label>مبلغ حمایت (تومان)</label>
+    <input type="number" id="donationAmount" required>
+    <label>پیام حامی (اختیاری)</label>
+    <textarea id="donorMessage" rows="2"></textarea>
+    <button class="btn" onclick="startDonation()">💳 حمایت</button>
+  </div>
 </div>
 
-<!-- ____________________ 🎬 Overlay نمایش پرداخت ها 🎬 ____________________ -->
+<!-- دکمه رسمی NowPayments -->
+<div class="button-container">
+  <a class="btn" href="https://nowpayments.io/donation?api_key=MP94SK3-2RNMDJ4-PPKQWSS-GHCVMNJ" target="_blank" rel="noreferrer noopener">
+    <img src="https://nowpayments.io/images/embeds/donation-button-black.svg" alt="Crypto donation button">
+  </a>
+</div>
+
+<!-- Overlay نمایش حمایت -->
 <div id="overlay">
   <div id="donation-alert">
-    <video id="donation-video" src="alert-donate.mp4" autoplay muted></video>
+    <video id="donation-video" src="donate.mp4" autoplay muted></video>
     <p id="donor-text"></p>
   </div>
   <div id="stats">
-    <p>💰 جمع کل: <span id="total">0</span> ریال</p>
+    <p>💰 جمع کل: <span id="total">0</span> USDT</p>
     <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
   </div>
 </div>
 
-<!-- ____________________ ⏰ ساعت زنده ⏰ ____________________ -->
+<!-- ساعت زنده -->
 <div id="clock"></div>
 
 <script>
-/* ____________________ 🎬 متغیرها و المان های DOM 🎬 ____________________ */
 const alertBox = document.getElementById('donation-alert');
 const donorText = document.getElementById('donor-text');
 const videoEl = document.getElementById('donation-video');
 const totalEl = document.getElementById('total');
 const percentEl = document.getElementById('percent');
-let total = 0, target = 60000000;
+let total = 0, target = 100; // هدف به USDT
 
-/* ____________________ ⏰ تابع ساعت زنده ⏰ ____________________ */
+// ساعت زنده
 function updateClock(){
-  let now = new Date(), h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-  h=('0'+h).slice(-2); m=('0'+m).slice(-2); s=('0'+s).slice(-2);
-  document.getElementById('clock').textContent = h + ':' + m + ':' + s;
+  const now = new Date();
+  let h = ('0'+now.getHours()).slice(-2);
+  let m = ('0'+now.getMinutes()).slice(-2);
+  let s = ('0'+now.getSeconds()).slice(-2);
+  document.getElementById('clock').textContent = h+':'+m+':'+s;
 }
 setInterval(updateClock, 1000);
 updateClock();
 
-/* ____________________ 🌐 اتصال به وبهوک دریافت پرداخت ها 🌐 ____________________ */
-async function fetchDonations(){
-  try{
-    const res = await fetch('https://eoyf8grpms15wjd.m.pipedream.net',{cache:'no-store'});
-    const data = await res.json();
-    data.forEach(d => {
-      if(!d.handled){
-        d.handled = true;
-        showDonation(d);
-      }
-    });
-  } catch(e){console.warn(e);}
-}
-setInterval(fetchDonations, 5000);
+// تابع شروع حمایت
+function startDonation(){
+  const name = document.getElementById('donorName').value || 'حامی ناشناس';
+  const amountIRR = parseFloat(document.getElementById('donationAmount').value) || 0;
+  const message = document.getElementById('donorMessage').value || '';
+  
+  if(!amountIRR){ alert('لطفاً مبلغ حمایت را وارد کنید'); return; }
 
-/* ____________________ 🎬 نمایش پرداخت جدید 🎬 ____________________ */
-function showDonation(d){
-  let amountIRR = d.amount*d.currency_rate || d.amount || 0;
-  total += amountIRR;
-  donorText.textContent = (d.name||'حامی ناشناس')+' | '+amountIRR.toLocaleString('fa-IR')+' ریال'+(d.message?(' | '+d.message):'');
-  totalEl.textContent = total.toLocaleString('fa-IR');
+  // تبدیل ریال به USDT با نرخ ثابت 1USDT ~ 45000 تومان (مثال)
+  const usdtRate = 45000;
+  const amountUSDT = (amountIRR / usdtRate).toFixed(2);
+
+  // آپدیت جمع کل و درصد هدف
+  total += parseFloat(amountUSDT);
+  totalEl.textContent = total.toFixed(2);
   percentEl.textContent = Math.min(((total/target)*100).toFixed(1),100);
+
+  // نمایش ویدیو و متن
+  donorText.textContent = `${name} | ${amountUSDT} USDT${message?(' | '+message):''}`;
   alertBox.style.display='block';
   videoEl.currentTime=0;
   videoEl.play();
-  setTimeout(()=>{alertBox.style.display='none';},13000);
+  setTimeout(()=>{alertBox.style.display='none';}, amountUSDT*0); // فقط یکبار پخش
 }
 </script>
 </body>
