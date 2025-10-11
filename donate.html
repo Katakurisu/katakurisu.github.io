@@ -6,17 +6,21 @@
 <title>🎁 حمایت از میلاد کاتاکوری</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:'Vazirmatn',sans-serif; background:#000; color:#00ff99; text-align:center; direction:rtl; overflow-x:hidden;}
-h1 { margin:60px 0 50px; font-size:2.4em; text-shadow:0 0 15px #00ff99;}
-.button-container { display:flex; justify-content:center; gap:25px; flex-wrap:wrap; margin-bottom:80px;}
-.btn { display:inline-block; padding:16px 32px; font-size:1.2em; color:#00ff99; text-decoration:none; border:2px solid #00ff99; border-radius:12px; box-shadow:0 0 15px #00ff99; transition:all 0.3s ease;}
-.btn:hover { background:#00ff99; color:#000; box-shadow:0 0 30px #00ff99; transform:scale(1.05);}
-#clock { position:fixed; top:20px; right:20px; font-size:1.2em; color:#00ff99;}
-#overlay { position:fixed; inset:0; pointer-events:none;}
-#donation-alert { position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); text-align:center; background:rgba(0,0,0,0.9); border:2px solid #00ff99; border-radius:20px; padding:30px 40px; display:none; z-index:10; animation:fadein 0.5s ease;}
-#donation-video { width:200px; height:200px; border-radius:12px; margin-bottom:15px;}
-#donor-text { font-size:1.4em; text-shadow:0 0 15px #00ff99;}
-#stats { position:fixed; bottom:8%; left:50%; transform:translateX(-50%); font-size:1.3em; background:rgba(0,0,0,0.85); border-radius:14px; padding:20px 30px; color:#00ff99; text-shadow:0 0 12px #00ff99; line-height:1.8; z-index:5;}
+body { margin:0; font-family:'Vazirmatn',sans-serif; background:#000; color:#00ff99; text-align:center; direction:rtl; overflow-x:hidden; }
+h1 { margin:60px 0 50px; font-size:2.4em; text-shadow:0 0 15px #00ff99; }
+.button-container { display:flex; justify-content:center; gap:25px; flex-wrap:wrap; margin-bottom:80px; }
+.btn { display:inline-block; padding:16px 32px; font-size:1.2em; color:#00ff99; text-decoration:none; border:2px solid #00ff99; border-radius:12px; box-shadow:0 0 15px #00ff99; transition:all 0.3s ease; }
+.btn:hover { background:#00ff99; color:#000; box-shadow:0 0 30px #00ff99; transform:scale(1.05); }
+
+#clock { position:fixed; top:20px; right:20px; font-size:1.2em; color:#00ff99; }
+
+#overlay { position:fixed; inset:0; pointer-events:none; }
+#donation-alert { position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); text-align:center; background:rgba(0,0,0,0.9); border:2px solid #00ff99; border-radius:20px; padding:30px 40px; display:none; z-index:10; animation:fadein 0.5s ease; }
+#donation-video { width:200px; height:200px; border-radius:12px; margin-bottom:15px; }
+#donor-text { font-size:1.4em; text-shadow:0 0 15px #00ff99; }
+
+#stats { position:fixed; bottom:8%; left:50%; transform:translateX(-50%); font-size:1.3em; background:rgba(0,0,0,0.85); border-radius:14px; padding:20px 30px; color:#00ff99; text-shadow:0 0 12px #00ff99; line-height:1.8; z-index:5; }
+
 @keyframes fadein {from{opacity:0;}to{opacity:1;}}
 @media(max-width:500px){ .btn{padding:12px 20px;font-size:1em;} h1{font-size:2em;margin:40px 0;} #donation-video{width:140px;height:140px;} #stats{padding:15px 20px;font-size:1.1em;} }
 </style>
@@ -26,13 +30,13 @@ h1 { margin:60px 0 50px; font-size:2.4em; text-shadow:0 0 15px #00ff99;}
 <h1>🎁 حمایت از میلاد کاتاکوری</h1>
 <div class="button-container">
   <a class="btn" href="https://nowpayments.io/donation/katakuri" target="_blank" rel="noreferrer noopener">
-    <img src="https://nowpayments.io/images/embeds/donation-button-black.svg" alt="Crypto donation button">
+     <img src="https://nowpayments.io/images/embeds/donation-button-black.svg" alt="Crypto donation button by NOWPayments">
   </a>
 </div>
 
 <div id="overlay">
   <div id="donation-alert">
-    <video id="donation-video" src="donate.mp4" muted></video>
+    <video id="donation-video" src="donate.mp4" autoplay muted></video>
     <p id="donor-text"></p>
   </div>
   <div id="stats">
@@ -44,46 +48,42 @@ h1 { margin:60px 0 50px; font-size:2.4em; text-shadow:0 0 15px #00ff99;}
 <div id="clock"></div>
 
 <script>
-// المان ها
 const alertBox = document.getElementById('donation-alert');
 const donorText = document.getElementById('donor-text');
 const videoEl = document.getElementById('donation-video');
 const totalEl = document.getElementById('total');
 const percentEl = document.getElementById('percent');
-
-// متغیرها
 let total = 0, target = 100; // هدف به USDT
 
-// ساعت زنده
 function updateClock(){
-  let now = new Date();
-  let h=('0'+now.getHours()).slice(-2);
-  let m=('0'+now.getMinutes()).slice(-2);
-  let s=('0'+now.getSeconds()).slice(-2);
-  document.getElementById('clock').textContent = h+':'+m+':'+s;
+  let now = new Date(), h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  h=('0'+h).slice(-2); m=('0'+m).slice(-2); s=('0'+s).slice(-2);
+  document.getElementById('clock').textContent = h + ':' + m + ':' + s;
 }
-setInterval(updateClock,1000);
+setInterval(updateClock, 1000);
 updateClock();
 
-// نمایش دونیت
-function showDonation(name, message, amountUSDT){
-  donorText.textContent = name + (message ? ' | '+message : '') + ' | '+amountUSDT.toFixed(2)+' USDT';
-  total += amountUSDT;
+// شبیه سازی دریافت حمایت از API NowPayments یا ریال با تبدیل لحظه ای به USDT
+async function fetchDonations(){
+  try{
+    // نمونه داده، در عمل با IPN یا API واقعی جایگزین می‌شود
+    const data = []; // داده‌های جدید حمایت‌ها
+    data.forEach(d => { if(!d.handled){ d.handled=true; showDonation(d); } });
+  } catch(e){ console.warn(e); }
+}
+setInterval(fetchDonations, 5000);
+
+function showDonation(d){
+  let usdtAmount = d.amount_usdt || 0; // ریال یا کریپتو تبدیل شده به USDT
+  total += parseFloat(usdtAmount);
+  donorText.textContent = (d.name||'حامی ناشناس')+' | '+usdtAmount.toFixed(2)+' USDT'+(d.message?(' | '+d.message):'');
   totalEl.textContent = total.toFixed(2);
   percentEl.textContent = Math.min(((total/target)*100).toFixed(1),100);
   alertBox.style.display='block';
-  videoEl.currentTime = 0;
+  videoEl.currentTime=0;
   videoEl.play();
   videoEl.onended = () => { alertBox.style.display='none'; };
 }
-
-// شبیه سازی دریافت دونیت (جایگزین وبهوک)  
-// این تابع بعداً با دریافت اطلاعات NowPayments جایگزین میشه
-function receiveDonation(){
-  // مثال: نام حامی، پیام، مقدار USDT
-  showDonation('حامی ناشناس','تشویق', 0.05);
-}
-setInterval(receiveDonation, 30000); // هر 30 ثانیه تست
 </script>
 </body>
 </html>
