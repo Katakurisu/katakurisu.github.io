@@ -8,7 +8,7 @@
 body {
   margin:0;
   font-family:'Vazirmatn',sans-serif;
-  background:transparent; /* شفاف برای OBS */
+  background:transparent;
   direction:rtl;
   display:flex;
   justify-content:center;
@@ -17,11 +17,11 @@ body {
 }
 
 #goal-container {
-  width:20%; /* طول کلی نوار */
+  width:20%;
   min-width:200px;
   display:flex;
   flex-direction:column;
-  align-items:flex-end; /* راست‌چین کردن محتوا */
+  align-items:flex-end;
 }
 
 #goal-title {
@@ -42,9 +42,9 @@ body {
 #goal-bar-wrapper {
   width:100%;
   height:30px;
-  border:3px solid yellow; /* بوردر دور نوار */
+  border:3px solid yellow;
   border-radius:8px;
-  background:transparent; /* شفاف */
+  background:transparent;
   position:relative;
   overflow:hidden;
 }
@@ -52,18 +52,19 @@ body {
 #goal-bar-fill {
   height:100%;
   width:0%;
-  background:#00ff99; /* سبز فسفری */
+  background:#00ff99; /* پر شدن سبز فسفری */
   text-align:left;
   line-height:30px;
   padding-left:5px;
   box-sizing:border-box;
   color:#000;
   font-weight:bold;
+  position:relative;
 }
 
 #goal-bar-fill span {
   direction:ltr;
-  float:left; /* درصد سمت چپ */
+  float:left;
   margin-left:5px;
 }
 
@@ -71,7 +72,7 @@ body {
   margin-top:5px;
   font-size:1.2em;
   color:#00ff99;
-  text-align:right; /* راست‌چین */
+  text-align:right;
   text-shadow:0 0 5px #000;
 }
 </style>
@@ -96,37 +97,37 @@ body {
 </div>
 
 <script>
+// عناصر DOM
 const goalBarFill = document.getElementById('goal-bar-fill');
 const goalPercentage = document.getElementById('goal-percentage');
 const goalTextBottom = document.getElementById('goal-text-bottom');
 const goalTitleElement = document.getElementById('goal-title');
 
-// گرفتن مقادیر از localStorage
+// مقادیر اولیه
 let currentAmount = parseInt(localStorage.getItem('currentAmount')) || 0;
 let goalAmount = parseInt(localStorage.getItem('goalAmount')) || 6000000;
 let goalTitle = localStorage.getItem('goalTitle') || 'خرید وبکم';
 
-// به‌روزرسانی نوار هدف
+// تابع آپدیت نوار هدف
 function updateGoalBar() {
-  let percentage = Math.min((currentAmount / goalAmount)*100,100);
+  const percentage = Math.min((currentAmount / goalAmount) * 100, 100);
   goalBarFill.style.width = percentage + '%';
   goalPercentage.textContent = percentage.toFixed(0) + '%';
   goalTextBottom.textContent = `تاکنون ${currentAmount.toLocaleString()} از ${goalAmount.toLocaleString()} تومان حمایت شده`;
   goalTitleElement.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/889/889692.png" alt="کادو"> هدف: ${goalTitle}`;
 }
 
-// تابع برای بروزرسانی مقادیر از داشبورد
-function updateGoalValues(newCurrent, newGoal, newTitle) {
-  currentAmount = newCurrent;
-  goalAmount = newGoal;
-  goalTitle = newTitle;
-  localStorage.setItem('currentAmount', currentAmount);
-  localStorage.setItem('goalAmount', goalAmount);
-  localStorage.setItem('goalTitle', goalTitle);
+// ارتباط زنده با داشبورد
+const bc = new BroadcastChannel('goal_channel');
+bc.onmessage = (event) => {
+  const data = event.data;
+  currentAmount = data.currentAmount;
+  goalAmount = data.goalAmount;
+  goalTitle = data.goalTitle;
   updateGoalBar();
-}
+};
 
-// بروزرسانی بار اول
+// آپدیت اولیه
 updateGoalBar();
 </script>
 
