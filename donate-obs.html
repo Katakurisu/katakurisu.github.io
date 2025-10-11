@@ -6,18 +6,15 @@
 <title>🎬 Overlay حمایت (ویژه OBS)</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* ____________________ ⚙️ تنظیمات پایه و تم ____________________ */
 body {
   margin: 0;
   font-family: 'Vazirmatn', sans-serif;
-  background: transparent; /* برای شفافیت در OBS */
+  background: transparent;
   color: #00ff99;
   text-align: center;
   direction: rtl;
   overflow: hidden;
 }
-
-/* ____________________ 🎬 جعبه نمایش دونیت ____________________ */
 #overlay {
   position: fixed;
   inset: 0;
@@ -25,22 +22,17 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  pointer-events: none; /* اجازه نده ماوس روش بیاد */
+  pointer-events: none;
 }
-
 #donation-alert {
   position: relative;
   text-align: center;
-  background: rgba(0, 0, 0, 0.7);
   border-radius: 20px;
   padding: 25px 35px;
   display: none;
   z-index: 10;
   overflow: hidden;
-  animation: fadein 0.5s ease;
 }
-
-/* ____________________ 🎞️ ویدیوی دونیت ____________________ */
 #donation-video {
   width: 200px;
   height: 200px;
@@ -49,15 +41,11 @@ body {
   object-fit: cover;
   background: #000;
 }
-
-/* ____________________ ✍️ متن حامی ____________________ */
 #donor-text {
   font-size: 1.3em;
   text-shadow: 0 0 15px #00ff99;
   color: #00ff99;
 }
-
-/* ____________________ 🎯 افکت بوردر متحرک ____________________ */
 #donation-border {
   position: absolute;
   inset: 0;
@@ -67,43 +55,25 @@ body {
   opacity: 0;
   pointer-events: none;
 }
-
-/* ____________________ ✨ انیمیشن‌ها ____________________ */
-@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
-@keyframes borderFade {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-@media (max-width: 500px) {
-  #donation-video { width: 140px; height: 140px; }
-  #donor-text { font-size: 1.1em; }
-}
+@keyframes borderFade {0% {opacity:0;} 10% {opacity:1;} 90% {opacity:1;} 100% {opacity:0;}}
 </style>
 </head>
 <body>
 
-<!-- ____________________ 🎁 بخش اصلی نمایش حمایت ____________________ -->
 <div id="overlay">
   <div id="donation-alert">
     <div id="donation-border"></div>
-    <video id="donation-video" src="https://katakurisu.github.io/alert-donate.mp4" preload="auto"></video>
+    <video id="donation-video" src="https://katakurisu.github.io/donate-obs.mp4" preload="auto"></video>
     <p id="donor-text"></p>
   </div>
 </div>
 
 <script>
-/* ____________________ 🎮 متغیرها ____________________ */
 const alertBox = document.getElementById('donation-alert');
 const donorText = document.getElementById('donor-text');
 const videoEl = document.getElementById('donation-video');
 const donationBorder = document.getElementById('donation-border');
 
-let total = 0, target = 60000000;
-
-/* ____________________ 🌐 اتصال وبهوک ____________________ */
 async function fetchDonations() {
   try {
     const res = await fetch('https://eoyf8grpms15wjd.m.pipedream.net', { cache: 'no-store' });
@@ -112,34 +82,28 @@ async function fetchDonations() {
       if (!d.handled) {
         d.handled = true;
         showDonation(d);
+        // اطلاع‌رسانی به goal-obs و کنترل
+        const bc = new BroadcastChannel('goal_channel');
+        bc.postMessage({
+          currentAmount: d.amount,
+          goalAmount: 6000000,
+          goalTitle: 'خرید وبکم'
+        });
       }
     });
-  } catch (e) {
-    console.warn(e);
-  }
+  } catch(e) { console.warn(e); }
 }
 setInterval(fetchDonations, 5000);
 
-/* ____________________ 🎬 نمایش ویدیو هنگام دونیت جدید ____________________ */
 function showDonation(d) {
   const amountIRR = d.amount * d.currency_rate || d.amount || 0;
-  total += amountIRR;
-
-  donorText.textContent = (d.name || 'حامی ناشناس') +
-    ' | ' + amountIRR.toLocaleString('fa-IR') + ' ریال' +
-    (d.message ? (' | ' + d.message) : '');
-
+  donorText.textContent = (d.name || 'حامی ناشناس') + ' | ' + amountIRR.toLocaleString('fa-IR') + ' ریال' + (d.message ? (' | ' + d.message) : '');
   alertBox.style.display = 'block';
   videoEl.currentTime = 0;
   videoEl.play().catch(err => console.log('Autoplay issue', err));
-
   donationBorder.style.animation = 'borderFade 13s linear';
   donationBorder.style.opacity = '1';
-
-  setTimeout(() => {
-    alertBox.style.display = 'none';
-    donationBorder.style.opacity = '0';
-  }, 13000);
+  videoEl.onended = () => { alertBox.style.display = 'none'; donationBorder.style.opacity='0'; };
 }
 </script>
 
