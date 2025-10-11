@@ -13,135 +13,95 @@ body {
   direction:rtl;
   padding:20px;
 }
-
-h1 {
-  text-align:center;
-  margin-bottom:20px;
-  color:red;
-  text-shadow:0 0 5px #000;
-}
-
-label {
-  display:block;
-  margin-top:10px;
-  font-weight:bold;
-}
-
-input[type="text"], input[type="number"] {
-  width:100%;
-  padding:8px;
-  margin-top:5px;
-  border-radius:5px;
-  border:none;
-  font-size:1em;
-  box-sizing:border-box;
-}
-
-button {
-  margin-top:15px;
-  padding:10px 15px;
-  font-size:1em;
-  background:#00ff99;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-#last-donations {
+h1 { text-align:center; color:#ff5555; }
+label { display:block; margin-top:15px; }
+input { padding:5px; font-size:1em; width:100%; margin-top:5px; }
+button { margin-top:10px; padding:8px 15px; font-size:1em; cursor:pointer; }
+#goal-display {
   margin-top:30px;
-  max-height:200px;
-  overflow-y:auto;
-  border:2px solid #00ff99;
-  border-radius:8px;
-  padding:10px;
-}
-
-#clock {
-  position:fixed;
-  top:10px;
-  right:20px;
-  font-size:1.2em;
-  color:#00ff99;
-}
-
-.donation-item {
-  border-bottom:1px solid #00ff99;
-  padding:5px 0;
+  border:2px solid yellow;
+  padding:15px;
+  border-radius:10px;
 }
 </style>
 </head>
 <body>
 
-<div id="clock"></div>
-
 <h1>داشبورد هدف</h1>
 
-<label for="goalTitle">عنوان هدف:</label>
-<input type="text" id="goalTitle" value="خرید وبکم">
+<label>عنوان هدف:</label>
+<input type="text" id="goal-title-input">
 
-<label for="goalAmount">مبلغ نهایی هدف (تومان):</label>
-<input type="number" id="goalAmount" value="6000000">
+<label>مبلغ هدف (تومان):</label>
+<input type="number" id="goal-amount-input">
 
-<label for="currentAmount">مبلغ فعلی حمایت (تومان):</label>
-<input type="number" id="currentAmount" value="0">
+<label>مبلغ فعلی حمایت شده (تومان):</label>
+<input type="number" id="current-amount-input">
 
-<button id="updateBtn">به‌روزرسانی هدف</button>
-<button id="testDonationBtn">تست حمایت</button>
+<button id="update-goal-btn">به‌روز رسانی هدف</button>
+<button id="add-donation-btn">افزودن حمایت جدید</button>
 
-<div id="last-donations">
-  <strong>آخرین حمایت‌ها:</strong>
+<div id="goal-display">
+  <h2>نمایش زنده هدف:</h2>
+  <p id="goal-display-title"></p>
+  <p id="goal-display-bar"></p>
+  <p id="goal-display-text"></p>
 </div>
 
 <script>
-// ساعت فارسی
-function updateClock(){
-  const now=new Date();
-  const h=('0'+now.getHours()).slice(-2);
-  const m=('0'+now.getMinutes()).slice(-2);
-  const s=('0'+now.getSeconds()).slice(-2);
-  document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-}
-setInterval(updateClock,1000);
-updateClock();
-
-// عناصر
-const goalTitleInput = document.getElementById('goalTitle');
-const goalAmountInput = document.getElementById('goalAmount');
-const currentAmountInput = document.getElementById('currentAmount');
-const updateBtn = document.getElementById('updateBtn');
-const testDonationBtn = document.getElementById('testDonationBtn');
-const lastDonationsDiv = document.getElementById('last-donations');
-
-// ارتباط با OBS
 const bc = new BroadcastChannel('goal_channel');
 
-function updateGoal() {
-  const data = {
-    goalTitle: goalTitleInput.value,
-    goalAmount: parseInt(goalAmountInput.value),
-    currentAmount: parseInt(currentAmountInput.value)
-  };
-  bc.postMessage(data);
+const goalTitleInput = document.getElementById('goal-title-input');
+const goalAmountInput = document.getElementById('goal-amount-input');
+const currentAmountInput = document.getElementById('current-amount-input');
+const updateBtn = document.getElementById('update-goal-btn');
+const addDonationBtn = document.getElementById('add-donation-btn');
+
+const displayTitle = document.getElementById('goal-display-title');
+const displayBar = document.getElementById('goal-display-bar');
+const displayText = document.getElementById('goal-display-text');
+
+// مقادیر اولیه
+let goalTitle = 'خرید وبکم';
+let goalAmount = 6000000;
+let currentAmount = 0;
+
+// آپدیت نمایش داخل داشبورد
+function updateDisplay() {
+  const percentage = Math.min((currentAmount / goalAmount) * 100, 100);
+  displayTitle.innerHTML = `🎁 هدف: ${goalTitle}`;
+  displayBar.innerHTML = `نوار: ${percentage.toFixed(0)}%`;
+  displayText.innerHTML = `تاکنون ${currentAmount.toLocaleString('fa-IR')} از ${goalAmount.toLocaleString('fa-IR')} تومان حمایت شده`;
 }
 
-// دکمه بروزرسانی
-updateBtn.addEventListener('click', () => {
-  updateGoal();
-});
+// ارسال به OBS
+function broadcast() {
+  bc.postMessage({goalTitle, goalAmount, currentAmount});
+}
 
-// دکمه تست دونیت
-testDonationBtn.addEventListener('click', () => {
-  const randomAmount = Math.floor(Math.random() * 500000) + 50000; // بین 50k تا 500k تومان
-  currentAmountInput.value = parseInt(currentAmountInput.value) + randomAmount;
-  updateGoal();
+// دکمه به‌روز رسانی هدف
+updateBtn.onclick = () => {
+  goalTitle = goalTitleInput.value || goalTitle;
+  goalAmount = parseInt(goalAmountInput.value) || goalAmount;
+  currentAmount = parseInt(currentAmountInput.value) || currentAmount;
+  updateDisplay();
+  broadcast();
+};
 
-  // اضافه کردن به لیست آخرین حمایت‌ها
-  const div = document.createElement('div');
-  div.className = 'donation-item';
-  div.textContent = `حمایت جدید: ${randomAmount.toLocaleString()} تومان`;
-  lastDonationsDiv.prepend(div);
-});
+// افزودن حمایت جدید
+addDonationBtn.onclick = () => {
+  const donation = parseInt(currentAmountInput.value) || 0;
+  currentAmount += donation;
+  updateDisplay();
+  broadcast();
+};
+
+// آپدیت اولیه
+goalTitleInput.value = goalTitle;
+goalAmountInput.value = goalAmount;
+currentAmountInput.value = currentAmount;
+updateDisplay();
+broadcast();
 </script>
 
 </body>
