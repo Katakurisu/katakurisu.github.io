@@ -3,72 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>داشبورد کنترل حمایت</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<title>Dashboard کنترل Goal</title>
 <style>
-body { margin:0; font-family:'Vazirmatn',sans-serif; background:#111; color:#00ff99; direction:rtl; }
-.container { width:90%; max-width:800px; margin:20px auto; }
-h1 { text-align:center; color:#ff4444; text-shadow:0 0 5px #000; }
-#goal-container { margin-top:30px; }
-#goal-title { font-size:1.5em; display:flex; align-items:center; gap:5px; color:red; text-shadow:0 0 5px #000; }
-#goal-title img { width:24px; height:24px; }
-#goal-bar-wrapper { width:100%; height:30px; border:3px solid yellow; border-radius:8px; background:transparent; position:relative; overflow:hidden; margin-top:5px; }
-#goal-bar-fill { height:100%; width:0%; background:#00ff99; position:relative; text-align:left; line-height:30px; padding-left:5px; box-sizing:border-box; font-weight:bold; color:#000; }
-#goal-bar-fill span { direction:ltr; float:left; margin-left:5px; }
-#goal-text-bottom { margin-top:5px; font-size:1.2em; color:#00ff99; text-align:right; text-shadow:0 0 5px #000; }
-button { margin:5px; padding:5px 10px; font-size:1em; cursor:pointer; }
+body { font-family:'Vazirmatn',sans-serif; padding:20px; background:#111; color:#0f0; }
+input, button { font-size:1em; margin:5px; }
+#goal-preview { margin-top:20px; }
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>داشبورد کنترل حمایت</h1>
-  
-  <div id="goal-container">
-    <div id="goal-title">
-      <img src="https://cdn-icons-png.flaticon.com/512/889/889692.png" alt="کادو">
-      هدف: <span id="goal-name">خرید وبکم</span>
-    </div>
 
-    <div id="goal-bar-wrapper">
-      <div id="goal-bar-fill"><span id="goal-percentage">0%</span></div>
-    </div>
+<h2>کنترل Goal و دونیت‌ها</h2>
+<label>نام هدف: <input type="text" id="goal-title-input"></label>
+<label>مبلغ هدف (تومان): <input type="number" id="goal-amount-input"></label>
+<label>مبلغ کنونی (تومان): <input type="number" id="current-amount-input"></label>
+<button id="update-goal">به‌روزرسانی</button>
 
-    <div id="goal-text-bottom">تاکنون 0 از 6,000,000 تومان حمایت شده</div>
-  </div>
-
-  <h2>تست حمایت</h2>
-  <button onclick="testDonation()">تست حمایت 100,000 تومان</button>
-
-</div>
+<div id="goal-preview"></div>
 
 <script>
+// عناصر
+const titleInput = document.getElementById('goal-title-input');
+const goalInput = document.getElementById('goal-amount-input');
+const currentInput = document.getElementById('current-amount-input');
+const updateBtn = document.getElementById('update-goal');
+const previewDiv = document.getElementById('goal-preview');
+
+let currentAmount = parseInt(localStorage.getItem('currentAmount')) || 0;
+let goalAmount = parseInt(localStorage.getItem('goalAmount')) || 6000000;
+let goalTitle = localStorage.getItem('goalTitle') || 'خرید وبکم';
+
+// نمایش زنده
+function renderPreview() {
+  previewDiv.innerHTML = `
+    <strong>هدف: ${goalTitle}</strong><br>
+    تاکنون ${currentAmount.toLocaleString()} از ${goalAmount.toLocaleString()} تومان حمایت شده
+  `;
+}
+renderPreview();
+
+// ارتباط با goal.html و OBS
 const bc = new BroadcastChannel('goal_channel');
-const goalBarFill = document.getElementById('goal-bar-fill');
-const goalPercentage = document.getElementById('goal-percentage');
-const goalTextBottom = document.getElementById('goal-text-bottom');
-const goalName = document.getElementById('goal-name');
-
-let currentAmount = 0;
-let goalAmount = 6000000;
-let goalTitle = 'خرید وبکم';
-
-function updateGoalBar() {
-  const percentage = Math.min((currentAmount / goalAmount) * 100, 100);
-  goalBarFill.style.width = percentage + '%';
-  goalPercentage.textContent = percentage.toFixed(0) + '%';
-  goalTextBottom.textContent = `تاکنون ${currentAmount.toLocaleString()} از ${goalAmount.toLocaleString()} تومان حمایت شده`;
-  goalName.textContent = goalTitle;
+function broadcast() {
   bc.postMessage({ currentAmount, goalAmount, goalTitle });
 }
 
-// شبیه‌سازی حمایت تست
-function testDonation() {
-  currentAmount += 100000;
-  updateGoalBar();
-}
+// به‌روزرسانی از فرم
+updateBtn.onclick = () => {
+  goalTitle = titleInput.value || goalTitle;
+  goalAmount = parseInt(goalInput.value) || goalAmount;
+  currentAmount = parseInt(currentInput.value) || currentAmount;
 
-// آپدیت اولیه
-updateGoalBar();
+  localStorage.setItem('goalTitle', goalTitle);
+  localStorage.setItem('goalAmount', goalAmount);
+  localStorage.setItem('currentAmount', currentAmount);
+
+  renderPreview();
+  broadcast();
+};
 </script>
+
 </body>
 </html>
