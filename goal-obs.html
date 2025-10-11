@@ -1,160 +1,134 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goal OBS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Vazirmatn', sans-serif;
-            background: transparent;
-            color: #00ff99;
-            text-align: center;
-            direction: rtl;
-            overflow: hidden;
-            height: 100vh;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goal Overlay - OBS</title>
+<style>
+body {
+  margin:0;
+  font-family:'Vazirmatn',sans-serif;
+  background:transparent; /* شفاف برای OBS */
+  direction:rtl;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
 
-        #overlay {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            pointer-events: none;
-        }
+#goal-container {
+  width:20%; /* طول کلی نوار */
+  min-width:200px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end; /* راست‌چین کردن محتوا */
+}
 
-        #goal-container {
-            width: 80%;  /* کنترل عرض نوار */
-            max-width: 600px;  /* حداکثر عرض */
-            position: relative;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 10px;
-            margin: 10px;
-        }
+#goal-title {
+  font-size:1.5em;
+  color:red;
+  text-shadow:0 0 5px #000;
+  margin-bottom:5px;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
 
-        .goal-text {
-            font-size: 1.2em;
-            color: #fff;
-            margin-bottom: 10px;
-            text-align: right;
-            font-weight: bold;
-        }
+#goal-title img {
+  width:24px;
+  height:24px;
+}
 
-        #goal-bar {
-            width: 100%;
-            height: 30px;
-            background: #f2f2f2;
-            border-radius: 15px;
-            position: relative;
-            overflow: hidden;
-        }
+#goal-bar-wrapper {
+  width:100%;
+  height:30px;
+  border:3px solid yellow; /* بوردر دور نوار */
+  border-radius:8px;
+  background:transparent; /* شفاف */
+  position:relative;
+  overflow:hidden;
+}
 
-        #goal-bar-fill {
-            height: 100%;
-            background: #00ff99;  /* رنگ سبز فسفری */
-            border-radius: 15px;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #000;
-            font-size: 1.2em;
-            transition: width 0.5s ease-in-out;
-        }
+#goal-bar-fill {
+  height:100%;
+  width:0%;
+  background:#00ff99; /* سبز فسفری */
+  text-align:left;
+  line-height:30px;
+  padding-left:5px;
+  box-sizing:border-box;
+  color:#000;
+  font-weight:bold;
+}
 
-        #goal-bar-text {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            color: red; /* رنگ نوشته بالا */
-            font-weight: bold;
-            font-size: 1.4em;
-            text-shadow: 0 0 15px #00ff99;
-        }
+#goal-bar-fill span {
+  direction:ltr;
+  float:left; /* درصد سمت چپ */
+  margin-left:5px;
+}
 
-        .info-text {
-            font-size: 1.2em;
-            color: #fff;
-            margin-top: 10px;
-        }
-
-        .info-text .icon {
-            margin-left: 10px;
-        }
-
-        .info-text .goal-title {
-            font-weight: bold;
-        }
-
-        .goal-percentage {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            color: red;
-            font-size: 1.2em;
-            text-shadow: 0 0 15px #00ff99;
-        }
-    </style>
+#goal-text-bottom {
+  margin-top:5px;
+  font-size:1.2em;
+  color:#00ff99;
+  text-align:right; /* راست‌چین */
+  text-shadow:0 0 5px #000;
+}
+</style>
 </head>
 <body>
 
-    <div id="overlay">
-        <div id="goal-container">
-            <div class="goal-text">
-                هدف: خرید وبکم
-            </div>
-            <div id="goal-bar">
-                <div id="goal-bar-fill" style="width: 10%;">
-                    <div class="goal-percentage">
-                        10%
-                    </div>
-                </div>
-                <div id="goal-bar-text">هدف: خرید وبکم</div>
-            </div>
-            <div class="info-text">
-                تاکنون <span id="current-amount">1000000</span> از <span id="goal-amount">6000000</span> تومان حمایت شده
-                <span class="icon">🎁</span>
-            </div>
-        </div>
+<div id="goal-container">
+  <div id="goal-title">
+    <img src="https://cdn-icons-png.flaticon.com/512/889/889692.png" alt="کادو">
+    هدف: خرید وبکم
+  </div>
+
+  <div id="goal-bar-wrapper">
+    <div id="goal-bar-fill">
+      <span id="goal-percentage">0%</span>
     </div>
+  </div>
 
-    <script>
-        const currentAmountElement = document.getElementById('current-amount');
-        const goalAmountElement = document.getElementById('goal-amount');
-        const goalBarFill = document.getElementById('goal-bar-fill');
-        const goalPercentage = document.querySelector('.goal-percentage');
-        const goalBarText = document.getElementById('goal-bar-text');
+  <div id="goal-text-bottom">
+    تاکنون 0 از 6,000,000 تومان حمایت شده
+  </div>
+</div>
 
-        let currentAmount = 1000000;  // مقدار فعلی حمایت
-        let goalAmount = 6000000;  // هدف
+<script>
+const goalBarFill = document.getElementById('goal-bar-fill');
+const goalPercentage = document.getElementById('goal-percentage');
+const goalTextBottom = document.getElementById('goal-text-bottom');
+const goalTitleElement = document.getElementById('goal-title');
 
-        // به روز رسانی نوار هدف
-        function updateGoalBar() {
-            const percentage = (currentAmount / goalAmount) * 100;
-            goalBarFill.style.width = percentage + '%';
-            goalPercentage.textContent = percentage.toFixed(0) + '%';
-            currentAmountElement.textContent = currentAmount.toLocaleString();
-            goalAmountElement.textContent = goalAmount.toLocaleString();
-        }
+// گرفتن مقادیر از localStorage
+let currentAmount = parseInt(localStorage.getItem('currentAmount')) || 0;
+let goalAmount = parseInt(localStorage.getItem('goalAmount')) || 6000000;
+let goalTitle = localStorage.getItem('goalTitle') || 'خرید وبکم';
 
-        // تست: فرض کنید یک حمایت جدید آمده
-        setInterval(() => {
-            currentAmount += 50000;  // به مقدار فعلی اضافه کن
-            updateGoalBar();
-        }, 5000); // هر 5 ثانیه یک بار به روز رسانی می‌شود
+// به‌روزرسانی نوار هدف
+function updateGoalBar() {
+  let percentage = Math.min((currentAmount / goalAmount)*100,100);
+  goalBarFill.style.width = percentage + '%';
+  goalPercentage.textContent = percentage.toFixed(0) + '%';
+  goalTextBottom.textContent = `تاکنون ${currentAmount.toLocaleString()} از ${goalAmount.toLocaleString()} تومان حمایت شده`;
+  goalTitleElement.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/889/889692.png" alt="کادو"> هدف: ${goalTitle}`;
+}
 
-        // به روز رسانی برای بار اول
-        updateGoalBar();
-    </script>
+// تابع برای بروزرسانی مقادیر از داشبورد
+function updateGoalValues(newCurrent, newGoal, newTitle) {
+  currentAmount = newCurrent;
+  goalAmount = newGoal;
+  goalTitle = newTitle;
+  localStorage.setItem('currentAmount', currentAmount);
+  localStorage.setItem('goalAmount', goalAmount);
+  localStorage.setItem('goalTitle', goalTitle);
+  updateGoalBar();
+}
+
+// بروزرسانی بار اول
+updateGoalBar();
+</script>
 
 </body>
 </html>
