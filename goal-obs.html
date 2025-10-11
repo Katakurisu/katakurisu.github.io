@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>هدف حمایت</title>
+    <title>Goal OBS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* --------------------------------- استایل کلی ------------------------------- */
         body {
             margin: 0;
             font-family: 'Vazirmatn', sans-serif;
@@ -14,128 +14,147 @@
             text-align: center;
             direction: rtl;
             overflow: hidden;
+            height: 100vh;
         }
 
-        /* ------------------------ نوار هدف ---------------------------- */
-        #goal-bar-container {
-            position: relative;
-            width: 100%;
-            height: 30px; /* ارتفاع نوار کمتر شد */
-            background: transparent;
-            border: 2px solid yellow;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        #goal-bar-fill {
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: 100%;
-            width: 0%;
-            background: #00ff99; /* سبز فسفری */
-            transition: width 1s ease;
+        #overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: flex-start;
-            padding-left: 10px;
-            box-sizing: border-box;
+            flex-direction: column;
+            pointer-events: none;
+        }
+
+        #goal-container {
+            width: 80%;  /* کنترل عرض نوار */
+            max-width: 600px;  /* حداکثر عرض */
+            position: relative;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .goal-text {
+            font-size: 1.2em;
             color: #fff;
-            font-weight: 600;
-        }
-
-        #goal-percent {
-            font-size: 1.2em;
-            text-shadow: 0 0 5px #00ff99;
-        }
-
-        #goal-percent::before {
-            content: '♥ ';
-        }
-
-        /* ------------------------ نوشته‌های بالا و پایین نوار ------------------------ */
-        #goal-text {
-            font-size: 1.2em;
-            color: #00ff99;
+            margin-bottom: 10px;
             text-align: right;
-            margin: 0 10px;
-        }
-
-        #goal-heading {
-            font-size: 1.3em;
-            color: #ff0000;
-            text-align: right;
-            margin: 10px 10px;
             font-weight: bold;
         }
 
-        /* ------------------------ آیکون کنار هدف ------------------------ */
-        #goal-icon {
-            font-size: 1.5em;
-            margin-left: 10px;
-            display: inline-block;
-            color: #ffcc00;
+        #goal-bar {
+            width: 100%;
+            height: 30px;
+            background: #f2f2f2;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* ------------------------ استایل صفحه ------------------------ */
-        #goal-container {
-            width: 80%;
-            margin: auto;
+        #goal-bar-fill {
+            height: 100%;
+            background: #00ff99;  /* رنگ سبز فسفری */
+            border-radius: 15px;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #000;
+            font-size: 1.2em;
+            transition: width 0.5s ease-in-out;
+        }
+
+        #goal-bar-text {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            color: red; /* رنگ نوشته بالا */
+            font-weight: bold;
+            font-size: 1.4em;
+            text-shadow: 0 0 15px #00ff99;
+        }
+
+        .info-text {
+            font-size: 1.2em;
+            color: #fff;
+            margin-top: 10px;
+        }
+
+        .info-text .icon {
+            margin-left: 10px;
+        }
+
+        .info-text .goal-title {
+            font-weight: bold;
+        }
+
+        .goal-percentage {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: red;
+            font-size: 1.2em;
+            text-shadow: 0 0 15px #00ff99;
         }
     </style>
 </head>
 <body>
 
-    <div id="goal-container">
-        <!-- عنوان هدف -->
-        <div id="goal-heading">
-            هدف: خرید وبکم
-            <span id="goal-icon">🎁</span> <!-- آیکون کادو -->
-        </div>
-
-        <!-- نوار هدف -->
-        <div id="goal-bar-container">
-            <div id="goal-bar-fill">
-                <div id="goal-percent">۰%</div> <!-- درصد هدف -->
+    <div id="overlay">
+        <div id="goal-container">
+            <div class="goal-text">
+                هدف: خرید وبکم
             </div>
-        </div>
-
-        <!-- نوشته پایین نوار -->
-        <div id="goal-text">
-            تاکنون <span id="current-support">۰</span> از <span id="target-amount">۶۰۰۰۰۰۰</span> تومان حمایت شده
+            <div id="goal-bar">
+                <div id="goal-bar-fill" style="width: 10%;">
+                    <div class="goal-percentage">
+                        10%
+                    </div>
+                </div>
+                <div id="goal-bar-text">هدف: خرید وبکم</div>
+            </div>
+            <div class="info-text">
+                تاکنون <span id="current-amount">1000000</span> از <span id="goal-amount">6000000</span> تومان حمایت شده
+                <span class="icon">🎁</span>
+            </div>
         </div>
     </div>
 
     <script>
-        // مقدار اولیه هدف (به تومان)
-        let target = 6000000; // 6 میلیون تومان
-        let total = 0; // حمایت شده فعلی
-
+        const currentAmountElement = document.getElementById('current-amount');
+        const goalAmountElement = document.getElementById('goal-amount');
         const goalBarFill = document.getElementById('goal-bar-fill');
-        const goalPercent = document.getElementById('goal-percent');
-        const goalText = document.getElementById('goal-text');
-        const currentSupport = document.getElementById('current-support');
-        const targetAmount = document.getElementById('target-amount');
+        const goalPercentage = document.querySelector('.goal-percentage');
+        const goalBarText = document.getElementById('goal-bar-text');
 
-        // بروزرسانی هدف با مقادیر جدید
-        function updateGoal(newAmount) {
-            total = newAmount;
-            let percent = Math.min((total / target) * 100, 100);
-            let persianPercent = percent.toFixed(1).toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-            goalBarFill.style.width = percent + '%';
-            goalPercent.textContent = persianPercent + '%'; // درصد داخل نوار
-            goalBarFill.textContent = goalPercent.textContent; // درصد داخل نوار
-            currentSupport.textContent = total.toLocaleString('fa-IR'); // مبلغ حمایت شده فعلی
-            goalText.textContent = 'تاکنون ' + total.toLocaleString('fa-IR') + ' از ' + target.toLocaleString('fa-IR') + ' تومان حمایت شده';
+        let currentAmount = 1000000;  // مقدار فعلی حمایت
+        let goalAmount = 6000000;  // هدف
+
+        // به روز رسانی نوار هدف
+        function updateGoalBar() {
+            const percentage = (currentAmount / goalAmount) * 100;
+            goalBarFill.style.width = percentage + '%';
+            goalPercentage.textContent = percentage.toFixed(0) + '%';
+            currentAmountElement.textContent = currentAmount.toLocaleString();
+            goalAmountElement.textContent = goalAmount.toLocaleString();
         }
 
-        // نمونه‌ای برای تست بروزرسانی هدف
+        // تست: فرض کنید یک حمایت جدید آمده
         setInterval(() => {
-            total += 500000; // افزودن مقدار جدید هر 5 ثانیه
-            updateGoal(total);
-        }, 5000);
+            currentAmount += 50000;  // به مقدار فعلی اضافه کن
+            updateGoalBar();
+        }, 5000); // هر 5 ثانیه یک بار به روز رسانی می‌شود
+
+        // به روز رسانی برای بار اول
+        updateGoalBar();
     </script>
+
 </body>
 </html>
