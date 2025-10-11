@@ -1,248 +1,80 @@
-<!-- donate.html -->
 <!DOCTYPE html>
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎁 حمایت از میلاد کاتاکوری</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<title>حمایت از میلاد کاتاکوری</title>
 <style>
-body {
-  margin:0;
-  font-family:'Vazirmatn',sans-serif;
-  background:#000;
-  color:#00ff99;
-  text-align:center;
-  direction:rtl;
-  overflow-x:hidden;
-}
-h1 {
-  margin:40px 0 30px;
-  font-size:2.2em;
-  text-shadow:0 0 15px #00ff99;
-}
-.button-container {
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  flex-wrap:wrap;
-  margin-bottom:50px;
-}
-.btn {
-  display:inline-block;
-  padding:14px 28px;
-  font-size:1.2em;
-  color:#00ff99;
-  text-decoration:none;
-  border:1px solid #00ff99;
-  border-radius:10px;
-  box-shadow:0 0 15px #00ff99;
-  transition:all 0.3s ease;
-}
-.btn:hover {
-  background:#fff;
-  color:#000;
-  box-shadow:0 0 25px #00ff99;
-  transform:scale(1.05);
-}
-
-/* فرم حمایت */
-#donate-form {
-  background:rgba(0,0,0,0.85);
-  border:1px solid #00ff99;
-  border-radius:12px;
-  padding:25px 30px;
-  max-width:400px;
-  margin:0 auto 40px auto;
-  text-align:right;
-}
-#donate-form label {
-  display:block;
-  margin:12px 0 6px;
-  font-size:1em;
-}
-#donate-form input {
-  width:100%;
-  padding:8px 10px;
-  font-size:1em;
-  border-radius:6px;
-  border:1px solid #00ff99;
-  background:#000;
-  color:#00ff99;
-}
-#donate-form #converted {
-  margin-top:6px;
-  font-size:0.95em;
-  color:#fff;
-  text-align:left;
-}
-
-/* ویدیو popup */
-#overlay {
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:10;
-}
-#donation-alert {
-  position:absolute;
-  top:40%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  text-align:center;
-  background:rgba(0,0,0,0.9);
-  border:1px solid #00ff99;
-  border-radius:16px;
-  padding:20px 25px;
-  display:none;
-  z-index:20;
-  animation:fadein 0.5s ease;
-}
-#donation-video {
-  width:180px;
-  height:180px;
-  border-radius:10px;
-  margin-bottom:12px;
-}
-#donor-text {
-  font-size:1.2em;
-  text-shadow:0 0 12px #00ff99;
-}
-
-/* جمع کل و درصد هدف */
-#stats {
-  position:fixed;
-  bottom:8%;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:1.2em;
-  background:rgba(0,0,0,0.85);
-  border-radius:12px;
-  padding:18px 25px;
-  color:#00ff99;
-  text-shadow:0 0 10px #00ff99;
-  z-index:5;
-}
-
-/* ساعت */
-#clock {
-  position:fixed;
-  top:15px;
-  right:20px;
-  font-size:1.2em;
-  color:#00ff99;
-}
-
-@keyframes fadein {from{opacity:0;}to{opacity:1;}}
-@media(max-width:500px){
-  .btn{padding:10px 20px;font-size:1em;}
-  h1{font-size:1.8em;margin:30px 0;}
-  #donation-video{width:140px;height:140px;}
-  #stats{padding:12px 18px;font-size:1em;}
-}
+    body { font-family: Tahoma, sans-serif; background-color: #f8f8f8; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .donate-container { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 100%; max-width: 420px; }
+    h2 { text-align: center; margin-bottom: 20px; }
+    label { display: block; margin-top: 15px; font-weight: bold; font-size: 1rem; }
+    input { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+    .amount-display { margin-top: 10px; font-weight: bold; font-size: 0.95rem; color: #333; }
+    .donate-btn { margin-top: 25px; width: 100%; padding: 15px; background: #fff; border: 1px solid #999; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .donate-btn:hover { background: #f0f0f0; }
 </style>
 </head>
 <body>
+<div class="donate-container">
+    <h2>حمایت از میلاد کاتاکوری</h2>
+    <form id="donateForm">
+        <label for="name">نام</label>
+        <input type="text" id="name" placeholder="نام خود را وارد کنید">
 
-<h1>🎁 حمایت از میلاد کاتاکوری</h1>
+        <label for="phone">شماره تماس (اختیاری)</label>
+        <input type="text" id="phone" placeholder="شماره تماس">
 
-<!-- فرم حمایت -->
-<div id="donate-form">
-  <label for="name">نام (اختیاری)</label>
-  <input type="text" id="name" placeholder="نام شما">
-  
-  <label for="phone">شماره تماس (اختیاری)</label>
-  <input type="text" id="phone" placeholder="شماره تماس">
-  
-  <label for="amount">مبلغ (تومان)</label>
-  <input type="number" id="amount" placeholder="مثلاً 50000">
-  <div id="converted">مبلغ معادل: 0 USDT</div>
-  
-  <a id="nowpay-btn" class="btn" href="https://nowpayments.io/donation?api_key=MP94SK3-2RNMDJ4-PPKQWSS-GHCVMNJ" target="_blank">
-    حمایت با NowPayments
-  </a>
+        <label for="amount">مبلغ به تومان</label>
+        <input type="number" id="amount" placeholder="مثال: 666000" min="0">
+
+        <div class="amount-display" id="amountDisplay">۰ تومان = ۰ USDT</div>
+
+        <button type="submit" class="donate-btn">حمایت با NowPayments</button>
+    </form>
 </div>
-
-<!-- overlay و popup -->
-<div id="overlay">
-  <div id="donation-alert">
-    <video id="donation-video" src="donate.mp4" autoplay muted></video>
-    <p id="donor-text"></p>
-  </div>
-  <div id="stats">
-    <p>💰 جمع کل: <span id="total">0</span> تومان</p>
-    <p>🎯 درصد هدف: <span id="percent">0</span>%</p>
-  </div>
-</div>
-
-<!-- ساعت -->
-<div id="clock"></div>
 
 <script>
-// ساعت زنده
-function updateClock(){
-  const now = new Date();
-  const h=('0'+now.getHours()).slice(-2);
-  const m=('0'+now.getMinutes()).slice(-2);
-  const s=('0'+now.getSeconds()).slice(-2);
-  document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-}
-setInterval(updateClock,1000);
-updateClock();
-
-// جمع کل و popup
-let total = 0;
-const target = 60000000; // هدف
-
-function showDonation(name, phone, amount){
-  total += amount;
-  document.getElementById('total').textContent = total.toLocaleString('fa-IR');
-  document.getElementById('percent').textContent = Math.min(((total/target)*100).toFixed(1),100);
-
-  const alertBox = document.getElementById('donation-alert');
-  const donorText = document.getElementById('donor-text');
-  donorText.textContent = `${name || 'حامی ناشناس'} | ${amount.toLocaleString('fa-IR')} تومان${phone ? ' | '+phone : ''}`;
-  alertBox.style.display='block';
-  const videoEl = document.getElementById('donation-video');
-  videoEl.currentTime=0;
-  videoEl.play();
-  setTimeout(()=>{alertBox.style.display='none';},13000);
-}
-
-// تبدیل تومان به USDT (نرخ لحظه‌ای نوبیتکس)
-async function getUSDTValue(toman){
-  try{
-    const res = await fetch('https://api.nobitex.ir/v2/orderbook/?symbol=usdtirt');
-    const data = await res.json();
-    const rate = parseFloat(data.best_ask); // قیمت فروش لحظه‌ای
-    return (toman / rate).toFixed(2);
-  } catch(e){console.warn(e); return (toman/45000).toFixed(2);}
-}
-
 const amountInput = document.getElementById('amount');
-const converted = document.getElementById('converted');
+const amountDisplay = document.getElementById('amountDisplay');
+const form = document.getElementById('donateForm');
 
-amountInput.addEventListener('input', async ()=>{
-  const value = parseFloat(amountInput.value) || 0;
-  const usdt = await getUSDTValue(value);
-  converted.textContent = `مبلغ معادل: ${usdt} USDT`;
-});
+// نرخ تتر لحظه‌ای از نوبیتکس
+let usdtRate = 0;
+async function fetchUSDT() {
+    try {
+        const res = await fetch('https://api.nobitex.ir/v2/orderbook/?market=usdt-irt');
+        const data = await res.json();
+        usdtRate = parseFloat(data.ticker.last); // آخرین نرخ تتر به ریال
+        updateDisplay();
+    } catch (e) {
+        console.error('خطا در دریافت نرخ تتر:', e);
+    }
+}
 
-// دکمه NowPayments لینک با مقدار
-document.getElementById('nowpay-btn').addEventListener('click', async (e)=>{
-  e.preventDefault();
-  const name = document.getElementById('name').value;
-  const phone = document.getElementById('phone').value;
-  const amount = parseFloat(document.getElementById('amount').value) || 0;
-  if(amount<=0){alert('مبلغ معتبر نیست'); return;}
-  
-  // نمایش popup
-  showDonation(name, phone, amount);
+// نمایش مقدار تومان و USDT
+function updateDisplay() {
+    const tomans = parseFloat(amountInput.value) || 0;
+    const irt = tomans * 10; // تومان → ریال
+    const usdt = usdtRate ? (irt / usdtRate).toFixed(2) : 0;
+    amountDisplay.textContent = `${tomans.toLocaleString()} تومان = ${usdt} USDT`;
+}
 
-  // باز کردن لینک NowPayments با api key
-  window.open('https://nowpayments.io/donation?api_key=MP94SK3-2RNMDJ4-PPKQWSS-GHCVMNJ','_blank');
+// رفرش نرخ تتر هر 30 ثانیه
+setInterval(fetchUSDT, 30000);
+fetchUSDT();
+
+amountInput.addEventListener('input', updateDisplay);
+
+// ارسال فرم به NowPayments
+form.addEventListener('submit', e => {
+    e.preventDefault();
+    const amount = parseFloat(amountInput.value) || 0;
+    if(amount <= 0) return alert('لطفا مبلغ صحیح وارد کنید');
+    const apiKey = 'MP94SK3-2RNMDJ4-PPKQWSS-GHCVMNJ';
+    const url = `https://nowpayments.io/donation?api_key=${apiKey}&price_amount=${amount}&price_currency=IRR`;
+    window.open(url, '_blank');
 });
 </script>
-
 </body>
 </html>
